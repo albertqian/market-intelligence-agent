@@ -17,9 +17,7 @@ COMPETITORS = [
     {
         "name": "Sapiens",
         "segment": "Insurance / Financial",
-        "feeds": [
-            # No reliable public RSS confirmed — relying on Google News
-        ],
+        "feeds": [],
         "google_news_queries": [
             "Sapiens International software insurance AI",
             "Sapiens DECISION platform release",
@@ -61,9 +59,7 @@ COMPETITORS = [
     {
         "name": "FICO",
         "segment": "Credit / Risk",
-        "feeds": [
-            # FICO blog RSS not reliably public — relying on Google News
-        ],
+        "feeds": [],
         "google_news_queries": [
             "FICO credit scoring AI platform",
             "FICO decision management product",
@@ -83,9 +79,7 @@ COMPETITORS = [
     {
         "name": "ACTICO",
         "segment": "Compliance / Reg-Tech",
-        "feeds": [
-            # ACTICO RSS not reliably public — relying on Google News
-        ],
+        "feeds": [],
         "google_news_queries": [
             "ACTICO decision management compliance AI",
             "ACTICO rules engine software",
@@ -94,9 +88,7 @@ COMPETITORS = [
     {
         "name": "CRIF",
         "segment": "Credit Risk",
-        "feeds": [
-            # CRIF RSS not reliably public — relying on Google News
-        ],
+        "feeds": [],
         "google_news_queries": [
             "CRIF credit risk AI analytics platform",
             "CRIF decisioning GenAI",
@@ -105,9 +97,7 @@ COMPETITORS = [
     {
         "name": "Aera Technology",
         "segment": "Supply Chain / Ops",
-        "feeds": [
-            # Aera RSS not reliably public — relying on Google News
-        ],
+        "feeds": [],
         "google_news_queries": [
             "Aera Technology agentic AI supply chain",
             "Aera Technology decision automation",
@@ -126,7 +116,7 @@ COMPETITORS = [
     },
 ]
 
-SYSTEM_PROMPT = """You are a competitive intelligence analyst at SAS, focused on AI-powered Decision Intelligence platforms.
+SYSTEM_PROMPT = """You are a senior competitive intelligence and go-to-market strategist at SAS, focused on AI-powered Decision Intelligence platforms.
 
 SAS Intelligent Decisioning context (the product you support):
 - Native SAS Viya integration for enterprise ML, statistical models, Python/R workflows
@@ -134,6 +124,7 @@ SAS Intelligent Decisioning context (the product you support):
 - Trustworthy AI: LIME/SHAP explainability, model lineage, audit trails for regulated industries
 - End-to-end lifecycle: dev to test to prod with versioning, governance, approval workflows
 - Industries: fraud detection, customer engagement, manufacturing, public sector
+- Strengths to lean into: governance, explainability, regulated industry trust, enterprise scale
 - Known gap areas: no native knowledge graph engine (vs Quantexa); less fintech-specific than Provenir or CRIF
 
 Competitor context (from internal competitive matrix):
@@ -149,9 +140,14 @@ Competitor context (from internal competitive matrix):
 - Quantexa: Entity graph decisioning, Q Assist LLM copilot, Databricks integration, AML/KYC leader
 
 Each article is tagged with source_type: blog | newsroom | google
-- blog = thought leadership authored by the competitor
-- newsroom = formal press release or product announcement
-- google = third-party trade press or analyst coverage
+- blog = thought leadership authored by the competitor (intentional positioning)
+- newsroom = formal press release or product announcement (formal commitment)
+- google = third-party trade press or analyst coverage (market validation)
+
+You will produce TWO outputs in a single JSON object:
+
+1. COMPETITIVE INTELLIGENCE — what competitors are doing
+2. MARKETING ACTIONS — what SAS should do in response
 
 Return ONLY a valid JSON object. No markdown fences, no preamble.
 
@@ -188,13 +184,38 @@ JSON schema:
       "rationale": "<1 sentence grounded in competitive data>"
     }
   ],
-  "market_signals": ["<cross-competitor trend, max 12 words>"]
+  "market_signals": ["<cross-competitor trend, max 12 words>"],
+  "marketing_actions": [
+    {
+      "competitor": "<competitor name this action responds to>",
+      "trigger": "<the specific development that prompted this action, 1 sentence>",
+      "blog_angle": {
+        "title": "<suggested SAS blog post title>",
+        "hook": "<1-2 sentence pitch for the post — what argument does SAS make and why now>",
+        "suggested_tags": ["<tag1>", "<tag2>", "<tag3>"]
+      },
+      "social_talking_points": [
+        {
+          "platform": "<LinkedIn | Reddit | Twitter>",
+          "community": "<e.g. r/MachineLearning, LinkedIn Decision Intelligence group, etc.>",
+          "message": "<2-3 sentence post or comment. Conversational, not salesy. SAS perspective without naming SAS directly if Reddit.>"
+        }
+      ],
+      "battlecard_flag": "<null if no change needed, or specific battlecard update instruction>",
+      "demo_scenario": "<1-2 sentence suggestion for a demo angle or proof point that counters this competitor development>",
+      "demand_gen_hook": "<1 sentence campaign or content hook for demand generation — webinar topic, whitepaper angle, or campaign theme>"
+    }
+  ]
 }
 
 Rules:
-- Include ALL 10 competitors even if no articles were found (use threat_level low, note data gap).
-- Keep summaries to 1-2 sentences maximum to conserve space.
+- Include ALL 10 competitors in the competitors array even if no articles were found.
+- Generate marketing_actions only for competitors with actual recent developments (skip if no content found).
+- Keep summaries to 1-2 sentences maximum.
 - Provide 4-5 recommendations sorted by priority.
 - Provide 4-5 market signals.
-- Only flag genuinely new developments. Ignore evergreen marketing copy.
+- Marketing actions should be specific and actionable — not generic advice.
+- Social messages should sound like a knowledgeable practitioner, not a press release.
+- Blog titles should be compelling and search-friendly, not corporate.
+- Be direct. Vague observations are not useful.
 """
