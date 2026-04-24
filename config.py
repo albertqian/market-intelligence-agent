@@ -1,15 +1,14 @@
 """
 config.py — Competitor configuration and Claude system prompt.
 
-Feed strategy (in priority order per competitor):
-  1. Direct blog RSS — highest signal, lowest noise
-  2. Newsroom / press RSS — product and partnership announcements
-  3. Google News RSS — catches trade press and analyst coverage
+Feed types:
+  blog      — Thought leadership, opinion, technical content authored by the competitor
+  newsroom  — Press releases, product launches, partnership announcements
+  google    — Trade press coverage, analyst mentions, third-party reporting
 
 Edit COMPETITORS freely to add, remove, or re-tune any entry.
 """
 
-# Browser-like user agent — prevents 403s from corporate blog servers
 FEED_USER_AGENT = (
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -21,8 +20,8 @@ COMPETITORS = [
         "name": "Sapiens",
         "segment": "Insurance / Financial",
         "feeds": [
-            "https://www.sapiens.com/blog/feed/",
-            "https://www.sapiens.com/news/feed/",
+            {"url": "https://www.sapiens.com/blog/feed/",  "type": "blog"},
+            {"url": "https://www.sapiens.com/news/feed/",  "type": "newsroom"},
         ],
         "google_news_queries": [
             "Sapiens International software insurance AI",
@@ -33,8 +32,8 @@ COMPETITORS = [
         "name": "Palantir",
         "segment": "Government / Enterprise",
         "feeds": [
-            "https://medium.com/feed/palantir",
-            "https://blog.palantir.com/feed",
+            {"url": "https://medium.com/feed/palantir",    "type": "blog"},
+            {"url": "https://blog.palantir.com/feed",      "type": "blog"},
         ],
         "google_news_queries": [
             "Palantir AIP platform product",
@@ -45,8 +44,8 @@ COMPETITORS = [
         "name": "Pegasystems",
         "segment": "CRM / BPM",
         "feeds": [
-            "https://www.pega.com/blog/rss.xml",
-            "https://www.pega.com/newsroom/press-releases/rss.xml",
+            {"url": "https://www.pega.com/blog/rss.xml",                        "type": "blog"},
+            {"url": "https://www.pega.com/newsroom/press-releases/rss.xml",     "type": "newsroom"},
         ],
         "google_news_queries": [
             "Pegasystems Pega AI product launch",
@@ -57,9 +56,9 @@ COMPETITORS = [
         "name": "IBM",
         "segment": "Enterprise AI",
         "feeds": [
-            "https://www.ibm.com/blog/feed/",
-            "https://research.ibm.com/blog/feed",
-            "https://newsroom.ibm.com/rss/news-releases.htm",
+            {"url": "https://www.ibm.com/blog/feed/",                   "type": "blog"},
+            {"url": "https://research.ibm.com/blog/feed",               "type": "blog"},
+            {"url": "https://newsroom.ibm.com/rss/news-releases.htm",   "type": "newsroom"},
         ],
         "google_news_queries": [
             "IBM watsonx AI product announcement",
@@ -70,8 +69,8 @@ COMPETITORS = [
         "name": "FICO",
         "segment": "Credit / Risk",
         "feeds": [
-            "https://www.fico.com/blogs/rss.xml",
-            "https://www.fico.com/en/newsroom/rss.xml",
+            {"url": "https://www.fico.com/blogs/rss.xml",           "type": "blog"},
+            {"url": "https://www.fico.com/en/newsroom/rss.xml",     "type": "newsroom"},
         ],
         "google_news_queries": [
             "FICO credit scoring AI platform",
@@ -82,8 +81,8 @@ COMPETITORS = [
         "name": "Provenir",
         "segment": "Fintech",
         "feeds": [
-            "https://www.provenir.com/blog/feed/",
-            "https://www.provenir.com/news/feed/",
+            {"url": "https://www.provenir.com/blog/feed/",  "type": "blog"},
+            {"url": "https://www.provenir.com/news/feed/",  "type": "newsroom"},
         ],
         "google_news_queries": [
             "Provenir fintech credit risk AI",
@@ -94,8 +93,8 @@ COMPETITORS = [
         "name": "ACTICO",
         "segment": "Compliance / Reg-Tech",
         "feeds": [
-            "https://www.actico.com/en/blog/feed/",
-            "https://www.actico.com/blog/feed/",
+            {"url": "https://www.actico.com/en/blog/feed/", "type": "blog"},
+            {"url": "https://www.actico.com/blog/feed/",    "type": "blog"},
         ],
         "google_news_queries": [
             "ACTICO decision management compliance AI",
@@ -106,8 +105,8 @@ COMPETITORS = [
         "name": "CRIF",
         "segment": "Credit Risk",
         "feeds": [
-            "https://www.crif.com/news/feed/",
-            "https://www.crif.com/blog/feed/",
+            {"url": "https://www.crif.com/news/feed/",  "type": "newsroom"},
+            {"url": "https://www.crif.com/blog/feed/",  "type": "blog"},
         ],
         "google_news_queries": [
             "CRIF credit risk AI analytics platform",
@@ -118,8 +117,8 @@ COMPETITORS = [
         "name": "Aera Technology",
         "segment": "Supply Chain / Ops",
         "feeds": [
-            "https://www.aeratechnology.com/blog/feed/",
-            "https://www.aeratechnology.com/news/feed/",
+            {"url": "https://www.aeratechnology.com/blog/feed/", "type": "blog"},
+            {"url": "https://www.aeratechnology.com/news/feed/", "type": "newsroom"},
         ],
         "google_news_queries": [
             "Aera Technology agentic AI supply chain",
@@ -130,8 +129,8 @@ COMPETITORS = [
         "name": "Quantexa",
         "segment": "AML / KYC / Fraud",
         "feeds": [
-            "https://www.quantexa.com/blog/feed/",
-            "https://www.quantexa.com/news/feed/",
+            {"url": "https://www.quantexa.com/blog/feed/", "type": "blog"},
+            {"url": "https://www.quantexa.com/news/feed/", "type": "newsroom"},
         ],
         "google_news_queries": [
             "Quantexa AI analytics fraud AML platform",
@@ -162,33 +161,46 @@ Competitor context (from internal competitive matrix):
 - Aera Technology: Agentic AI layer, Control Room, prescriptive operations, supply chain focus
 - Quantexa: Entity graph decisioning, Q Assist LLM copilot, Databricks integration, AML/KYC leader
 
-You will receive RSS feed articles from these competitors. Analyze what is strategically significant and return ONLY a valid JSON object. No markdown fences, no preamble, no commentary.
+Each article in the feed is tagged with a source_type:
+- blog      = thought leadership authored directly by the competitor
+- newsroom  = formal press release or product announcement
+- google    = third-party trade press or analyst coverage
+
+Use source_type to inform your analysis. A blog post signals intentional positioning. A press release signals a formal commitment. Trade press signals market validation.
+
+You will receive RSS feed articles from these competitors. Return ONLY a valid JSON object. No markdown fences, no preamble.
 
 JSON schema:
 {
   "generated_at": "<ISO 8601 timestamp>",
   "competitors": [
     {
-      "name": "<exact name from the list above>",
+      "name": "<exact name>",
       "threat_level": "<high | medium | low>",
       "headline": "<most significant recent development, max 12 words>",
       "developments": [
         {
           "title": "<short title>",
-          "date": "<e.g. April 2025 or Q1 2025>",
-          "summary": "<2-3 factual sentences based on the articles>",
-          "sas_impact": "<specific implication for SAS Intelligent Decisioning, 1-2 sentences>"
+          "date": "<e.g. April 2025>",
+          "source_type": "<blog | newsroom | trade_press>",
+          "summary": "<2-3 factual sentences>",
+          "sas_impact": "<specific implication for SAS Intelligent Decisioning>"
         }
       ],
-      "strategic_posture": "<one sentence on their current strategic direction>"
+      "strategic_posture": "<one sentence on their current direction>",
+      "content_activity": {
+        "blog_count": <int>,
+        "newsroom_count": <int>,
+        "trade_press_count": <int>
+      }
     }
   ],
   "recommendations": [
     {
       "priority": "<critical | high | medium>",
-      "area": "<capability area, e.g. AI Agent Governance>",
+      "area": "<capability area>",
       "action": "<specific, actionable step for the SAS product team>",
-      "rationale": "<grounded in specific competitive data found, 1-2 sentences>"
+      "rationale": "<grounded in competitive data, 1-2 sentences>"
     }
   ],
   "market_signals": [
@@ -197,9 +209,9 @@ JSON schema:
 }
 
 Rules:
-- Include ALL 10 competitors. If no articles were found, still include them with threat_level low and note the data gap.
-- Provide 4-6 recommendations sorted by priority (critical first).
-- Provide 4-6 market signals drawn from patterns across multiple competitors.
-- Only flag developments that are genuinely new. Ignore evergreen marketing copy.
-- Be direct and specific. Vague observations are not useful.
+- Include ALL 10 competitors even if no articles were found.
+- Provide 4-6 recommendations sorted by priority.
+- Provide 4-6 market signals.
+- Only flag genuinely new developments. Ignore evergreen marketing copy.
+- Be direct. Vague observations are not useful.
 """
