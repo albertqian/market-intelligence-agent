@@ -176,13 +176,32 @@ def run_claude_analysis(all_items: dict[str, list], context_files: list[str] = N
 
     response = client.messages.create(
         model="claude-sonnet-4-6",
-        max_tokens=4096,
+        max_tokens=8192,
         system=SYSTEM_PROMPT,
         messages=[{"role": "user", "content": content}],
     )
 
     raw = response.content[0].text.strip()
     raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+
+    # Check if response was cut off (stop_reason = max_tokens)
+    stop_reason = response.stop_reason
+    if stop_reason == "max_tokens":
+        print("  ⚠ Response hit token limit — retrying with concise mode...")
+        concise_content = content.copy()
+        concise_content[0]["text"] += (
+            "\n\nIMPORTANT: Your previous response was truncated. "
+            "Be more concise. Limit each summary to 1 sentence. "
+            "Limit developments to 1 per competitor. Return only the JSON."
+        )
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=8192,
+            system=SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": concise_content}],
+        )
+        raw = response.content[0].text.strip()
+        raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
 
     try:
         return json.loads(raw)
