@@ -44,6 +44,16 @@ SOURCE_ICONS = {
     "trade_press": ("📰", "Trade Press",          "#0891b2"),
 }
 
+PLATFORM_ICONS = {
+    "LinkedIn": "💼",
+    "Reddit":   "🔴",
+    "Twitter":  "𝕏",
+}
+
+PRI_COLORS = {"critical": "#dc2626", "high": "#d97706", "medium": "#2563eb"}
+THREAT_LABELS = {"high": "🔴 HIGH", "medium": "🟡 MED", "low": "🟢 LOW"}
+THREAT_ORDER = {"high": 0, "medium": 1, "low": 2}
+
 
 # ── RSS FETCHING ──────────────────────────────────────────────────────────────
 
@@ -125,7 +135,9 @@ def build_prompt(all_items: dict, context_files: list | None) -> str:
             lines.append("No recent articles found.\n")
             continue
         for item in items:
-            lines.append(f"- [{item['source_type'].upper()}] {item['title']} ({item['published']})")
+            lines.append(
+                f"- [{item['source_type'].upper()}] {item['title']} ({item['published']})"
+            )
             if item["summary"]:
                 lines.append(f"  {item['summary'][:350]}")
         lines.append("")
@@ -150,28 +162,27 @@ def parse_json(raw: str) -> dict:
 
 def run_claude_analysis(all_items: dict, context_files: list | None = None) -> dict:
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    prompt_text = build_prompt(all_items, context_files)
+    message_content = [{"type": "text", "text": prompt_text}]
 
-    message_content = [{"type": "text", "text": build_prompt(all_items, context_files)}]
-
-    if context_files:
-        for path in (context_files or []):
-            try:
-                with open(path, "rb") as f:
-                    data = base64.standard_b64encode(f.read()).decode("utf-8")
-                ext = path.rsplit(".", 1)[-1].lower()
-                media_type = {
-                    "pdf": "application/pdf",
-                    "png": "image/png",
-                    "jpg": "image/jpeg",
-                    "jpeg": "image/jpeg",
-                }.get(ext, "application/octet-stream")
-                message_content.append({
-                    "type": "document",
-                    "source": {"type": "base64", "media_type": media_type, "data": data},
-                })
-                print(f"  Attached: {path}")
-            except Exception as e:
-                print(f"  Warning — could not attach {path}: {e}")
+    for path in (context_files or []):
+        try:
+            with open(path, "rb") as f:
+                data = base64.standard_b64encode(f.read()).decode("utf-8")
+            ext = path.rsplit(".", 1)[-1].lower()
+            media_type = {
+                "pdf": "application/pdf",
+                "png": "image/png",
+                "jpg": "image/jpeg",
+                "jpeg": "image/jpeg",
+            }.get(ext, "application/octet-stream")
+            message_content.append({
+                "type": "document",
+                "source": {"type": "base64", "media_type": media_type, "data": data},
+            })
+            print(f"  Attached: {path}")
+        except Exception as e:
+            print(f"  Warning — could not attach {path}: {e}")
 
     response = client.messages.create(
         model="claude-sonnet-4-6",
@@ -182,10 +193,9 @@ def run_claude_analysis(all_items: dict, context_files: list | None = None) -> d
 
     if response.stop_reason == "max_tokens":
         print("  ⚠ Response truncated — retrying in concise mode...")
-        concise_text = build_prompt(all_items, context_files)
-        concise_text += (
+        concise_text = prompt_text + (
             "\n\nIMPORTANT: Be very concise. Max 1 development per competitor, "
-            "1 sentence each. Return only the JSON."
+            "1 sentence each. Max 3 marketing actions total. Return only the JSON."
         )
         response = client.messages.create(
             model="claude-sonnet-4-6",
@@ -205,30 +215,42 @@ def save_json(data: dict, path: str = FEED_FILE) -> None:
     print(f"✓ Saved → {path}")
 
 
-# ── EMAIL ─────────────────────────────────────────────────────────────────────
+# ── EMAIL BUILDER ─────────────────────────────────────────────────────────────
+
+def _card(content: str, border_color: str = "#e2e8f0", bg: str = "#f8fafc") -> str:
+    return (
+        f"<div style='border-left:3px solid {border_color};"
+        f"padding:10px 14px;margin-bottom:12px;background:{bg}'>"
+        f"{content}</div>"
+    )
+
+
+def _h2(text: str) -> str:
+    return f"<h2 style='color:#1e40af;margin-top:28px;margin-bottom:12px'>{text}</h2>"
+
 
 def build_email_html(data: dict) -> str:
     generated = data.get("generated_at", "")
     sections = []
 
+    # ── Market Signals ────────────────────────────────────────────────────────
     signals = data.get("market_signals", [])
     if signals:
         bullets = "".join(f"<li style='margin-bottom:6px'>{s}</li>" for s in signals)
         sections.append(
-            f"<h2 style='color:#1e40af'>📡 Market Signals</h2>"
-            f"<ul style='padding-left:20px'>{bullets}</ul>"
+            _h2("📡 Market Signals")
+            + f"<ul style='padding-left:20px;margin:0'>{bullets}</ul>"
         )
 
-    threat_order = {"high": 0, "medium": 1, "low": 2}
-    threat_labels = {"high": "🔴 HIGH", "medium": "🟡 MED", "low": "🟢 LOW"}
+    # ── Competitor Snapshot ───────────────────────────────────────────────────
     competitors = sorted(
         data.get("competitors", []),
-        key=lambda c: threat_order.get(c.get("threat_level", "low"), 2),
+        key=lambda c: THREAT_ORDER.get(c.get("threat_level", "low"), 2),
     )
 
     rows = ""
     for c in competitors:
-        label = threat_labels.get(c.get("threat_level", "low"), "🟢 LOW")
+        label = THREAT_LABELS.get(c.get("threat_level", "low"), "🟢 LOW")
         act = c.get("content_activity", {})
         act_str = (
             f"📝 {act.get('blog_count', 0)}&nbsp;"
@@ -247,8 +269,8 @@ def build_email_html(data: dict) -> str:
         )
 
     sections.append(
-        f"<h2 style='color:#1e40af'>Competitor Snapshot</h2>"
-        f"<table style='width:100%;border-collapse:collapse;font-size:13px'>"
+        _h2("Competitor Snapshot")
+        + f"<table style='width:100%;border-collapse:collapse;font-size:13px'>"
         f"<thead><tr style='background:#f8fafc'>"
         f"<th style='padding:10px;border:1px solid #e2e8f0;text-align:left'>Competitor</th>"
         f"<th style='padding:10px;border:1px solid #e2e8f0;text-align:left'>Latest Development</th>"
@@ -259,6 +281,7 @@ def build_email_html(data: dict) -> str:
         f"📝 Blog &nbsp;·&nbsp; 📣 Press / Product &nbsp;·&nbsp; 📰 Trade Press</p>"
     )
 
+    # ── High Threat Detail ────────────────────────────────────────────────────
     high_threat = [c for c in competitors if c.get("threat_level") == "high"]
     if high_threat:
         dev_html = ""
@@ -267,25 +290,23 @@ def build_email_html(data: dict) -> str:
             for dev in c.get("developments", []):
                 src = dev.get("source_type", "google")
                 icon, lbl, color = SOURCE_ICONS.get(src, ("📰", "Trade Press", "#0891b2"))
-                dev_html += (
-                    f"<div style='border-left:3px solid {color};padding:8px 12px;"
-                    f"margin-bottom:10px;background:#f8fafc'>"
+                dev_html += _card(
                     f"<span style='font-size:11px;color:{color};font-weight:bold'>{icon} {lbl}</span><br>"
                     f"<strong style='font-size:13px'>{dev.get('title', '')}</strong> "
                     f"<span style='color:#94a3b8;font-size:11px'>{dev.get('date', '')}</span><br>"
                     f"<span style='font-size:13px'>{dev.get('summary', '')}</span><br>"
                     f"<span style='font-size:12px;color:#d97706'>"
-                    f"<strong>SAS Impact:</strong> {dev.get('sas_impact', '')}</span>"
-                    f"</div>"
+                    f"<strong>SAS Impact:</strong> {dev.get('sas_impact', '')}</span>",
+                    border_color=color,
                 )
-        sections.append(f"<h2 style='color:#1e40af'>High Threat — Detail</h2>{dev_html}")
+        sections.append(_h2("High Threat — Detail") + dev_html)
 
+    # ── Strategic Recommendations ─────────────────────────────────────────────
     recs = data.get("recommendations", [])
     if recs:
-        pri_colors = {"critical": "#dc2626", "high": "#d97706", "medium": "#2563eb"}
         rec_html = ""
         for r in recs:
-            color = pri_colors.get(r.get("priority", "medium"), "#2563eb")
+            color = PRI_COLORS.get(r.get("priority", "medium"), "#2563eb")
             rec_html += (
                 f"<li style='margin-bottom:14px'>"
                 f"<span style='color:{color};font-weight:bold'>[{r.get('priority','').upper()}]</span> "
@@ -295,23 +316,112 @@ def build_email_html(data: dict) -> str:
                 f"</li>"
             )
         sections.append(
-            f"<h2 style='color:#1e40af'>Strategic Recommendations</h2>"
-            f"<ol style='padding-left:20px'>{rec_html}</ol>"
+            _h2("Strategic Recommendations")
+            + f"<ol style='padding-left:20px'>{rec_html}</ol>"
         )
 
+    # ── Marketing Actions ─────────────────────────────────────────────────────
+    actions = data.get("marketing_actions", [])
+    if actions:
+        actions_html = ""
+        for action in actions:
+            comp = action.get("competitor", "")
+            trigger = action.get("trigger", "")
+            blog = action.get("blog_angle", {})
+            socials = action.get("social_talking_points", [])
+            battlecard = action.get("battlecard_flag")
+            demo = action.get("demo_scenario", "")
+            demand_gen = action.get("demand_gen_hook", "")
+
+            inner = f"<strong style='font-size:14px'>↳ {comp}</strong><br>"
+            inner += f"<em style='color:#6b7280;font-size:12px'>Trigger: {trigger}</em>"
+
+            # Blog angle
+            if blog:
+                tags_html = " ".join(
+                    f"<span style='background:#dbeafe;color:#1e40af;font-size:10px;"
+                    f"padding:2px 6px;border-radius:3px;margin-right:4px'>{t}</span>"
+                    for t in blog.get("suggested_tags", [])
+                )
+                inner += (
+                    f"<div style='margin-top:10px'>"
+                    f"<span style='font-size:11px;font-weight:bold;color:#1e40af'>📝 BLOG ANGLE</span><br>"
+                    f"<strong style='font-size:13px'>{blog.get('title', '')}</strong><br>"
+                    f"<span style='font-size:12px;color:#374151'>{blog.get('hook', '')}</span><br>"
+                    f"<div style='margin-top:5px'>{tags_html}</div>"
+                    f"</div>"
+                )
+
+            # Social talking points
+            if socials:
+                social_html = ""
+                for s in socials:
+                    platform = s.get("platform", "")
+                    p_icon = PLATFORM_ICONS.get(platform, "💬")
+                    social_html += (
+                        f"<div style='margin-bottom:8px'>"
+                        f"<span style='font-size:11px;font-weight:bold;color:#374151'>"
+                        f"{p_icon} {platform}</span>"
+                        f"<span style='font-size:11px;color:#6b7280'> · {s.get('community', '')}</span><br>"
+                        f"<span style='font-size:12px;color:#374151'>{s.get('message', '')}</span>"
+                        f"</div>"
+                    )
+                inner += (
+                    f"<div style='margin-top:10px'>"
+                    f"<span style='font-size:11px;font-weight:bold;color:#1e40af'>💬 SOCIAL TALKING POINTS</span><br>"
+                    f"<div style='margin-top:6px'>{social_html}</div>"
+                    f"</div>"
+                )
+
+            # Demo scenario
+            if demo:
+                inner += (
+                    f"<div style='margin-top:10px'>"
+                    f"<span style='font-size:11px;font-weight:bold;color:#1e40af'>🎯 DEMO SCENARIO</span><br>"
+                    f"<span style='font-size:12px;color:#374151'>{demo}</span>"
+                    f"</div>"
+                )
+
+            # Demand gen hook
+            if demand_gen:
+                inner += (
+                    f"<div style='margin-top:10px'>"
+                    f"<span style='font-size:11px;font-weight:bold;color:#1e40af'>📣 DEMAND GEN HOOK</span><br>"
+                    f"<span style='font-size:12px;color:#374151'>{demand_gen}</span>"
+                    f"</div>"
+                )
+
+            # Battlecard flag
+            if battlecard and battlecard.lower() != "null":
+                inner += (
+                    f"<div style='margin-top:10px;padding:6px 10px;background:#fef3c7;"
+                    f"border:1px solid #f59e0b;font-size:12px'>"
+                    f"⚠️ <strong>Battlecard Update:</strong> {battlecard}"
+                    f"</div>"
+                )
+
+            actions_html += _card(inner, border_color="#6366f1", bg="#fafafa")
+
+        sections.append(_h2("🚀 Marketing Actions") + actions_html)
+
+    # ── Assemble ──────────────────────────────────────────────────────────────
     return (
         "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;"
-        "max-width:780px;margin:0 auto;padding:28px;color:#1e293b'>"
+        "max-width:800px;margin:0 auto;padding:28px;color:#1e293b'>"
         "<h1 style='color:#1e40af;margin-bottom:4px'>SAS Intelligent Decisioning</h1>"
-        "<h2 style='font-weight:normal;color:#64748b;margin-top:0'>Competitive Intelligence Digest</h2>"
+        "<h2 style='font-weight:normal;color:#64748b;margin-top:0'>"
+        "Competitive Intelligence &amp; Marketing Actions</h2>"
         f"<p style='color:#94a3b8;font-size:12px;border-bottom:1px solid #e2e8f0;"
         f"padding-bottom:16px'>Generated: {generated}</p>"
         + "\n".join(sections)
         + "<hr style='border:none;border-top:1px solid #e2e8f0;margin:28px 0'>"
-        "<p style='font-size:11px;color:#94a3b8'>SAS Intel Feed &middot; Mon &amp; Thu "
-        "&middot; Powered by Claude</p></body></html>"
+        "<p style='font-size:11px;color:#94a3b8'>"
+        "SAS Intel Feed &middot; Mon &amp; Thu &middot; Powered by Claude</p>"
+        "</body></html>"
     )
 
+
+# ── EMAIL SEND ────────────────────────────────────────────────────────────────
 
 def send_email(data: dict) -> None:
     from_addr = os.getenv("EMAIL_FROM")
