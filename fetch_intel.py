@@ -6,7 +6,7 @@ Usage:
     python fetch_intel.py              # full run
     python fetch_intel.py --dry-run    # fetch feeds only, skip Claude + email
     python fetch_intel.py --hours 168  # extend lookback to 7 days
-    python fetch_intel.py --file path/to/report.pdf  # attach a context document
+    python fetch_intel.py --file report.pdf   # attach context document to analysis
 """
 
 import argparse
@@ -28,9 +28,15 @@ from config import COMPETITORS, FEED_USER_AGENT, SYSTEM_PROMPT
 load_dotenv()
 
 FEED_FILE = "intel_feed.json"
-LOOKBACK_HOURS = 80  # slightly over 72h to avoid boundary misses
+LOOKBACK_HOURS = 80
 MAX_ITEMS_PER_FEED = 8
 MAX_ITEMS_PER_COMPETITOR = 15
+
+SOURCE_LABELS = {
+    "blog":     "📝 Thought Leadership",
+    "newsroom": "📣 Product / Company Update",
+    "google":   "📰 Trade Press Coverage",
+}
 
 
 # ── RSS FETCHING ──────────────────────────────────────────────────────────────
@@ -42,8 +48,8 @@ def google_news_url(query: str) -> str:
     )
 
 
-def fetch_feed(url: str, cutoff: datetime) -> list[dict]:
-    """Fetch a single RSS feed and return items newer than cutoff."""
+def fetch_feed(url: str, feed_type: str, cutoff: datetime) -> list[dict]:
+    """Fetch a single RSS feed, tag each item with its source type."""
     items = []
     try:
         feed = feedparser.parse(url, agent=FEED_USER_AGENT)
@@ -61,15 +67,15 @@ def fetch_feed(url: str, cutoff: datetime) -> list[dict]:
                     continue
 
             title = entry.get("title", "").strip()
-            summary = (entry.get("summary", "") or "")[:600].strip()
             if not title:
                 continue
 
             items.append({
                 "title": title,
-                "summary": summary,
+                "summary": (entry.get("summary", "") or "")[:600].strip(),
                 "link": entry.get("link", ""),
                 "published": entry.get("published", "unknown date"),
+                "source_type": feed_type,
             })
     except Exception as e:
         print(f"      ↳ Feed error: {e}")
@@ -78,24 +84,27 @@ def fetch_feed(url: str, cutoff: datetime) -> list[dict]:
 
 
 def fetch_competitor_items(competitor: dict, hours: int = LOOKBACK_HOURS) -> list[dict]:
-    """Fetch all feeds for a competitor, deduplicated."""
+    """Fetch all feeds for a competitor, deduplicated, with source tags."""
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
     all_items = []
 
-    # 1. Direct / newsroom feeds
-    for url in competitor.get("feeds", []):
-        items = fetch_feed(url, cutoff)
+    # Direct and newsroom feeds
+    for feed_cfg in competitor.get("feeds", []):
+        url = feed_cfg["url"]
+        feed_type = feed_cfg["type"]
+        items = fetch_feed(url, feed_type, cutoff)
         if items:
-            print(f"      ✓ {len(items)} item(s) from {url[:60]}")
+            label = SOURCE_LABELS.get(feed_type, feed_type)
+            print(f"      ✓ {len(items)} item(s) [{label}] from {url[:55]}")
         all_items.extend(items)
         time.sleep(0.3)
 
-    # 2. Google News fallback (always run — catches trade press)
+    # Google News fallback — always runs
     for query in competitor.get("google_news_queries", []):
         url = google_news_url(query)
-        items = fetch_feed(url, cutoff)
+        items = fetch_feed(url, "google", cutoff)
         if items:
-            print(f"      ✓ {len(items)} item(s) via Google News: '{query}'")
+            print(f"      ✓ {len(items)} item(s) [📰 Trade Press] via: '{query}'")
         all_items.extend(items)
         time.sleep(0.3)
 
@@ -113,7 +122,8 @@ def fetch_competitor_items(competitor: dict, hours: int = LOOKBACK_HOURS) -> lis
 # ── CLAUDE ANALYSIS ───────────────────────────────────────────────────────────
 
 def build_analysis_prompt(all_items: dict[str, list], context_files: list[str] = None) -> str:
-    lines = ["Recent RSS feed items collected from SAS Intelligent Decisioning competitors:\n"]
+    lines = ["Recent RSS feed items collected from SAS Intelligent Decisioning competitors.\n"]
+    lines.append("Each item is tagged with source_type: blog | newsroom | google\n")
 
     for comp_name, items in all_items.items():
         lines.append(f"## {comp_name}")
@@ -121,15 +131,17 @@ def build_analysis_prompt(all_items: dict[str, list], context_files: list[str] =
             lines.append("No recent articles found in this scan window.\n")
             continue
         for item in items:
-            lines.append(f"- **{item['title']}** ({item['published']})")
+            lines.append(
+                f"- [{item['source_type'].upper()}] **{item['title']}** ({item['published']})"
+            )
             if item["summary"]:
                 lines.append(f"  {item['summary'][:400]}")
         lines.append("")
 
     if context_files:
-        lines.append("\n## Additional Context Documents Provided\n")
+        lines.append("\n## Additional Context Documents\n")
         for path in context_files:
-            lines.append(f"- {path} (attached below)")
+            lines.append(f"- {path} (attached)")
 
     lines.append("\nReturn only the JSON analysis. No preamble.")
     return "\n".join(lines)
@@ -139,7 +151,6 @@ def run_claude_analysis(all_items: dict[str, list], context_files: list[str] = N
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     prompt = build_analysis_prompt(all_items, context_files)
 
-    # Build message content — text first, then any attached documents
     content = [{"type": "text", "text": prompt}]
 
     if context_files:
@@ -159,7 +170,7 @@ def run_claude_analysis(all_items: dict[str, list], context_files: list[str] = N
                     "type": "document",
                     "source": {"type": "base64", "media_type": media_type, "data": data},
                 })
-                print(f"  Attached context file: {path}")
+                print(f"  Attached: {path}")
             except Exception as e:
                 print(f"  Warning: Could not attach {path}: {e}")
 
@@ -179,16 +190,16 @@ def run_claude_analysis(all_items: dict[str, list], context_files: list[str] = N
         start, end = raw.find("{"), raw.rfind("}")
         if start != -1 and end != -1:
             return json.loads(raw[start : end + 1])
-        raise ValueError(f"Could not parse JSON from Claude response:\n{raw[:500]}")
+        raise ValueError(f"Could not parse JSON:\n{raw[:500]}")
 
 
-# ── OUTPUT ────────────────────────────────────────────────────────────────────
+# ── EMAIL ─────────────────────────────────────────────────────────────────────
 
-def save_json(data: dict, path: str = FEED_FILE) -> None:
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-    print(f"✓ Saved → {path}")
-
+SOURCE_ICONS = {
+    "blog":        ("📝", "Thought Leadership",      "#2563eb"),
+    "newsroom":    ("📣", "Product / Co. Update",    "#7c3aed"),
+    "trade_press": ("📰", "Trade Press",             "#0891b2"),
+}
 
 def build_email_html(data: dict) -> str:
     generated = data.get("generated_at", "")
@@ -203,23 +214,30 @@ def build_email_html(data: dict) -> str:
             f"<ul style='padding-left:20px'>{bullets}</ul>"
         )
 
-    # Competitors sorted by threat
+    # Competitor snapshot table
     threat_order = {"high": 0, "medium": 1, "low": 2}
+    threat_labels = {"high": "🔴 HIGH", "medium": "🟡 MED", "low": "🟢 LOW"}
     competitors = sorted(
         data.get("competitors", []),
         key=lambda c: threat_order.get(c.get("threat_level", "low"), 2),
     )
 
-    threat_labels = {"high": "🔴 HIGH", "medium": "🟡 MEDIUM", "low": "🟢 LOW"}
     rows = ""
     for c in competitors:
         label = threat_labels.get(c.get("threat_level", "low"), "🟢 LOW")
+        activity = c.get("content_activity", {})
+        activity_str = (
+            f"📝 {activity.get('blog_count', 0)} &nbsp;"
+            f"📣 {activity.get('newsroom_count', 0)} &nbsp;"
+            f"📰 {activity.get('trade_press_count', 0)}"
+        )
         rows += (
             f"<tr>"
             f"<td style='padding:10px;border:1px solid #e2e8f0;vertical-align:top'>"
             f"<strong>{c['name']}</strong><br>"
-            f"<span style='color:#6b7280;font-size:12px'>{c.get('strategic_posture','')}</span></td>"
+            f"<span style='color:#6b7280;font-size:11px'>{c.get('strategic_posture','')}</span></td>"
             f"<td style='padding:10px;border:1px solid #e2e8f0;vertical-align:top'>{c.get('headline','—')}</td>"
+            f"<td style='padding:10px;border:1px solid #e2e8f0;text-align:center;font-size:11px'>{activity_str}</td>"
             f"<td style='padding:10px;border:1px solid #e2e8f0;text-align:center;white-space:nowrap'>{label}</td>"
             f"</tr>"
         )
@@ -229,9 +247,32 @@ def build_email_html(data: dict) -> str:
         f"<thead><tr style='background:#f8fafc'>"
         f"<th style='padding:10px;border:1px solid #e2e8f0;text-align:left'>Competitor</th>"
         f"<th style='padding:10px;border:1px solid #e2e8f0;text-align:left'>Latest Development</th>"
+        f"<th style='padding:10px;border:1px solid #e2e8f0;text-align:center'>Activity</th>"
         f"<th style='padding:10px;border:1px solid #e2e8f0'>Threat</th>"
         f"</tr></thead><tbody>{rows}</tbody></table>"
+        f"<p style='font-size:11px;color:#94a3b8;margin-top:6px'>"
+        f"Activity: 📝 Blog / Thought Leadership &nbsp;·&nbsp; 📣 Press / Product Update &nbsp;·&nbsp; 📰 Trade Press</p>"
     )
+
+    # Detailed developments per competitor (high threat only in email — keeps it readable)
+    high_threat = [c for c in competitors if c.get("threat_level") == "high"]
+    if high_threat:
+        dev_html = ""
+        for c in high_threat:
+            dev_html += f"<h3 style='color:#dc2626;margin-bottom:4px'>🔴 {c['name']}</h3>"
+            for dev in c.get("developments", []):
+                src_type = dev.get("source_type", "google")
+                icon, label, color = SOURCE_ICONS.get(src_type, ("📰", "Trade Press", "#0891b2"))
+                dev_html += (
+                    f"<div style='border-left:3px solid {color};padding:8px 12px;margin-bottom:10px;background:#f8fafc'>"
+                    f"<span style='font-size:11px;color:{color};font-weight:bold'>{icon} {label}</span><br>"
+                    f"<strong style='font-size:13px'>{dev.get('title','')}</strong> "
+                    f"<span style='color:#94a3b8;font-size:11px'>{dev.get('date','')}</span><br>"
+                    f"<span style='font-size:13px'>{dev.get('summary','')}</span><br>"
+                    f"<span style='font-size:12px;color:#d97706'><strong>SAS Impact:</strong> {dev.get('sas_impact','')}</span>"
+                    f"</div>"
+                )
+        sections.append(f"<h2 style='color:#1e40af'>High Threat — Detail</h2>{dev_html}")
 
     # Recommendations
     recs = data.get("recommendations", [])
@@ -264,8 +305,7 @@ def build_email_html(data: dict) -> str:
 {body}
 <hr style="border:none;border-top:1px solid #e2e8f0;margin:28px 0">
 <p style="font-size:11px;color:#94a3b8">
-  SAS Intel Feed &middot; Runs Mon &amp; Thu &middot; Powered by Claude &middot;
-  <a href="https://github.com" style="color:#94a3b8">View in GitHub</a>
+  SAS Intel Feed &middot; Mon &amp; Thu &middot; Powered by Claude
 </p>
 </body></html>"""
 
@@ -278,7 +318,7 @@ def send_email(data: dict) -> None:
     smtp_port = int(os.getenv("SMTP_PORT", "465"))
 
     if not all([from_addr, to_addr, password]):
-        print("⚠  Email env vars not set (EMAIL_FROM / EMAIL_TO / EMAIL_PASSWORD). Skipping.")
+        print("⚠  Email env vars not set. Skipping.")
         return
 
     html = build_email_html(data)
@@ -311,30 +351,33 @@ def main():
     print(f"\nSAS Intel Feed  —  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
     print(f"Lookback: {args.hours}h  |  Competitors: {len(COMPETITORS)}\n")
 
-    # 1. Fetch RSS feeds
     all_items: dict[str, list] = {}
     for comp in COMPETITORS:
         print(f"  {comp['name']}")
         items = fetch_competitor_items(comp, hours=args.hours)
         all_items[comp["name"]] = items
-        print(f"    → {len(items)} unique item(s) total\n")
+
+        # Local summary of what was found by source type
+        counts = {"blog": 0, "newsroom": 0, "google": 0}
+        for item in items:
+            counts[item.get("source_type", "google")] += 1
+        print(
+            f"    → {len(items)} items total  "
+            f"[📝 {counts['blog']} blog  📣 {counts['newsroom']} newsroom  📰 {counts['google']} trade press]\n"
+        )
 
     total = sum(len(v) for v in all_items.values())
-    print(f"Total items collected: {total}")
+    print(f"Total items: {total}")
 
     if args.dry_run:
         print("\n[dry-run] Skipping Claude analysis and email.")
         return
 
-    # 2. Claude analysis
     print("\nRunning Claude analysis...")
     data = run_claude_analysis(all_items, context_files=args.file)
     data["generated_at"] = datetime.now(timezone.utc).isoformat()
 
-    # 3. Save JSON
     save_json(data)
-
-    # 4. Email
     send_email(data)
 
     print("\nDone.\n")
