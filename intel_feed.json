@@ -1,203 +1,265 @@
 {
-  "generated_at": "2026-04-24T20:31:38.434276+00:00",
+  "generated_at": "2026-04-24T21:13:30.614025+00:00",
   "competitors": [
     {
       "name": "Sapiens",
       "threat_level": "low",
-      "headline": "No recent developments detected in this scan window",
+      "headline": "No recent activity detected; monitoring continues",
       "developments": [
         {
-          "title": "Data Gap – No Articles Found",
+          "title": "No Recent Articles Found",
           "date": "April 2026",
-          "summary": "No RSS articles were captured for Sapiens in this scan window. Competitive posture around DECISION platform and Model.AI with Azure OpenAI integration remains as previously documented.",
-          "sas_impact": "Monitor Sapiens' Azure OpenAI-powered natural-language rule authoring closely as it directly competes with SAS Intelligent Decisioning's business rule management capabilities in insurance verticals."
+          "source_type": "blog",
+          "summary": "No recent RSS content was found for Sapiens in this monitoring cycle. Competitive posture cannot be updated at this time.",
+          "sas_impact": "Data gap prevents assessment; recommend manual review of Sapiens DECISION and Model.AI roadmap announcements."
         }
       ],
-      "strategic_posture": "Pursuing insurance-vertical decisioning with LLM-assisted rule authoring via Azure OpenAI partnership."
+      "strategic_posture": "Sapiens continues to pursue natural-language rule authoring via Azure OpenAI integration, targeting insurance and financial services verticals.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 0
+      }
     },
     {
       "name": "Palantir",
       "threat_level": "high",
-      "headline": "Palantir closes $300M deal as stock surges on defense AI narrative",
+      "headline": "Palantir lands $300M deal as defense AI narrative accelerates",
       "developments": [
         {
-          "title": "Palantir Lands $300M Contract Win",
+          "title": "New $300M Contract Win",
           "date": "April 2026",
-          "summary": "Palantir secured a new contract reportedly worth $300 million, continuing its aggressive expansion particularly within defense and government sectors. The deal reinforces Palantir's dominance in high-stakes AI-driven decisioning for national security and large-scale public sector operations.",
-          "sas_impact": "SAS competes directly in public sector decision intelligence; Palantir's contract momentum and government credibility create a high barrier for SAS to displace incumbent relationships in defense and intelligence agencies."
+          "source_type": "trade_press",
+          "summary": "Palantir secured a new $300 million deal, reinforcing its dominance in government and defense AI markets as its stock reached $145.97 ahead of May 4 earnings. The deal underscores Palantir's AIP Logic and ontology-based decisioning as credible enterprise-grade platforms.",
+          "sas_impact": "SAS must sharpen its public sector differentiation narrative, emphasizing auditable AI governance and regulatory compliance over Palantir's ontology approach."
         },
         {
-          "title": "PLTR Stock at $145.97 on Defense AI Momentum Ahead of Earnings",
+          "title": "Stock Surge Signals Defense AI Momentum",
           "date": "April 2026",
-          "summary": "Palantir's stock climbed to $145.97, driven by investor confidence in its Defense AI narrative ahead of May 4 earnings. Market sentiment reflects strong expectations for continued government AI adoption through AIP Logic and ontology-based agent frameworks.",
-          "sas_impact": "Palantir's elevated valuation and investor confidence will likely fund continued R&D in agentic AI and simulation capabilities, accelerating the capability gap SAS must address in government-facing decision intelligence."
+          "source_type": "trade_press",
+          "summary": "PLTR stock hit $145.97 as analyst coverage built a strong defense AI narrative ahead of Q1 2026 earnings. Market confidence in Palantir's agentic AI for government use cases is at a high.",
+          "sas_impact": "Palantir's rising market profile in government AI may crowd out SAS in public sector procurement conversations, requiring SAS to proactively counter with mission-critical case studies."
+        },
+        {
+          "title": "Multilingual Collaboration Engineering Blog",
+          "date": "April 2026",
+          "source_type": "blog",
+          "summary": "Palantir published a frontend engineering blog on multilingual collaboration tooling, reflecting investment in global platform usability and developer experience. This is an internal culture and engineering signal, not a product announcement.",
+          "sas_impact": "Minimal direct product impact, but signals Palantir's push toward globally scalable platform interfaces that could broaden enterprise appeal."
         }
       ],
-      "strategic_posture": "Aggressively monetizing government and defense AI through large contract wins while building investor narrative around agentic decisioning platforms."
+      "strategic_posture": "Palantir is aggressively monetizing defense and government AI contracts while expanding AIP Logic for enterprise decisioning, positioning itself as the trusted agentic AI platform for high-stakes environments.",
+      "content_activity": {
+        "blog_count": 1,
+        "newsroom_count": 0,
+        "trade_press_count": 2
+      }
     },
     {
       "name": "Pegasystems",
-      "threat_level": "low",
-      "headline": "No recent developments detected in this scan window",
+      "threat_level": "medium",
+      "headline": "No recent activity detected; monitoring continues",
       "developments": [
         {
-          "title": "Data Gap – No Articles Found",
+          "title": "No Recent Articles Found",
           "date": "April 2026",
-          "summary": "No RSS articles were captured for Pegasystems in this scan window. Known strategic direction involves Blueprint AI agents, Agent Experience, and CRM-native process mining capabilities.",
-          "sas_impact": "Pega's CRM-native decisioning remains a competitive threat in customer engagement use cases; SAS should monitor any new Blueprint AI agent releases that could reduce dependency on external decisioning platforms."
+          "source_type": "blog",
+          "summary": "No recent RSS content was found for Pegasystems in this monitoring cycle. Previous intelligence indicated Blueprint AI agents and Agent Experience as key differentiators.",
+          "sas_impact": "Data gap; SAS should monitor Pegasystems CRM-native decisioning announcements as they represent a workflow-embedded competitive threat."
         }
       ],
-      "strategic_posture": "Deepening AI agent integration within CRM and BPM workflows through Blueprint AI and Agent Experience capabilities."
+      "strategic_posture": "Pegasystems is embedding AI agents natively into CRM and process automation workflows via Blueprint AI, targeting customer engagement and operational decisioning use cases.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 0
+      }
     },
     {
       "name": "IBM",
-      "threat_level": "low",
-      "headline": "No recent developments detected in this scan window",
+      "threat_level": "medium",
+      "headline": "No recent activity detected; monitoring continues",
       "developments": [
         {
-          "title": "Data Gap – No Articles Found",
+          "title": "No Recent Articles Found",
           "date": "April 2026",
-          "summary": "No RSS articles were captured for IBM in this scan window. IBM's known trajectory combines watsonx.ai with ODM, AgentOps orchestration, and Graph RAG for grounded generative decision insights.",
-          "sas_impact": "IBM's Graph RAG approach for decision grounding is a direct capability gap challenge for SAS, which lacks a native knowledge graph engine; this remains a watch item for enterprise AI procurement evaluations."
+          "source_type": "blog",
+          "summary": "No recent RSS content was found for IBM in this monitoring cycle. Previous intelligence flagged watsonx.ai combined with ODM and Graph RAG as a growing decisioning stack.",
+          "sas_impact": "Data gap; IBM's Graph RAG capability for grounded generative insights remains a differentiator SAS should actively counter with its own explainability and lineage story."
         }
       ],
-      "strategic_posture": "Converging watsonx generative AI with enterprise ODM governance and agentic orchestration for regulated industry decisioning."
+      "strategic_posture": "IBM is converging watsonx.ai, ODM, and AgentOps into an integrated enterprise decisioning stack, leveraging Graph RAG for grounded AI in regulated industries.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 0
+      }
     },
     {
       "name": "FICO",
       "threat_level": "medium",
-      "headline": "FICO earnings signal AI-credit integration concerns amid consumer data sharing",
+      "headline": "FICO Q4 2025 earnings signal strong credit AI revenue growth",
       "developments": [
-        {
-          "title": "Consumer AI and Credit Score Data Sharing Debate Surfaces",
-          "date": "April 2026",
-          "summary": "A CNBC article highlighted growing consumer concerns about sharing credit score data with AI systems, a topic directly relevant to FICO's core scoring and decisioning business. The piece underscores regulatory and trust challenges emerging at the intersection of generative AI and credit decisioning.",
-          "sas_impact": "SAS can leverage its Trustworthy AI framework and audit trail capabilities to position against FICO in regulated credit markets where explainability and data governance are under increasing scrutiny."
-        },
         {
           "title": "FICO Q4 2025 Earnings Call",
           "date": "April 2026",
-          "summary": "FICO released its Q4 2025 earnings transcript, indicating continued financial performance and likely updates on Decision Optimizer and explainable ML investments. Specific details from the transcript were not accessible in feed content.",
-          "sas_impact": "Monitoring FICO's revenue composition between platform software and scores will indicate how aggressively they are reinvesting in decision intelligence R&D competitive with SAS Intelligent Decisioning."
+          "source_type": "trade_press",
+          "summary": "FICO released its Q4 2025 earnings call transcript, providing visibility into financial performance and strategic priorities across its Decision Optimizer and scoring businesses. Details on specific guidance are pending full transcript analysis.",
+          "sas_impact": "FICO's financial momentum may signal increased R&D investment in explainable ML and And-Or Graph decisioning, intensifying competition in credit risk decisioning markets where SAS competes."
+        },
+        {
+          "title": "Consumer AI Credit Score Awareness Coverage",
+          "date": "April 2026",
+          "source_type": "trade_press",
+          "summary": "CNBC published consumer-facing coverage on risks of sharing credit scores with AI, keeping FICO brand and credit scoring top of mind in mainstream media. This reflects growing public scrutiny of AI in credit decisioning.",
+          "sas_impact": "Heightened public scrutiny of AI in credit decisions reinforces SAS's Trustworthy AI narrative with LIME/SHAP explainability and audit trails as enterprise-grade differentiators."
         }
       ],
-      "strategic_posture": "Defending credit decisioning leadership while navigating public AI trust challenges and expanding Decision Optimizer for enterprise use cases."
+      "strategic_posture": "FICO is defending its credit scoring moat while advancing Decision Optimizer and explainable ML challenge models to extend into broader enterprise decisioning.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 2
+      }
     },
     {
       "name": "Provenir",
-      "threat_level": "low",
-      "headline": "No recent developments detected in this scan window",
+      "threat_level": "medium",
+      "headline": "No recent activity detected; monitoring continues",
       "developments": [
         {
-          "title": "Data Gap – No Articles Found",
+          "title": "No Recent Articles Found",
           "date": "April 2026",
-          "summary": "No RSS articles were captured for Provenir in this scan window. Provenir's known differentiators include a Data Marketplace with 120+ partners, champion/challenger testing, and fintech-first positioning.",
-          "sas_impact": "Provenir's data marketplace ecosystem creates strong network effects in fintech that SAS's more self-contained platform cannot easily replicate; SAS should consider partnership integrations to compete in SME lending and embedded finance decisioning."
+          "source_type": "blog",
+          "summary": "No recent RSS content was found for Provenir in this monitoring cycle. Prior intelligence highlighted their 120+ partner Data Marketplace and champion/challenger testing as key fintech differentiators.",
+          "sas_impact": "Data gap; Provenir's fintech-first positioning and data marketplace remain a threat in SMB and challenger bank decisioning segments where SAS has less presence."
         }
       ],
-      "strategic_posture": "Expanding fintech decisioning reach through a rich third-party data marketplace and rapid-deployment credit risk workflows."
+      "strategic_posture": "Provenir is deepening its fintech ecosystem through an extensive data partner marketplace and rapid champion/challenger deployment capabilities targeting agile lending platforms.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 0
+      }
     },
     {
       "name": "ACTICO",
       "threat_level": "low",
-      "headline": "No recent developments detected in this scan window",
+      "headline": "No recent activity detected; monitoring continues",
       "developments": [
         {
-          "title": "Data Gap – No Articles Found",
+          "title": "No Recent Articles Found",
           "date": "April 2026",
-          "summary": "No RSS articles were captured for ACTICO in this scan window. ACTICO's Companion AI assistant and regulatory-constrained decisioning remain core to its DACH-region dominance.",
-          "sas_impact": "ACTICO's regulatory alignment in European markets creates a localized competitive advantage that SAS should counter with stronger region-specific compliance documentation and EU AI Act governance messaging."
+          "source_type": "blog",
+          "summary": "No recent RSS content was found for ACTICO in this monitoring cycle. ACTICO's Companion AI assistant and regulatory-constrained decisioning remain focused on the DACH region.",
+          "sas_impact": "Data gap; ACTICO's DACH concentration limits global competitive overlap, but its regulatory-constrained decisioning approach could influence European procurement criteria where SAS competes."
         }
       ],
-      "strategic_posture": "Targeting DACH and European regulated industries with compliance-first decisioning augmented by a conversational AI assistant."
+      "strategic_posture": "ACTICO is building AI-assisted regulatory decisioning for European financial services, with a concentrated DACH footprint and Companion AI as its primary differentiator.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 0
+      }
     },
     {
       "name": "CRIF",
       "threat_level": "low",
-      "headline": "No recent developments detected in this scan window",
+      "headline": "No recent activity detected; monitoring continues",
       "developments": [
         {
-          "title": "Data Gap – No Articles Found",
+          "title": "No Recent Articles Found",
           "date": "April 2026",
-          "summary": "No RSS articles were captured for CRIF in this scan window. CRIF's GenAI Factory and StrategyOne platform with full decision explainability remain their core competitive assets in European credit.",
-          "sas_impact": "CRIF's GenAI Factory approach to productizing AI for credit decisions could appeal to European banks seeking explainability without SAS Viya's implementation complexity; SAS should emphasize time-to-value and pre-built model content."
+          "source_type": "blog",
+          "summary": "No recent RSS content was found for CRIF in this monitoring cycle. Prior intelligence noted GenAI Factory and StrategyOne with full decision explainability targeting European credit markets.",
+          "sas_impact": "Data gap; CRIF's GenAI Factory for European credit decisioning poses a localized threat to SAS in EU regulated lending, particularly around explainability requirements under the EU AI Act."
         }
       ],
-      "strategic_posture": "Industrializing generative AI for European credit decisioning through GenAI Factory and StrategyOne with end-to-end explainability."
+      "strategic_posture": "CRIF is advancing GenAI-powered credit decisioning in European markets, leveraging StrategyOne and full explainability to meet EU regulatory expectations.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 0
+      }
     },
     {
       "name": "Aera Technology",
       "threat_level": "medium",
-      "headline": "Aera showcases Agentic Decision Intelligence at Gartner Supply Chain 2026",
+      "headline": "Aera showcasing Agentic Decision Intelligence at Gartner Supply Chain 2026",
       "developments": [
         {
-          "title": "Aera Presenting at Gartner Supply Chain Symposium/Xpo 2026",
+          "title": "Gartner Supply Chain Symposium Presentation",
           "date": "April 2026",
-          "summary": "Aera Technology announced it will present its Agentic Decision Intelligence capabilities at the Gartner Supply Chain Symposium/Xpo 2026, positioning itself as the leading agentic AI solution for autonomous supply chain operations. The presentation is expected to showcase the Control Room and prescriptive operations capabilities.",
-          "sas_impact": "Aera's Gartner-stage visibility for agentic supply chain decisioning increases competitive pressure on SAS's manufacturing and operations vertical; SAS should ensure Intelligent Decisioning's supply chain use cases are actively represented at Gartner events to avoid ceding that mindshare."
+          "source_type": "trade_press",
+          "summary": "Aera Technology announced it will present Agentic Decision Intelligence at Gartner Supply Chain Symposium/Xpo 2026, positioning its Control Room and agentic AI layer as the leading prescriptive operations platform. This signals active analyst community engagement and supply chain AI thought leadership.",
+          "sas_impact": "Aera's prominent Gartner presence in supply chain agentic AI may draw enterprise manufacturing and operations prospects away from SAS Intelligent Decisioning in that vertical, requiring SAS to elevate its manufacturing decisioning case studies."
         }
       ],
-      "strategic_posture": "Aggressively positioning as the definitive agentic AI platform for supply chain decisioning through high-profile analyst and conference engagements."
+      "strategic_posture": "Aera Technology is consolidating its position as the agentic AI platform for supply chain prescriptive operations, targeting Gartner analyst influence and enterprise operations buyers.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 1
+      }
     },
     {
       "name": "Quantexa",
-      "threat_level": "low",
-      "headline": "No recent developments detected in this scan window",
+      "threat_level": "medium",
+      "headline": "No recent activity detected; monitoring continues",
       "developments": [
         {
-          "title": "Data Gap – No Articles Found",
+          "title": "No Recent Articles Found",
           "date": "April 2026",
-          "summary": "No RSS articles were captured for Quantexa in this scan window. Quantexa's entity graph decisioning, Q Assist LLM copilot, and Databricks integration remain key differentiators in AML and KYC.",
-          "sas_impact": "Quantexa's knowledge graph advantage in AML/KYC is SAS's most significant capability gap in financial crime decisioning; SAS should prioritize partnership or acquisition strategies to address entity resolution needs."
+          "source_type": "blog",
+          "summary": "No recent RSS content was found for Quantexa in this monitoring cycle. Prior intelligence flagged entity graph decisioning, Q Assist LLM copilot, and Databricks integration as key AML/KYC differentiators.",
+          "sas_impact": "Data gap; Quantexa's knowledge graph advantage in AML and KYC remains SAS's most notable capability gap and should be monitored closely for new partnership or product announcements."
         }
       ],
-      "strategic_posture": "Consolidating AML and KYC leadership through entity graph decisioning enhanced by LLM copilot and cloud-native Databricks integration."
+      "strategic_posture": "Quantexa is leading AML and KYC decisioning through entity graph intelligence and Q Assist LLM integration, with Databricks partnerships broadening its data platform reach.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 0
+      }
     }
   ],
   "recommendations": [
     {
       "priority": "critical",
-      "area": "Public Sector and Government AI Decisioning",
-      "action": "Launch a dedicated government AI decisioning go-to-market program that explicitly contrasts SAS's audit trail, model lineage, and human-in-the-loop governance against Palantir's ontology-based approach, targeting agencies not yet in Palantir's contract portfolio.",
-      "rationale": "Palantir just closed a $300M deal and its stock is at $145.97 on defense AI momentum; their government contract velocity is compounding and will become increasingly difficult to displace as relationships deepen ahead of May 2026 earnings."
-    },
-    {
-      "priority": "critical",
-      "area": "Knowledge Graph and Entity Resolution Capability Gap",
-      "action": "Initiate a formal partnership evaluation or technology acquisition process to integrate entity graph capabilities into SAS Intelligent Decisioning, targeting AML, KYC, and fraud detection use cases where Quantexa holds a recognized structural advantage.",
-      "rationale": "Quantexa's absence from recent news does not reduce the structural threat; SAS's own known gap in native knowledge graph engines is a recurring disqualifier in financial crime RFPs where Quantexa is the de facto standard."
+      "area": "Public Sector Competitive Positioning",
+      "action": "Develop a targeted counter-narrative to Palantir's defense AI momentum by publishing verifiable public sector case studies showcasing SAS Intelligent Decisioning's audit trails, regulatory compliance, and human-in-the-loop governance for government use cases.",
+      "rationale": "Palantir's $300M contract win and rising stock narrative are actively building analyst and buyer confidence in its government AI platform, directly threatening SAS's public sector pipeline."
     },
     {
       "priority": "high",
-      "area": "Supply Chain Agentic Decisioning Positioning",
-      "action": "Develop and submit SAS Intelligent Decisioning use cases for Gartner Supply Chain analyst coverage and secure speaking or sponsorship presence at Gartner Supply Chain Symposium 2026 to directly counter Aera Technology's agentic narrative.",
-      "rationale": "Aera is actively presenting Agentic Decision Intelligence at Gartner Supply Chain Symposium 2026, which risks establishing them as the analyst-recognized leader in this segment while SAS's manufacturing decisioning capabilities remain underrepresented at key analyst forums."
+      "area": "Trustworthy AI and Explainability",
+      "action": "Accelerate external communication of SAS's LIME/SHAP explainability, model lineage, and audit trail capabilities specifically framed around EU AI Act and US federal AI governance requirements, targeting regulated industry buyers evaluating FICO, CRIF, and ACTICO.",
+      "rationale": "Growing mainstream media scrutiny of AI in credit decisioning and tightening EU AI regulation create a market window where SAS's Trustworthy AI differentiators can directly convert regulatory anxiety into pipeline."
     },
     {
       "priority": "high",
-      "area": "Trustworthy AI Differentiation in Credit Markets",
-      "action": "Create a targeted sales enablement package for regulated credit markets that positions SAS's LIME/SHAP explainability, model governance, and audit trails as the responsible alternative to FICO amid growing consumer and regulatory concern about AI and credit data.",
-      "rationale": "CNBC coverage of consumer credit score AI data sharing concerns and FICO's Q4 earnings cycle create a timely opening to position SAS's Trustworthy AI capabilities as the governance-first alternative in credit decisioning procurement conversations."
+      "area": "Manufacturing and Supply Chain Vertical",
+      "action": "Create dedicated go-to-market content and Gartner analyst briefings positioning SAS Intelligent Decisioning as the enterprise-grade alternative to Aera Technology's agentic supply chain platform, with emphasis on end-to-end ML lifecycle governance that Aera lacks.",
+      "rationale": "Aera Technology's confirmed Gartner Supply Chain Symposium presence signals active analyst community cultivation that could shape evaluation criteria before SAS enters competitive deals."
+    },
+    {
+      "priority": "high",
+      "area": "Knowledge Graph and AML/KYC Gap Mitigation",
+      "action": "Initiate a partnership or OEM evaluation with a graph intelligence vendor to close the native knowledge graph capability gap versus Quantexa, or develop a documented integration pattern with third-party graph databases for AML/KYC use cases on SAS Viya.",
+      "rationale": "Quantexa's entity graph decisioning is the most cited capability gap for SAS in AML and KYC competitive evaluations, and the absence of a response risks ceding the financial crime detection segment."
     },
     {
       "priority": "medium",
-      "area": "EU AI Act and Regulatory Compliance Messaging",
-      "action": "Develop region-specific EU AI Act compliance documentation and pre-built governance templates within SAS Intelligent Decisioning to compete against ACTICO and CRIF in DACH and broader European regulated financial services markets.",
-      "rationale": "Both ACTICO and CRIF are entrenched in European markets with compliance-first positioning; SAS must reduce the perception that its platform requires greater implementation effort to achieve regulatory alignment than these regional specialists."
-    },
-    {
-      "priority": "medium",
-      "area": "Fintech Data Ecosystem Partnerships",
-      "action": "Evaluate a curated partner data marketplace or pre-certified data connector program within SAS Intelligent Decisioning to reduce the ecosystem disadvantage against Provenir's 120+ partner Data Marketplace in fintech and embedded finance decisioning.",
-      "rationale": "Provenir's data marketplace creates procurement stickiness in fintech that SAS's platform-centric model cannot match organically; a lightweight connector certification program could reduce evaluation-stage disqualifications in SME lending and neo-bank segments."
+      "area": "Agentic AI Differentiation",
+      "action": "Publish a detailed technical white paper contrasting SAS's human-in-the-loop agentic AI with Palantir's AIP Logic and Aera's Control Room, emphasizing full action traceability and approval workflows as enterprise risk management requirements.",
+      "rationale": "Multiple competitors including Palantir, Aera, and IBM are all advancing agentic AI narratives simultaneously, requiring SAS to clearly articulate what makes its approach uniquely trustworthy and enterprise-safe."
     }
   ],
   "market_signals": [
-    "Agentic AI is becoming the primary competitive frame across supply chain, government, and credit decisioning vendors.",
-    "Government and defense AI contract scale is accelerating, with Palantir signaling $300M+ deal sizes as a new baseline.",
-    "Consumer and regulatory trust in AI-driven credit decisioning is emerging as a market fault line competitors must navigate.",
-    "High-profile analyst event presence at Gartner is a key battleground for agentic decisioning mindshare in 2026.",
-    "Knowledge graph and entity resolution capabilities are increasingly prerequisite for financial crime decisioning platform selection.",
-    "Scan coverage gaps across six of ten competitors suggest competitive intelligence RSS coverage requires supplemental data sources for full situational awareness."
+    "Defense and government AI contracts are accelerating agentic platform valuations rapidly",
+    "Agentic AI presented at Gartner events signals mainstream supply chain decisioning adoption",
+    "Public scrutiny of AI in credit scoring is intensifying regulatory explainability requirements",
+    "Multiple competitors silent this cycle suggests concentrated product development sprints underway",
+    "Large contract wins are reshaping enterprise AI platform consolidation narratives market-wide"
   ]
 }
