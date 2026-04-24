@@ -1,15 +1,15 @@
 """
 fetch_intel.py — SAS Competitive Intelligence Feed
-Fetches RSS feeds, analyzes with Claude, saves JSON, and optionally emails a digest.
 
 Usage:
     python fetch_intel.py              # full run
     python fetch_intel.py --dry-run    # fetch feeds only, skip Claude + email
-    python fetch_intel.py --hours 168  # extend lookback to 7 days
-    python fetch_intel.py --file report.pdf   # attach context document to analysis
+    python fetch_intel.py --hours 168  # extend lookback window
+    python fetch_intel.py --file report.pdf  # attach context document
 """
 
 import argparse
+import base64
 import json
 import os
 import smtplib
@@ -35,7 +35,13 @@ MAX_ITEMS_PER_COMPETITOR = 15
 SOURCE_LABELS = {
     "blog":     "📝 Thought Leadership",
     "newsroom": "📣 Product / Company Update",
-    "google":   "📰 Trade Press Coverage",
+    "google":   "📰 Trade Press",
+}
+
+SOURCE_ICONS = {
+    "blog":        ("📝", "Thought Leadership",   "#2563eb"),
+    "newsroom":    ("📣", "Product / Co. Update", "#7c3aed"),
+    "trade_press": ("📰", "Trade Press",          "#0891b2"),
 }
 
 
@@ -43,72 +49,59 @@ SOURCE_LABELS = {
 
 def google_news_url(query: str) -> str:
     return (
-        f"https://news.google.com/rss/search"
+        "https://news.google.com/rss/search"
         f"?q={quote_plus(query)}&hl=en-US&gl=US&ceid=US:en"
     )
 
 
 def fetch_feed(url: str, feed_type: str, cutoff: datetime) -> list[dict]:
-    """Fetch a single RSS feed, tag each item with its source type."""
     items = []
     try:
         feed = feedparser.parse(url, agent=FEED_USER_AGENT)
-        http_status = getattr(feed, "status", 0)
-
-        if http_status in (403, 404, 410):
-            print(f"      ↳ HTTP {http_status}: {url[:65]}")
+        status = getattr(feed, "status", 0)
+        if status in (403, 404, 410):
+            print(f"      ↳ HTTP {status}: {url[:65]}")
             return []
-
         for entry in feed.entries[:MAX_ITEMS_PER_FEED]:
             pub = entry.get("published_parsed") or entry.get("updated_parsed")
             if pub:
                 pub_dt = datetime(*pub[:6], tzinfo=timezone.utc)
                 if pub_dt < cutoff:
                     continue
-
-            title = entry.get("title", "").strip()
+            title = (entry.get("title") or "").strip()
             if not title:
                 continue
-
             items.append({
                 "title": title,
-                "summary": (entry.get("summary", "") or "")[:600].strip(),
+                "summary": (entry.get("summary") or "")[:600].strip(),
                 "link": entry.get("link", ""),
                 "published": entry.get("published", "unknown date"),
                 "source_type": feed_type,
             })
     except Exception as e:
         print(f"      ↳ Feed error: {e}")
-
     return items
 
 
-def fetch_competitor_items(competitor: dict, hours: int = LOOKBACK_HOURS) -> list[dict]:
-    """Fetch all feeds for a competitor, deduplicated, with source tags."""
+def fetch_competitor_items(competitor: dict, hours: int) -> list[dict]:
     cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
     all_items = []
 
-    # Direct and newsroom feeds
     for feed_cfg in competitor.get("feeds", []):
-        url = feed_cfg["url"]
-        feed_type = feed_cfg["type"]
-        items = fetch_feed(url, feed_type, cutoff)
+        items = fetch_feed(feed_cfg["url"], feed_cfg["type"], cutoff)
         if items:
-            label = SOURCE_LABELS.get(feed_type, feed_type)
-            print(f"      ✓ {len(items)} item(s) [{label}] from {url[:55]}")
+            label = SOURCE_LABELS.get(feed_cfg["type"], feed_cfg["type"])
+            print(f"      ✓ {len(items)} item(s) [{label}]")
         all_items.extend(items)
         time.sleep(0.3)
 
-    # Google News fallback — always runs
     for query in competitor.get("google_news_queries", []):
-        url = google_news_url(query)
-        items = fetch_feed(url, "google", cutoff)
+        items = fetch_feed(google_news_url(query), "google", cutoff)
         if items:
             print(f"      ✓ {len(items)} item(s) [📰 Trade Press] via: '{query}'")
         all_items.extend(items)
         time.sleep(0.3)
 
-    # Deduplicate by normalized title
     seen, deduped = set(), []
     for item in all_items:
         key = item["title"].lower()[:80]
@@ -121,41 +114,47 @@ def fetch_competitor_items(competitor: dict, hours: int = LOOKBACK_HOURS) -> lis
 
 # ── CLAUDE ANALYSIS ───────────────────────────────────────────────────────────
 
-def build_analysis_prompt(all_items: dict[str, list], context_files: list[str] = None) -> str:
-    lines = ["Recent RSS feed items collected from SAS Intelligent Decisioning competitors.\n"]
-    lines.append("Each item is tagged with source_type: blog | newsroom | google\n")
-
+def build_prompt(all_items: dict, context_files: list | None) -> str:
+    lines = [
+        "Recent RSS items from SAS Intelligent Decisioning competitors.",
+        "Each item tagged: blog | newsroom | google\n",
+    ]
     for comp_name, items in all_items.items():
         lines.append(f"## {comp_name}")
         if not items:
-            lines.append("No recent articles found in this scan window.\n")
+            lines.append("No recent articles found.\n")
             continue
         for item in items:
-            lines.append(
-                f"- [{item['source_type'].upper()}] **{item['title']}** ({item['published']})"
-            )
+            lines.append(f"- [{item['source_type'].upper()}] {item['title']} ({item['published']})")
             if item["summary"]:
-                lines.append(f"  {item['summary'][:400]}")
+                lines.append(f"  {item['summary'][:350]}")
         lines.append("")
-
     if context_files:
-        lines.append("\n## Additional Context Documents\n")
-        for path in context_files:
-            lines.append(f"- {path} (attached)")
-
-    lines.append("\nReturn only the JSON analysis. No preamble.")
+        lines.append("\n## Additional Context Documents")
+        for p in context_files:
+            lines.append(f"- {p} (attached)")
+    lines.append("\nReturn only the JSON. No preamble.")
     return "\n".join(lines)
 
 
-def run_claude_analysis(all_items: dict[str, list], context_files: list[str] = None) -> dict:
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    prompt = build_analysis_prompt(all_items, context_files)
+def parse_json(raw: str) -> dict:
+    raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        start, end = raw.find("{"), raw.rfind("}")
+        if start != -1 and end != -1:
+            return json.loads(raw[start:end + 1])
+        raise ValueError(f"Could not parse JSON from response:\n{raw[:400]}")
 
-    content = [{"type": "text", "text": prompt}]
+
+def run_claude_analysis(all_items: dict, context_files: list | None = None) -> dict:
+    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+
+    message_content = [{"type": "text", "text": build_prompt(all_items, context_files)}]
 
     if context_files:
-        import base64
-        for path in context_files:
+        for path in (context_files or []):
             try:
                 with open(path, "rb") as f:
                     data = base64.standard_b64encode(f.read()).decode("utf-8")
@@ -166,65 +165,52 @@ def run_claude_analysis(all_items: dict[str, list], context_files: list[str] = N
                     "jpg": "image/jpeg",
                     "jpeg": "image/jpeg",
                 }.get(ext, "application/octet-stream")
-                content.append({
+                message_content.append({
                     "type": "document",
                     "source": {"type": "base64", "media_type": media_type, "data": data},
                 })
                 print(f"  Attached: {path}")
             except Exception as e:
-                print(f"  Warning: Could not attach {path}: {e}")
+                print(f"  Warning — could not attach {path}: {e}")
 
     response = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=8192,
         system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": content}],
+        messages=[{"role": "user", "content": message_content}],
     )
 
-    raw = response.content[0].text.strip()
-    raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
-
-    # Check if response was cut off (stop_reason = max_tokens)
-    stop_reason = response.stop_reason
-    if stop_reason == "max_tokens":
-        print("  ⚠ Response hit token limit — retrying with concise mode...")
-        concise_content = content.copy()
-        concise_content[0]["text"] += (
-            "\n\nIMPORTANT: Your previous response was truncated. "
-            "Be more concise. Limit each summary to 1 sentence. "
-            "Limit developments to 1 per competitor. Return only the JSON."
+    if response.stop_reason == "max_tokens":
+        print("  ⚠ Response truncated — retrying in concise mode...")
+        concise_text = build_prompt(all_items, context_files)
+        concise_text += (
+            "\n\nIMPORTANT: Be very concise. Max 1 development per competitor, "
+            "1 sentence each. Return only the JSON."
         )
         response = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=8192,
             system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": concise_content}],
+            messages=[{"role": "user", "content": [{"type": "text", "text": concise_text}]}],
         )
-        raw = response.content[0].text.strip()
-        raw = raw.removeprefix("```json").removeprefix("```").removesuffix("```").strip()
 
-    try:
-        return json.loads(raw)
-    except json.JSONDecodeError:
-        start, end = raw.find("{"), raw.rfind("}")
-        if start != -1 and end != -1:
-            return json.loads(raw[start : end + 1])
-        raise ValueError(f"Could not parse JSON:\n{raw[:500]}")
+    return parse_json(response.content[0].text)
+
+
+# ── JSON OUTPUT ───────────────────────────────────────────────────────────────
+
+def save_json(data: dict, path: str = FEED_FILE) -> None:
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+    print(f"✓ Saved → {path}")
 
 
 # ── EMAIL ─────────────────────────────────────────────────────────────────────
-
-SOURCE_ICONS = {
-    "blog":        ("📝", "Thought Leadership",      "#2563eb"),
-    "newsroom":    ("📣", "Product / Co. Update",    "#7c3aed"),
-    "trade_press": ("📰", "Trade Press",             "#0891b2"),
-}
 
 def build_email_html(data: dict) -> str:
     generated = data.get("generated_at", "")
     sections = []
 
-    # Market signals
     signals = data.get("market_signals", [])
     if signals:
         bullets = "".join(f"<li style='margin-bottom:6px'>{s}</li>" for s in signals)
@@ -233,7 +219,6 @@ def build_email_html(data: dict) -> str:
             f"<ul style='padding-left:20px'>{bullets}</ul>"
         )
 
-    # Competitor snapshot table
     threat_order = {"high": 0, "medium": 1, "low": 2}
     threat_labels = {"high": "🔴 HIGH", "medium": "🟡 MED", "low": "🟢 LOW"}
     competitors = sorted(
@@ -244,22 +229,23 @@ def build_email_html(data: dict) -> str:
     rows = ""
     for c in competitors:
         label = threat_labels.get(c.get("threat_level", "low"), "🟢 LOW")
-        activity = c.get("content_activity", {})
-        activity_str = (
-            f"📝 {activity.get('blog_count', 0)} &nbsp;"
-            f"📣 {activity.get('newsroom_count', 0)} &nbsp;"
-            f"📰 {activity.get('trade_press_count', 0)}"
+        act = c.get("content_activity", {})
+        act_str = (
+            f"📝 {act.get('blog_count', 0)}&nbsp;"
+            f"📣 {act.get('newsroom_count', 0)}&nbsp;"
+            f"📰 {act.get('trade_press_count', 0)}"
         )
         rows += (
             f"<tr>"
             f"<td style='padding:10px;border:1px solid #e2e8f0;vertical-align:top'>"
             f"<strong>{c['name']}</strong><br>"
-            f"<span style='color:#6b7280;font-size:11px'>{c.get('strategic_posture','')}</span></td>"
-            f"<td style='padding:10px;border:1px solid #e2e8f0;vertical-align:top'>{c.get('headline','—')}</td>"
-            f"<td style='padding:10px;border:1px solid #e2e8f0;text-align:center;font-size:11px'>{activity_str}</td>"
-            f"<td style='padding:10px;border:1px solid #e2e8f0;text-align:center;white-space:nowrap'>{label}</td>"
+            f"<span style='color:#6b7280;font-size:11px'>{c.get('strategic_posture', '')}</span></td>"
+            f"<td style='padding:10px;border:1px solid #e2e8f0'>{c.get('headline', '—')}</td>"
+            f"<td style='padding:10px;border:1px solid #e2e8f0;text-align:center;font-size:11px'>{act_str}</td>"
+            f"<td style='padding:10px;border:1px solid #e2e8f0;text-align:center'>{label}</td>"
             f"</tr>"
         )
+
     sections.append(
         f"<h2 style='color:#1e40af'>Competitor Snapshot</h2>"
         f"<table style='width:100%;border-collapse:collapse;font-size:13px'>"
@@ -270,30 +256,30 @@ def build_email_html(data: dict) -> str:
         f"<th style='padding:10px;border:1px solid #e2e8f0'>Threat</th>"
         f"</tr></thead><tbody>{rows}</tbody></table>"
         f"<p style='font-size:11px;color:#94a3b8;margin-top:6px'>"
-        f"Activity: 📝 Blog / Thought Leadership &nbsp;·&nbsp; 📣 Press / Product Update &nbsp;·&nbsp; 📰 Trade Press</p>"
+        f"📝 Blog &nbsp;·&nbsp; 📣 Press / Product &nbsp;·&nbsp; 📰 Trade Press</p>"
     )
 
-    # Detailed developments per competitor (high threat only in email — keeps it readable)
     high_threat = [c for c in competitors if c.get("threat_level") == "high"]
     if high_threat:
         dev_html = ""
         for c in high_threat:
-            dev_html += f"<h3 style='color:#dc2626;margin-bottom:4px'>🔴 {c['name']}</h3>"
+            dev_html += f"<h3 style='color:#dc2626;margin-bottom:6px'>🔴 {c['name']}</h3>"
             for dev in c.get("developments", []):
-                src_type = dev.get("source_type", "google")
-                icon, label, color = SOURCE_ICONS.get(src_type, ("📰", "Trade Press", "#0891b2"))
+                src = dev.get("source_type", "google")
+                icon, lbl, color = SOURCE_ICONS.get(src, ("📰", "Trade Press", "#0891b2"))
                 dev_html += (
-                    f"<div style='border-left:3px solid {color};padding:8px 12px;margin-bottom:10px;background:#f8fafc'>"
-                    f"<span style='font-size:11px;color:{color};font-weight:bold'>{icon} {label}</span><br>"
-                    f"<strong style='font-size:13px'>{dev.get('title','')}</strong> "
-                    f"<span style='color:#94a3b8;font-size:11px'>{dev.get('date','')}</span><br>"
-                    f"<span style='font-size:13px'>{dev.get('summary','')}</span><br>"
-                    f"<span style='font-size:12px;color:#d97706'><strong>SAS Impact:</strong> {dev.get('sas_impact','')}</span>"
+                    f"<div style='border-left:3px solid {color};padding:8px 12px;"
+                    f"margin-bottom:10px;background:#f8fafc'>"
+                    f"<span style='font-size:11px;color:{color};font-weight:bold'>{icon} {lbl}</span><br>"
+                    f"<strong style='font-size:13px'>{dev.get('title', '')}</strong> "
+                    f"<span style='color:#94a3b8;font-size:11px'>{dev.get('date', '')}</span><br>"
+                    f"<span style='font-size:13px'>{dev.get('summary', '')}</span><br>"
+                    f"<span style='font-size:12px;color:#d97706'>"
+                    f"<strong>SAS Impact:</strong> {dev.get('sas_impact', '')}</span>"
                     f"</div>"
                 )
         sections.append(f"<h2 style='color:#1e40af'>High Threat — Detail</h2>{dev_html}")
 
-    # Recommendations
     recs = data.get("recommendations", [])
     if recs:
         pri_colors = {"critical": "#dc2626", "high": "#d97706", "medium": "#2563eb"}
@@ -303,9 +289,9 @@ def build_email_html(data: dict) -> str:
             rec_html += (
                 f"<li style='margin-bottom:14px'>"
                 f"<span style='color:{color};font-weight:bold'>[{r.get('priority','').upper()}]</span> "
-                f"<strong>{r.get('area','')}</strong><br>"
-                f"<span style='font-size:13px'>{r.get('action','')}</span><br>"
-                f"<em style='color:#6b7280;font-size:12px'>{r.get('rationale','')}</em>"
+                f"<strong>{r.get('area', '')}</strong><br>"
+                f"<span style='font-size:13px'>{r.get('action', '')}</span><br>"
+                f"<em style='color:#6b7280;font-size:12px'>{r.get('rationale', '')}</em>"
                 f"</li>"
             )
         sections.append(
@@ -313,20 +299,18 @@ def build_email_html(data: dict) -> str:
             f"<ol style='padding-left:20px'>{rec_html}</ol>"
         )
 
-    body = "\n".join(sections)
-    return f"""<!DOCTYPE html>
-<html><body style="font-family:Arial,sans-serif;max-width:780px;margin:0 auto;padding:28px;color:#1e293b">
-<h1 style="color:#1e40af;margin-bottom:4px">SAS Intelligent Decisioning</h1>
-<h2 style="font-weight:normal;color:#64748b;margin-top:0">Competitive Intelligence Digest</h2>
-<p style="color:#94a3b8;font-size:12px;border-bottom:1px solid #e2e8f0;padding-bottom:16px">
-  Generated: {generated}
-</p>
-{body}
-<hr style="border:none;border-top:1px solid #e2e8f0;margin:28px 0">
-<p style="font-size:11px;color:#94a3b8">
-  SAS Intel Feed &middot; Mon &amp; Thu &middot; Powered by Claude
-</p>
-</body></html>"""
+    return (
+        "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;"
+        "max-width:780px;margin:0 auto;padding:28px;color:#1e293b'>"
+        "<h1 style='color:#1e40af;margin-bottom:4px'>SAS Intelligent Decisioning</h1>"
+        "<h2 style='font-weight:normal;color:#64748b;margin-top:0'>Competitive Intelligence Digest</h2>"
+        f"<p style='color:#94a3b8;font-size:12px;border-bottom:1px solid #e2e8f0;"
+        f"padding-bottom:16px'>Generated: {generated}</p>"
+        + "\n".join(sections)
+        + "<hr style='border:none;border-top:1px solid #e2e8f0;margin:28px 0'>"
+        "<p style='font-size:11px;color:#94a3b8'>SAS Intel Feed &middot; Mon &amp; Thu "
+        "&middot; Powered by Claude</p></body></html>"
+    )
 
 
 def send_email(data: dict) -> None:
@@ -340,14 +324,11 @@ def send_email(data: dict) -> None:
         print("⚠  Email env vars not set. Skipping.")
         return
 
-    html = build_email_html(data)
-    date_str = datetime.now().strftime("%b %d, %Y")
-
     msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"SAS Competitive Intel — {date_str}"
+    msg["Subject"] = f"SAS Competitive Intel — {datetime.now().strftime('%b %d, %Y')}"
     msg["From"] = from_addr
     msg["To"] = to_addr
-    msg.attach(MIMEText(html, "html"))
+    msg.attach(MIMEText(build_email_html(data), "html"))
 
     try:
         with smtplib.SMTP_SSL(smtp_host, smtp_port) as smtp:
@@ -362,9 +343,9 @@ def send_email(data: dict) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="SAS Intel Feed")
-    parser.add_argument("--dry-run", action="store_true", help="Fetch feeds only; skip Claude + email")
+    parser.add_argument("--dry-run", action="store_true", help="Fetch feeds only, skip Claude + email")
     parser.add_argument("--hours", type=int, default=LOOKBACK_HOURS, help="Lookback window in hours")
-    parser.add_argument("--file", nargs="*", metavar="PATH", help="PDF/image files to include as context")
+    parser.add_argument("--file", nargs="*", metavar="PATH", help="PDF/image files to attach as context")
     args = parser.parse_args()
 
     print(f"\nSAS Intel Feed  —  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
@@ -375,29 +356,29 @@ def main():
         print(f"  {comp['name']}")
         items = fetch_competitor_items(comp, hours=args.hours)
         all_items[comp["name"]] = items
-
-        # Local summary of what was found by source type
         counts = {"blog": 0, "newsroom": 0, "google": 0}
         for item in items:
             counts[item.get("source_type", "google")] += 1
         print(
-            f"    → {len(items)} items total  "
-            f"[📝 {counts['blog']} blog  📣 {counts['newsroom']} newsroom  📰 {counts['google']} trade press]\n"
+            f"    → {len(items)} items  "
+            f"[📝 {counts['blog']} blog  "
+            f"📣 {counts['newsroom']} newsroom  "
+            f"📰 {counts['google']} trade press]\n"
         )
 
     total = sum(len(v) for v in all_items.values())
-    print(f"Total items: {total}")
+    print(f"Total items collected: {total}")
 
     if args.dry_run:
         print("\n[dry-run] Skipping Claude analysis and email.")
         return
 
     print("\nRunning Claude analysis...")
-    data = run_claude_analysis(all_items, context_files=args.file)
-    data["generated_at"] = datetime.now(timezone.utc).isoformat()
+    result = run_claude_analysis(all_items, context_files=args.file)
+    result["generated_at"] = datetime.now(timezone.utc).isoformat()
 
-    save_json(data)
-    send_email(data)
+    save_json(result)
+    send_email(result)
 
     print("\nDone.\n")
 
