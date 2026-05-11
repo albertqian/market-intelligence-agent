@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-05-07T15:31:52.955371+00:00",
+  "generated_at": "2026-05-11T15:57:18.732687+00:00",
   "competitors": [
     {
       "name": "Sapiens",
-      "threat_level": "low",
-      "headline": "No recent activity detected in monitoring period",
+      "threat_level": "medium",
+      "headline": "No recent developments detected this cycle",
       "developments": [],
-      "strategic_posture": "Sapiens continues to focus on insurance-sector decision automation with Azure OpenAI integration but shows no recent public-facing content activity.",
+      "strategic_posture": "Sapiens continues to position its DECISION platform and Model.AI with Azure OpenAI for natural-language rule authoring in insurance and financial services.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -16,56 +16,33 @@
     {
       "name": "Palantir",
       "threat_level": "high",
-      "headline": "Palantir posts 85% revenue growth; analysts crown it enterprise AI leader",
-      "developments": [
-        {
-          "title": "Palantir Q1 2026 Revenue Growth Hits 85%",
-          "date": "May 2026",
-          "source_type": "trade_press",
-          "summary": "Palantir reported 85% revenue growth, its fastest since its 2020 market debut, driven by accelerating enterprise AI adoption across government and commercial sectors. Analysts at Rosenblatt raised price targets to $225, citing Palantir as the key to unlocking enterprise AI.",
-          "sas_impact": "Palantir's explosive commercial growth signals that enterprise buyers are consolidating AI decisioning spend on platforms with strong ontology and agent orchestration narratives, putting pressure on SAS to articulate its differentiated ROI story more aggressively."
-        },
-        {
-          "title": "Palantir Positioned as Enterprise AI Adoption Leader",
-          "date": "May 2026",
-          "source_type": "trade_press",
-          "summary": "Multiple analyst voices, including Dan Ives, have publicly positioned Palantir as the leading enterprise AI adoption platform, with MarketWatch noting that Anthropic and OpenAI are now emulating Palantir's go-to-market playbook. This narrative is gaining mainstream financial press traction.",
-          "sas_impact": "The 'Palantir playbook' narrative is shaping buyer expectations for what enterprise AI looks like, potentially crowding out SAS in analyst conversations unless SAS intensifies its own thought leadership around governed, explainable agentic decisioning."
-        }
-      ],
-      "strategic_posture": "Palantir is aggressively converting government AI credibility into commercial enterprise dominance, with financial markets and analysts amplifying a winner-takes-most narrative that elevates their brand above all enterprise AI competitors.",
+      "headline": "No recent developments detected this cycle",
+      "developments": [],
+      "strategic_posture": "Palantir continues to deepen AIP Logic and ontology-based agentic decisioning with strong government and defense footprint expansion.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
-        "trade_press_count": 6
+        "trade_press_count": 0
       }
     },
     {
       "name": "Pegasystems",
       "threat_level": "medium",
-      "headline": "Third-party content frames Pega in adaptive decisioning vs. static rules debate",
-      "developments": [
-        {
-          "title": "HackerNoon Feature: AI-Powered BPA and Adaptive Decisioning",
-          "date": "May 2026",
-          "source_type": "trade_press",
-          "summary": "A HackerNoon article on AI-powered business process automation positions the industry shift from static rules to adaptive decisioning, a framing that aligns closely with Pega's Blueprint AI and Next-Best-Action messaging. The article reaches a developer and technical buyer audience.",
-          "sas_impact": "This type of third-party narrative reinforces Pega's thought leadership positioning in adaptive decisioning among technical audiences, a segment SAS must engage more directly with its own model-driven, governed decisioning story."
-        }
-      ],
-      "strategic_posture": "Pega is leveraging CRM-native agentic AI and process mining to claim the adaptive decisioning narrative in enterprise workflows, increasingly competing with SAS in customer engagement and operational decisioning use cases.",
+      "headline": "No recent developments detected this cycle",
+      "developments": [],
+      "strategic_posture": "Pegasystems is advancing Blueprint AI agents and Agent Experience capabilities tightly integrated with its CRM and process mining suite.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
-        "trade_press_count": 1
+        "trade_press_count": 0
       }
     },
     {
       "name": "IBM",
-      "threat_level": "medium",
-      "headline": "No recent activity detected in monitoring period",
+      "threat_level": "high",
+      "headline": "No recent developments detected this cycle",
       "developments": [],
-      "strategic_posture": "IBM continues to bundle watsonx.ai with ODM and AgentOps for enterprise AI decisioning, particularly targeting regulated industries where SAS competes directly.",
+      "strategic_posture": "IBM is aggressively bundling watsonx.ai with ODM and AgentOps, pushing Graph RAG for grounded enterprise decisioning at scale.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -74,10 +51,30 @@
     },
     {
       "name": "FICO",
+      "threat_level": "high",
+      "headline": "FICO posts strong Q2 EPS beat, signaling continued platform investment",
+      "developments": [
+        {
+          "title": "FICO Q2 Earnings Beat: $12.50 EPS",
+          "date": "May 2026",
+          "source_type": "trade_press",
+          "summary": "Fair Isaac Corporation reported Q2 earnings per share of $12.50, beating analyst expectations and signaling robust financial health. The strong earnings provide FICO with continued capital to invest in Decision Optimizer, explainable ML, and platform expansion.",
+          "sas_impact": "FICO's financial strength means accelerated R&D and potential aggressive pricing or packaging in shared verticals like banking and insurance, increasing competitive pressure on SAS Intelligent Decisioning's enterprise deals."
+        }
+      ],
+      "strategic_posture": "FICO is leveraging strong financial performance to double down on Decision Optimizer and explainable ML, reinforcing its dominance in credit decisioning and expanding into adjacent enterprise decision management use cases.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 1
+      }
+    },
+    {
+      "name": "Provenir",
       "threat_level": "medium",
-      "headline": "No recent activity detected in monitoring period",
+      "headline": "No recent developments detected this cycle",
       "developments": [],
-      "strategic_posture": "FICO maintains its stronghold in credit risk decisioning with its explainable ML challenge model and And-Or Graph technology, positioning explainability as a core differentiator that overlaps directly with SAS strengths.",
+      "strategic_posture": "Provenir continues to differentiate through its 120+ partner Data Marketplace and champion/challenger testing, targeting fintech-first risk decisioning buyers.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -85,52 +82,11 @@
       }
     },
     {
-      "name": "Provenir",
-      "threat_level": "high",
-      "headline": "Provenir pushes trusted AI decisioning narrative and customer base monetization for banks",
-      "developments": [
-        {
-          "title": "Blog: The Revenue Hiding in Your Customer Base",
-          "date": "May 2026",
-          "source_type": "blog",
-          "summary": "Provenir published a thought leadership piece arguing that financial institutions are chasing growth in the wrong places — new markets, unbanked populations — while the real AI decisioning revenue opportunity is existing customer monetization. The piece is clearly targeted at bank CDOs and chief risk officers.",
-          "sas_impact": "Provenir is directly competing for mindshare with financial institution decision-makers on AI-driven customer portfolio optimization, an area where SAS has deep model governance and analytics capabilities that need to be more aggressively positioned."
-        },
-        {
-          "title": "Blog: Building AI Decisioning Platforms Banks Can Trust",
-          "date": "May 2026",
-          "source_type": "blog",
-          "summary": "Provenir CPO David Mirfield discussed the architectural and roadmap realities of building trustworthy AI decisioning platforms for banks, drawing on 20 years of fintech experience. The content targets skeptical buyers evaluating build vs. buy decisions.",
-          "sas_impact": "Provenir is humanizing its platform credibility through executive-led technical content, which competes directly with SAS's trust and governance narrative in financial services and may influence shortlists at mid-tier banks."
-        },
-        {
-          "title": "Partner Spotlight: 1datapipe — Deterministic Identity Intelligence",
-          "date": "May 2026",
-          "source_type": "blog",
-          "summary": "Provenir highlighted a new Data Marketplace partner, 1datapipe, focused on deterministic identity resolution for emerging markets, with explainable linkage and full data lineage. This adds another specialized data partner to Provenir's 120+ partner ecosystem.",
-          "sas_impact": "Provenir's expanding Data Marketplace with identity graph capabilities narrows a gap with Quantexa's entity resolution strength, making Provenir a more complete single-vendor option for financial institutions that might otherwise consider SAS plus third-party data partners."
-        },
-        {
-          "title": "Event Sponsorship: Banking Innovation Summit Memphis",
-          "date": "May 2026",
-          "source_type": "blog",
-          "summary": "Provenir is sponsoring the Banking Innovation Summit in Memphis, June 1-3, signaling continued investment in in-person presence with banking innovation buyers. This is consistent with their fintech-first field marketing strategy.",
-          "sas_impact": "Provenir's active presence at banking innovation events reinforces their fintech-first brand with exactly the buyers SAS should be engaging; SAS needs a visible counter-presence at these venues with a regulated AI governance message."
-        }
-      ],
-      "strategic_posture": "Provenir is executing a high-frequency content and event marketing strategy squarely aimed at financial institution buyers, combining trusted AI thought leadership with Data Marketplace ecosystem expansion to become the default decisioning platform for banks and fintechs.",
-      "content_activity": {
-        "blog_count": 4,
-        "newsroom_count": 0,
-        "trade_press_count": 0
-      }
-    },
-    {
       "name": "ACTICO",
       "threat_level": "low",
-      "headline": "No recent activity detected in monitoring period",
+      "headline": "No recent developments detected this cycle",
       "developments": [],
-      "strategic_posture": "ACTICO continues to focus on regulatory-constrained decisioning in the DACH region with its Companion AI assistant, representing a regional competitive threat rather than a global one.",
+      "strategic_posture": "ACTICO maintains its Companion AI assistant and regulatory-constrained decisioning focus, primarily targeting DACH-region financial services and insurance clients.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -139,10 +95,10 @@
     },
     {
       "name": "CRIF",
-      "threat_level": "low",
-      "headline": "No recent activity detected in monitoring period",
+      "threat_level": "medium",
+      "headline": "No recent developments detected this cycle",
       "developments": [],
-      "strategic_posture": "CRIF continues to advance its GenAI Factory and StrategyOne platform with full decision explainability, maintaining a strong position in European credit decisioning that competes with SAS in regulated market segments.",
+      "strategic_posture": "CRIF is advancing its GenAI Factory and StrategyOne platform with full decision explainability, targeting European credit and open banking decisioning workflows.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -152,210 +108,140 @@
     {
       "name": "Aera Technology",
       "threat_level": "medium",
-      "headline": "Aera launches agentic reasoning that converts situational awareness to action in one conversation",
-      "developments": [
-        {
-          "title": "Aera Introduces Agentic Reasoning for Enterprise Decisions",
-          "date": "May 2026",
-          "source_type": "trade_press",
-          "summary": "Aera Technology launched an agentic reasoning capability that moves enterprise decisions from situation identification to prescriptive action in a single conversational interaction, specifically targeting supply chain and operational decisioning. The announcement received coverage across supply chain trade press and MSN.",
-          "sas_impact": "Aera's single-conversation situation-to-action paradigm sets a new UX benchmark for agentic decisioning in operations, and if SAS does not articulate a comparable human-in-the-loop conversational decisioning story for manufacturing and supply chain, it risks losing ground in that vertical."
-        }
-      ],
-      "strategic_posture": "Aera is pushing the boundary of agentic AI in supply chain and prescriptive operations, moving toward fully conversational decision orchestration that abstracts away the complexity of traditional decisioning platforms.",
-      "content_activity": {
-        "blog_count": 0,
-        "newsroom_count": 0,
-        "trade_press_count": 3
-      }
-    },
-    {
-      "name": "Quantexa",
-      "threat_level": "medium",
-      "headline": "No recent activity detected in monitoring period",
+      "headline": "No recent developments detected this cycle",
       "developments": [],
-      "strategic_posture": "Quantexa continues to lead in entity graph-based decisioning for AML and KYC with its Q Assist LLM copilot and Databricks integration, representing a specialized but growing threat in financial crime use cases where SAS also competes.",
+      "strategic_posture": "Aera Technology is pushing its agentic AI layer and Control Room for prescriptive supply chain operations, targeting autonomous enterprise decision execution.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
         "trade_press_count": 0
+      }
+    },
+    {
+      "name": "Quantexa",
+      "threat_level": "high",
+      "headline": "Quantexa targets APAC law enforcement with entity graph decisioning platform",
+      "developments": [
+        {
+          "title": "Quantexa Profiled for APAC Law Enforcement Empowerment",
+          "date": "May 2026",
+          "source_type": "trade_press",
+          "summary": "GovInsider covered Quantexa's growing role in empowering APAC law enforcement agencies through its entity graph decisioning and Q Assist LLM copilot capabilities in a digital transformation context. The coverage highlights Quantexa's expansion into public sector intelligence and investigation use cases across the Asia-Pacific region.",
+          "sas_impact": "Quantexa is actively encroaching on public sector and law enforcement verticals where SAS has established fraud detection and analytics relationships, using its native knowledge graph as a differentiator SAS currently lacks natively."
+        }
+      ],
+      "strategic_posture": "Quantexa is aggressively expanding its entity graph decisioning into APAC public sector and law enforcement, leveraging Q Assist LLM and Databricks integration to challenge incumbents in AML, KYC, and investigative intelligence.",
+      "content_activity": {
+        "blog_count": 0,
+        "newsroom_count": 0,
+        "trade_press_count": 1
       }
     }
   ],
   "recommendations": [
     {
       "priority": "critical",
-      "area": "Brand and Analyst Narrative",
-      "action": "Launch a targeted analyst and media briefing program positioning SAS Intelligent Decisioning as the governance-first enterprise AI decisioning platform, directly countering the 'Palantir leads enterprise AI' narrative with SAS's regulated industry win stories and explainability depth.",
-      "rationale": "Palantir's 85% revenue growth and analyst crown as enterprise AI leader is shaping buyer shortlists before SAS even enters the conversation, and without a proactive counter-narrative SAS risks being excluded from initial consideration sets."
+      "area": "Public Sector & Law Enforcement Differentiation",
+      "action": "Develop a targeted public sector decisioning reference architecture and case study bundle for APAC law enforcement and border security, highlighting SAS Viya's traceable agentic AI, LIME/SHAP audit trails, and proven fraud detection at scale — directly addressing the Quantexa GovInsider narrative.",
+      "rationale": "Quantexa's GovInsider coverage signals active mind-share capture in APAC public sector where SAS has existing fraud and analytics relationships that could be displaced by Quantexa's entity graph narrative."
     },
     {
       "priority": "critical",
-      "area": "Financial Services GTM",
-      "action": "Develop and deploy a dedicated financial services decisioning content series — minimum four long-form assets in Q2 2026 — anchored on trusted AI architecture, model governance, and existing customer portfolio monetization, directly countering Provenir's high-frequency content strategy.",
-      "rationale": "Provenir published four blog assets in a single week targeting bank CDOs and CROs with trusted AI and revenue-from-existing-customers messaging, outpacing SAS's visible content presence in a segment where SAS has superior governance capabilities."
+      "area": "Knowledge Graph Gap Mitigation",
+      "action": "Accelerate a partner integration story or native capability roadmap item around entity resolution and graph analytics within SAS Intelligent Decisioning, and publish a transparency brief on how SAS approaches network-based fraud detection without a standalone knowledge graph engine.",
+      "rationale": "Quantexa's core differentiator in AML, KYC, and law enforcement is its entity graph — SAS must close the perceived gap or reframe it around governance and auditability advantages that graph-native players lack."
     },
     {
       "priority": "high",
-      "area": "Agentic AI UX and Conversational Decisioning",
-      "action": "Accelerate development and public demonstration of a conversational, human-in-the-loop agentic decisioning interface for SAS Intelligent Decisioning, with a specific demo scenario targeting manufacturing or supply chain operations to counter Aera's situation-to-action paradigm.",
-      "rationale": "Aera's launch of single-conversation agentic reasoning that moves from situation to prescriptive action sets a new UX expectation for operational decisioning buyers, and SAS must show comparable conversational intelligence while differentiating on auditability and governance."
+      "area": "Credit & Banking Competitive Defense vs. FICO",
+      "action": "Prepare a direct competitive enablement package for field teams facing FICO in banking and insurance deals, including TCO comparison, explainability depth comparison (LIME/SHAP vs. FICO's And-Or Graphs), and governance workflow differentiation, leveraging FICO's earnings beat as a signal they will increase sales aggression.",
+      "rationale": "FICO's Q2 earnings beat confirms strong financial momentum that will fund accelerated go-to-market activity in credit decisioning, directly threatening SAS Intelligent Decisioning's banking pipeline."
     },
     {
       "priority": "high",
-      "area": "Technical Audience Engagement",
-      "action": "Publish a series of developer-facing and architect-facing technical content pieces on SAS Viya's decisioning pipeline — including Python/R integration, champion/challenger testing, and model lineage — targeting HackerNoon, Towards Data Science, and LinkedIn technical communities.",
-      "rationale": "Pega is gaining adaptive decisioning mindshare among technical buyers through third-party trade press like HackerNoon, while SAS's superior model governance and lifecycle management capabilities remain largely invisible to that audience."
+      "area": "APAC Regional Go-to-Market Activation",
+      "action": "Commission an APAC-specific demand generation campaign targeting financial crime, public sector, and law enforcement buyers, using SAS's existing regulated industry trust credentials and human-in-the-loop oversight story as the campaign spine.",
+      "rationale": "Quantexa's GovInsider coverage indicates active market development in APAC, a region where SAS must proactively assert presence before Quantexa establishes dominant brand association with intelligence-led decisioning."
     },
     {
       "priority": "medium",
-      "area": "Event and Field Marketing in Banking",
-      "action": "Secure a speaking slot or sponsorship presence at the Banking Innovation Summit in Memphis (June 1-3) or an equivalent banking innovation event in Q2 2026, with a session specifically on AI governance and trusted decisioning for financial institutions.",
-      "rationale": "Provenir is actively sponsoring fintech and banking innovation events to reinforce their trusted AI brand with exactly the buyers SAS targets in financial services, and SAS's absence from these venues cedes direct comparison opportunities."
+      "area": "Earnings & Investment Narrative Monitoring",
+      "action": "Set up automated tracking of FICO investor communications and product announcements following the Q2 earnings beat to anticipate new product launches, pricing moves, or acquisition activity that could affect competitive positioning in H2 2026.",
+      "rationale": "A $12.50 EPS beat gives FICO significant capital allocation flexibility, and historical patterns suggest post-earnings investment announcements in platform capabilities within one to two quarters."
     }
   ],
   "market_signals": [
-    "Agentic AI is converging on conversational, situation-to-action decisioning interfaces across verticals",
-    "Palantir's growth is redefining enterprise AI buyer expectations before procurement begins",
-    "Fintech-first vendors are winning financial services mindshare through high-frequency executive content",
-    "Trust and explainability are now table stakes, not differentiators, requiring proof not claims",
-    "Data Marketplace ecosystems are becoming a decisioning platform selection criterion for banks"
+    "Public sector agentic decisioning is a growing battleground in APAC markets",
+    "Entity graph intelligence becoming table stakes for AML and law enforcement buyers",
+    "FICO financial strength signals intensified enterprise decisioning competition in H2 2026",
+    "Regulated industry trust and explainability remain primary enterprise procurement criteria",
+    "Competitors expanding decisioning footprint beyond financial services into government verticals"
   ],
   "marketing_actions": [
     {
-      "competitor": "Palantir",
-      "trigger": "Palantir reported 85% revenue growth and is being crowned the enterprise AI leader by multiple analysts, shaping buyer shortlists and procurement conversations before competitors enter the room.",
+      "competitor": "Quantexa",
+      "trigger": "GovInsider coverage positions Quantexa as the go-to decisioning platform for APAC law enforcement agencies, building public sector brand equity in a region where SAS competes on fraud and analytics.",
       "blog_angle": {
-        "title": "Enterprise AI Governance Is the Moat Palantir Can't Build: Why Regulated Industries Need More Than an Ontology",
-        "hook": "Palantir's revenue growth is real, but its ontology-based AI is largely unproven in the governance-heavy decisioning environments that banks, insurers, and government agencies actually operate in. This post argues that the enterprises with the most to lose from an AI decision gone wrong — and the most to gain from one made right — need audit trails, explainability, and lifecycle governance that flashy AIP deployments don't provide.",
+        "title": "Why Law Enforcement Agencies Need Governed AI Decisioning, Not Just Entity Graphs",
+        "hook": "Entity graph technology is powerful for connecting dots, but law enforcement and public sector agencies face a harder problem: how do you act on those connections in a way that is auditable, legally defensible, and trusted by oversight bodies? SAS makes the case that governed, traceable agentic decisioning is the missing layer above the graph.",
         "suggested_tags": [
-          "Enterprise AI",
-          "AI Governance",
-          "Trustworthy AI",
-          "Decision Intelligence",
-          "Regulated Industries"
+          "law enforcement AI",
+          "public sector decisioning",
+          "agentic AI governance",
+          "fraud detection",
+          "APAC"
         ]
       },
       "social_talking_points": [
         {
           "platform": "LinkedIn",
-          "community": "Decision Intelligence and AI in Financial Services groups",
-          "message": "Everyone's talking about Palantir's 85% revenue growth as proof that enterprise AI has arrived. But growth metrics don't tell you whether those AI decisions are explainable, auditable, or defensible to a regulator. The enterprises placing the biggest bets on AI decisioning aren't the ones moving fastest — they're the ones who can prove every decision was made correctly. That distinction matters more than any stock price."
-        },
-        {
-          "platform": "Reddit",
-          "community": "r/MachineLearning",
-          "message": "Interesting to see Palantir getting so much analyst love right now. From an ML engineering perspective, the ontology approach is genuinely clever for structured data environments, but I keep wondering how organizations handle model explainability and audit trails when regulators come knocking. Has anyone deployed AIP in a heavily regulated context and had to demonstrate decision lineage? Curious what the governance story looks like under the hood."
+          "community": "LinkedIn Decision Intelligence group",
+          "message": "There's a lot of excitement about entity graph technology in law enforcement and financial crime — and rightly so. But I keep coming back to the same question: when an AI system flags a suspect or recommends an action, can you explain exactly why, to a judge or an oversight committee? Graph connectivity is valuable, but governance and auditability are what make it deployable in regulated public sector environments. Curious how others in the space are thinking about this."
         },
         {
           "platform": "LinkedIn",
-          "community": "Chief Risk Officer and Compliance Technology groups",
-          "message": "Analyst coverage of Palantir is framing enterprise AI as a solved problem, but CROs I talk to are still asking the same foundational questions: Can I explain this decision to my regulator? Can I trace it back to the model version and training data? Can I override it and document why? Those aren't afterthoughts — they're the criteria on which enterprise AI deployments actually succeed or fail in regulated industries."
+          "community": "Public Sector Digital Transformation",
+          "message": "APAC law enforcement agencies are under pressure to modernize — digital fraud, cyber-enabled crime, and cross-border financial crime are all accelerating. The decisioning platforms that will win in this space aren't just the ones with the best data connectivity. They're the ones that can demonstrate full decision lineage, human-in-the-loop controls, and audit-ready explainability. The technology bar is rising, but so is the governance bar."
+        },
+        {
+          "platform": "Twitter",
+          "community": "GovTech and RegTech community",
+          "message": "Entity graphs help connect the dots in financial crime and law enforcement. But who explains the decision when it matters in court? Auditability and traceable AI aren't optional in public sector — they're the whole game. #GovTech #DecisionIntelligence #ExplainableAI"
         }
       ],
-      "battlecard_flag": "Update Palantir battlecard to include Q1 2026 revenue growth data and analyst positioning; add a new section addressing the 'Palantir leads enterprise AI' objection with SAS win stories in regulated industries, specifically highlighting audit trail depth and LIME/SHAP explainability as capabilities absent from Palantir's commercial AIP documentation.",
-      "demo_scenario": "Build a side-by-side demo scenario showing a fraud decisioning workflow in SAS Intelligent Decisioning where a model fires, the decision is logged with full SHAP attribution, flagged for human review, overridden with documented rationale, and the entire chain is exportable for regulatory audit — contrasting this with the opacity of ontology-based agent actions.",
-      "demand_gen_hook": "Webinar: 'What Enterprise AI Analysts Don't Tell You About Decisioning in Regulated Industries' — featuring a CRO or compliance leader from a SAS financial services or public sector customer discussing governance requirements that generic enterprise AI platforms fail to meet."
+      "battlecard_flag": "Update Quantexa battlecard to include APAC public sector law enforcement use case section; add talking points on SAS audit trail, human-in-the-loop oversight, and model lineage as differentiators over graph-native platforms in legally sensitive environments.",
+      "demo_scenario": "Build a live demo scenario simulating a law enforcement financial crime investigation where SAS Intelligent Decisioning surfaces a high-risk entity recommendation, then walks the audience through the complete decision audit trail, SHAP explainability output, and approval workflow — contrasting the 'black box graph score' problem with SAS's governed decisioning chain.",
+      "demand_gen_hook": "Webinar: 'From Graph to Governed: How APAC Public Sector Agencies Can Deploy AI Decisioning That Survives Legal Scrutiny' — targeting CIOs and risk officers in law enforcement, border agencies, and financial intelligence units across APAC."
     },
     {
-      "competitor": "Provenir",
-      "trigger": "Provenir published four blog assets in one week targeting bank decision-makers with trusted AI architecture content, existing-customer monetization framing, and a new identity intelligence Data Marketplace partner, while simultaneously activating field presence at a banking innovation summit.",
+      "competitor": "FICO",
+      "trigger": "FICO's Q2 EPS beat of $12.50 signals strong financial health and likely accelerated investment in Decision Optimizer and enterprise go-to-market in banking and insurance verticals where SAS competes directly.",
       "blog_angle": {
-        "title": "Your Existing Customers Are Your Best AI Decisioning Asset — But Only If Your Models Are Trustworthy Enough to Act On",
-        "hook": "Provenir is right that the biggest revenue opportunity for banks is the customers they already have — but the limiting factor isn't data access, it's whether the AI driving those decisions can be trusted, explained, and governed at enterprise scale. This post makes the case that AI decisioning for customer portfolio optimization only delivers sustained value when it's built on a foundation of model governance, not just a data marketplace.",
+        "title": "Beyond the Credit Score: Why Enterprise Decisioning Needs More Than FICO's Optimization Engine",
+        "hook": "FICO built its empire on the credit score and decision optimization — and it's very good at both. But modern enterprise decisioning spans fraud, customer engagement, operations, and compliance simultaneously. This post argues that organizations betting on a single-vendor score-and-optimize approach are leaving governance, model lifecycle, and cross-domain decisioning capability on the table.",
         "suggested_tags": [
-          "Financial Services AI",
-          "Customer Decisioning",
-          "AI Governance",
-          "Banking Technology",
-          "Decision Intelligence"
+          "enterprise decisioning",
+          "FICO alternative",
+          "decision intelligence",
+          "model governance",
+          "explainable AI"
         ]
       },
       "social_talking_points": [
         {
           "platform": "LinkedIn",
-          "community": "Banking Technology and Fintech Innovation groups",
-          "message": "There's a really sharp piece circulating about how financial institutions are chasing growth in the wrong direction — new markets, new segments — while the revenue sitting in their existing customer base goes untouched. The insight is correct. But the harder question is: what does it take for a bank to actually trust an AI recommendation enough to act on it at scale? Data access is table stakes. Model explainability, auditability, and approval workflows are what separate a pilot from a production system."
-        },
-        {
-          "platform": "LinkedIn",
-          "community": "Chief Data Officer and AI Risk Management groups",
-          "message": "When Provenir's CPO talks about building AI decisioning platforms banks can trust, I pay attention — 20 years in fintech is a real credential. But trust in AI means different things to different stakeholders. For a data scientist it means model performance. For a CRO it means explainability. For a compliance officer it means audit trails. For a board it means accountability. Any platform claiming to be trustworthy needs to answer all four simultaneously — that's a hard problem."
+          "community": "LinkedIn Risk & Compliance Professionals",
+          "message": "FICO's earnings results are a reminder of how entrenched credit decisioning incumbents are in financial services. But I've been seeing more RFPs where banks are asking for something FICO doesn't natively provide: end-to-end model lifecycle governance, multi-domain decisioning across fraud AND customer AND operations, and human-in-the-loop agent oversight. The decisioning conversation is getting broader than credit scores."
         },
         {
           "platform": "Reddit",
           "community": "r/fintech",
-          "message": "Saw a blog post arguing that FIs are missing revenue by not better monetizing existing customers through AI decisioning. The argument is compelling. What I'm less sure about is whether the decisioning infrastructure most banks have can support the governance requirements that come with acting on those AI signals at scale — especially in markets with FCRA or GDPR implications. Anyone working on this in production at a regulated institution? What does the compliance review workflow actually look like?"
+          "message": "Anyone else noticing that enterprise decision management RFPs are expanding scope significantly? Used to be mostly credit risk and fraud. Now they want model versioning, approval workflows, explainability for regulators, and agentic automation all in one platform. FICO is strong in optimization but there are real gaps when you need full lifecycle governance across multiple decisioning domains."
         }
       ],
-      "battlecard_flag": "Add a new Data Marketplace comparison section to the Provenir battlecard documenting SAS Viya's open data integration architecture versus Provenir's 120+ partner marketplace; emphasize SAS's model governance and lifecycle management depth as the differentiator for tier-1 banks with complex regulatory environments.",
-      "demo_scenario": "Develop a demo showing SAS Intelligent Decisioning used for next-best-offer across an existing bank customer portfolio — including champion/challenger model testing, offer decisioning with SHAP explainability per customer, full approval workflow for model promotion, and a compliance audit export — directly addressing the 'revenue from existing customers' narrative with a governed, enterprise-grade counter-demonstration.",
-      "demand_gen_hook": "Whitepaper: 'The Trusted AI Decisioning Stack for Financial Institutions: What Governance Capabilities Actually Separate Pilot Programs from Production Systems' — targeting bank CDOs, CROs, and AI risk teams with a framework for evaluating decisioning platforms beyond data partnerships."
-    },
-    {
-      "competitor": "Aera Technology",
-      "trigger": "Aera launched agentic reasoning that collapses the situation-to-action decisioning journey into a single conversational interaction, receiving broad supply chain trade press coverage and setting a new UX expectation for operational AI decisioning buyers.",
-      "blog_angle": {
-        "title": "From Situation to Action in One Conversation Is Impressive — But Who's Accountable for the Decision?",
-        "hook": "Aera's new agentic reasoning capability is a genuine UX leap: identify a supply chain disruption, reason through options, and execute a decision in one conversation. But in enterprise operations, the conversation isn't the hard part — accountability is. This post argues that agentic decisioning without traceable human-in-the-loop oversight isn't a feature, it's a liability, and examines what governed agentic AI actually looks like in manufacturing and logistics.",
-        "suggested_tags": [
-          "Agentic AI",
-          "Supply Chain AI",
-          "Human-in-the-Loop",
-          "Decision Governance",
-          "Manufacturing Analytics"
-        ]
-      },
-      "social_talking_points": [
-        {
-          "platform": "LinkedIn",
-          "community": "Supply Chain Technology and Digital Operations groups",
-          "message": "Aera's announcement of agentic reasoning that moves from situation to action in a single conversation is a genuinely interesting capability for supply chain operations. The UX promise is real. What I keep thinking about is the accountability layer: when an autonomous agent makes a procurement or logistics decision that turns out to be wrong, what's the audit trail? Who approved the action? How does that hold up when you're explaining it to a procurement committee or an operations board?"
-        },
-        {
-          "platform": "LinkedIn",
-          "community": "AI in Manufacturing and Industrial Operations groups",
-          "message": "The trend toward single-conversation agentic decisioning in operations is accelerating — Aera's announcement this week is a good example. For supply chain use cases with relatively contained risk, this makes a lot of sense. For decisions with significant financial, safety, or compliance implications in manufacturing, I'd argue the human-in-the-loop checkpoint isn't optional overhead — it's the feature. The question is whether the platform makes that checkpoint seamless or bureaucratic."
-        },
-        {
-          "platform": "Twitter",
-          "community": "AI and enterprise technology practitioners",
-          "message": "Aera launching situation-to-action agentic reasoning in one conversation is a smart UX move for supply chain ops. But 'one conversation' also means one decision, one accountability point, one audit need. The platforms that will win long-term aren't the ones that remove humans from decisions — they're the ones that make human oversight fast enough that it doesn't slow you down. Governance as a feature, not a friction."
-        }
-      ],
-      "battlecard_flag": "Create a new Aera Technology battlecard section on agentic AI governance differentiators, highlighting SAS Intelligent Decisioning's traceable agent action logs, human approval workflow integration, and model lineage as capabilities that Aera's supply chain-focused agentic layer does not natively address.",
-      "demo_scenario": "Design a manufacturing decisioning demo in SAS Intelligent Decisioning showing an agentic workflow that detects a production anomaly, reasons through response options using an embedded ML model, surfaces a recommended action to a human operator with full SHAP-based explanation, captures the human approval, and logs the complete decision chain — positioning this as 'agentic with accountability' versus Aera's fully autonomous paradigm.",
-      "demand_gen_hook": "Webinar: 'Agentic AI in Operations: How to Move Fast Without Losing Accountability' — targeting supply chain and manufacturing operations leaders with a live demonstration of governed agentic decisioning that preserves audit trails and human oversight without sacrificing decisioning speed."
-    },
-    {
-      "competitor": "Pegasystems",
-      "trigger": "Third-party trade press is framing the market shift from static rules to adaptive decisioning in terms that align closely with Pega's Blueprint AI positioning, building Pega's thought leadership credibility with technical and developer audiences on platforms like HackerNoon.",
-      "blog_angle": {
-        "title": "Static Rules vs. Adaptive AI Decisioning: The Framework Architects Actually Need to Choose",
-        "hook": "The 'static rules are dead, adaptive AI is the future' narrative is everywhere right now — but it glosses over the real architectural decision enterprises face: how do you govern adaptive AI decisions in environments where a wrong output has regulatory or financial consequences? This post provides a practical framework for decision architects choosing between rule-based, ML-driven, and hybrid decisioning approaches, grounded in real deployment constraints.",
-        "suggested_tags": [
-          "Decision Architecture",
-          "AI Decisioning",
-          "Rules Engine",
-          "Machine Learning",
-          "Enterprise AI"
-        ]
-      },
-      "social_talking_points": [
-        {
-          "platform": "Reddit",
-          "community": "r/MachineLearning",
-          "message": "The static rules vs. adaptive AI decisioning debate is heating up again with several pieces framing it as a binary choice. In practice, the most robust enterprise decisioning systems I've seen use adaptive ML models for prediction but retain explicit, auditable rule layers for constraint enforcement — especially in regulated contexts. The 'just use AI' framing skips the hard question of what happens when the adaptive model makes a decision that violates a regulatory constraint. Anyone building hybrid architectures for this?"
-        },
-        {
-          "platform": "LinkedIn",
-          "community": "Decision Intelligence and Enterprise Architecture groups",
-          "message": "Reading the wave of content about moving from static rules to adaptive AI decisioning and noticing that almost none of it addresses the governance gap. Adaptive models are genuinely better at capturing nonlinear patterns in customer or operational data — that's real. But 'adaptive' without model versioning, champion/challenger testing, and approval workflows for model promotion is just another way of saying 'we don't know who made this decision or why.' The architecture conversation needs to catch up to the narrative."
-        }
-      ],
-      "battlecard_flag": "Update Pegasystems battlecard to add a technical differentiation section on SAS Viya's model lifecycle management versus Pega's Blueprint AI, specifically addressing the absence of native statistical model governance in Pega's adaptive decisioning layer for non-CRM use cases.",
-      "demo_scenario": "Build a technical demo walkthrough for developer and architect audiences showing SAS Intelligent Decisioning's Python/R model integration pipeline, champion/challenger decisioning configuration, and model promotion approval workflow — framed as the governed adaptive decisioning architecture that fills the gap left by process-automation-first platforms.",
-      "demand_gen_hook": "Technical deep-dive content series: 'Decisioning Architecture Decisions: A Practitioner's Guide to Governed Adaptive AI' — targeting enterprise architects and senior data scientists with detailed technical content on model lifecycle, hybrid rule-ML decisioning, and governance at scale, distributed through developer community channels."
+      "battlecard_flag": "Update FICO battlecard to reflect post-earnings competitive posture: add section on FICO's investment trajectory, reinforce SAS differentiators on multi-domain decisioning, end-to-end model lifecycle governance, and native Viya ML integration that FICO's Decision Optimizer does not replicate.",
+      "demo_scenario": "Design a side-by-side capability walkthrough demo showing a fraud + customer engagement decisioning scenario that requires model versioning, regulatory audit trail, and cross-domain decision orchestration — use cases where FICO's credit-centric architecture creates friction and SAS Intelligent Decisioning handles natively.",
+      "demand_gen_hook": "Whitepaper campaign: 'The Total Cost of Decisioning: What Banks Miss When They Evaluate Credit Optimization Tools vs. Enterprise Decision Intelligence Platforms' — targeting CFOs and Chief Risk Officers at Tier 1 and Tier 2 banks in FICO's core verticals."
     }
   ]
 }
