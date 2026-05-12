@@ -434,10 +434,11 @@ def send_email(data: dict) -> None:
         print("⚠  Email env vars not set. Skipping.")
         return
 
+    recipients = [addr.strip() for addr in to_addr.split(",")]
+
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"SAS Competitive Intel — {datetime.now().strftime('%b %d, %Y')}"
     msg["From"] = from_addr
-   recipients = [addr.strip() for addr in to_addr.split(",")]
     msg["To"] = ", ".join(recipients)
     msg.attach(MIMEText(build_email_html(data), "html"))
 
@@ -445,7 +446,7 @@ def send_email(data: dict) -> None:
         with smtplib.SMTP_SSL(smtp_host, smtp_port) as smtp:
             smtp.login(from_addr, password)
             smtp.sendmail(from_addr, recipients, msg.as_string())
-        print(f"✓ Email sent → {to_addr}")
+        print(f"✓ Email sent → {', '.join(recipients)}")
     except Exception as e:
         print(f"✗ Email failed: {e}")
 
