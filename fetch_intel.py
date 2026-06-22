@@ -424,29 +424,30 @@ def build_email_html(data: dict) -> str:
 # ── EMAIL SEND ────────────────────────────────────────────────────────────────
 
 def send_email(data: dict) -> None:
+    api_key = os.getenv("SENDGRID_API_KEY")
     from_addr = os.getenv("EMAIL_FROM")
     to_addr = os.getenv("EMAIL_TO")
-    password = os.getenv("EMAIL_PASSWORD")
-    smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
-    smtp_port = int(os.getenv("SMTP_PORT", "465"))
 
-    if not all([from_addr, to_addr, password]):
-        print("⚠  Email env vars not set. Skipping.")
+    if not all([api_key, from_addr, to_addr]):
+        print("⚠  SendGrid env vars not set (SENDGRID_API_KEY / EMAIL_FROM / EMAIL_TO). Skipping.")
         return
 
     recipients = [addr.strip() for addr in to_addr.split(",")]
 
-    msg = MIMEMultipart("alternative")
-    msg["Subject"] = f"SAS Competitive Intel — {datetime.now().strftime('%b %d, %Y')}"
-    msg["From"] = from_addr
-    msg["To"] = ", ".join(recipients)
-    msg.attach(MIMEText(build_email_html(data), "html"))
+    import sendgrid
+    from sendgrid.helpers.mail import Mail, To
+
+    msg = Mail(
+        from_email=from_addr,
+        to_emails=[To(r) for r in recipients],
+        subject=f"SAS Competitive Intel — {datetime.now().strftime('%b %d, %Y')}",
+        html_content=build_email_html(data),
+    )
 
     try:
-        with smtplib.SMTP_SSL(smtp_host, smtp_port) as smtp:
-            smtp.login(from_addr, password)
-            smtp.sendmail(from_addr, recipients, msg.as_string())
-        print(f"✓ Email sent → {', '.join(recipients)}")
+        sg = sendgrid.SendGridAPIClient(api_key=api_key)
+        response = sg.send(msg)
+        print(f"✓ Email sent → {', '.join(recipients)} (status {response.status_code})")
     except Exception as e:
         print(f"✗ Email failed: {e}")
 
