@@ -12,11 +12,8 @@ import argparse
 import base64
 import json
 import os
-import smtplib
 import time
 from datetime import datetime, timedelta, timezone
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from urllib.parse import quote_plus
 
 import anthropic
