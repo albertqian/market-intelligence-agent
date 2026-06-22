@@ -1,32 +1,24 @@
 {
-  "generated_at": "2026-06-22T17:41:56.150722+00:00",
+  "generated_at": "2026-06-22T21:55:06.773117+00:00",
   "competitors": [
     {
       "name": "Sapiens",
       "threat_level": "medium",
-      "headline": "Sapiens CRO reframes insurance legacy as a people problem",
-      "developments": [
-        {
-          "title": "People-First Legacy Narrative in Insurance",
-          "date": "June 2026",
-          "source_type": "trade_press",
-          "summary": "Sapiens CRO James Hannay argued in a Life Insurance International interview that people, not technology, are insurance's real legacy platform. This positions Sapiens as a change management and cultural transformation partner, not just a software vendor.",
-          "sas_impact": "Sapiens is softening the technology-first pitch in regulated insurance markets, potentially undermining SAS's governance and explainability differentiation by reframing the conversation around organizational readiness rather than platform capability."
-        }
-      ],
-      "strategic_posture": "Sapiens is repositioning from a rules-engine vendor to a holistic insurance transformation partner, emphasizing human change alongside AI-powered decisioning.",
+      "headline": "No recent activity detected in monitoring window",
+      "developments": [],
+      "strategic_posture": "Sapiens continues to position its DECISION platform and Model.AI with Azure OpenAI for natural-language rule authoring, though no new public developments were captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
-        "trade_press_count": 1
+        "trade_press_count": 0
       }
     },
     {
       "name": "Palantir",
       "threat_level": "high",
-      "headline": "No recent Palantir activity detected this cycle",
+      "headline": "No recent activity detected in monitoring window",
       "developments": [],
-      "strategic_posture": "Palantir continues to press its ontology-based AIP Logic and government AI footprint but produced no tracked content this cycle.",
+      "strategic_posture": "Palantir continues to press AIP Logic and ontology-based agentic decisioning, with strong government and defense footprint representing an ongoing threat in public sector.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -35,30 +27,22 @@
     },
     {
       "name": "Pegasystems",
-      "threat_level": "medium",
-      "headline": "Pega profiled as CRM-automation specialist amid stock coverage",
-      "developments": [
-        {
-          "title": "Trade Press Stock and Strategy Profile",
-          "date": "June 2026",
-          "source_type": "trade_press",
-          "summary": "AD HOC NEWS published a background profile on Pegasystems framing the company as a CRM and automation specialist, signaling continued analyst interest in Pega's dual positioning across customer engagement and intelligent automation. The coverage reinforces Pega's enterprise software brand without announcing new product features.",
-          "sas_impact": "Pega's strengthening CRM-plus-decisioning narrative may attract enterprise buyers evaluating combined customer engagement and decision automation, a space where SAS Intelligent Decisioning must demonstrate superior model governance and ML depth."
-        }
-      ],
-      "strategic_posture": "Pegasystems is consolidating its identity as the CRM-native decisioning platform, leveraging Blueprint AI and process mining to expand from CRM into enterprise-wide intelligent automation.",
+      "threat_level": "high",
+      "headline": "No recent activity detected in monitoring window",
+      "developments": [],
+      "strategic_posture": "Pegasystems is deepening CRM-native decisioning via Blueprint AI agents and Agent Experience, targeting customer engagement use cases where SAS also competes.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
-        "trade_press_count": 1
+        "trade_press_count": 0
       }
     },
     {
       "name": "IBM",
       "threat_level": "high",
-      "headline": "No recent IBM activity detected this cycle",
+      "headline": "No recent activity detected in monitoring window",
       "developments": [],
-      "strategic_posture": "IBM watsonx.ai and ODM continue to target regulated enterprise decisioning with AgentOps and Graph RAG, but no new tracked content appeared this cycle.",
+      "strategic_posture": "IBM continues to bundle watsonx.ai with ODM and Graph RAG capabilities, leveraging its enterprise install base to cross-sell AI-powered decisioning.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -68,29 +52,37 @@
     {
       "name": "FICO",
       "threat_level": "high",
-      "headline": "No recent FICO activity detected this cycle",
-      "developments": [],
-      "strategic_posture": "FICO continues to advance Decision Optimizer and explainable ML challenge models but produced no tracked content this cycle.",
+      "headline": "Trade press profiles FICO as enduring scoring and decisioning pioneer",
+      "developments": [
+        {
+          "title": "FICO Background Profile in Trade Press",
+          "date": "June 2026",
+          "source_type": "trade_press",
+          "summary": "A trade press piece published a background profile on FICO, reinforcing its identity as a scoring pioneer with broad market recognition. The coverage sustains FICO's brand authority in credit risk and decisioning markets without announcing a specific new product.",
+          "sas_impact": "Ongoing media reinforcement of FICO's brand heritage in credit decisioning keeps it top of mind for buyers evaluating SAS Intelligent Decisioning, particularly in banking and insurance verticals."
+        }
+      ],
+      "strategic_posture": "FICO sustains brand dominance through persistent media presence and product depth in explainable ML and Decision Optimizer, making it a constant reference point in enterprise decisioning evaluations.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
-        "trade_press_count": 0
+        "trade_press_count": 1
       }
     },
     {
       "name": "Provenir",
       "threat_level": "medium",
-      "headline": "Provenir publishes data provider review framework for fintechs",
+      "headline": "Provenir blogs practical data provider review framework for fintech teams",
       "developments": [
         {
-          "title": "Data Provider Review Best Practice Blog",
+          "title": "Data Provider Review Framework Blog Post",
           "date": "June 2026",
           "source_type": "blog",
-          "summary": "Provenir published a blog post outlining what a rigorous third-party data provider review process should look like in financial services, arguing most firms reduce it to a commercial renegotiation. The post positions Provenir's Data Marketplace (120+ partners) as the infrastructure that makes structured provider governance possible.",
-          "sas_impact": "Provenir is using thought leadership to entrench its Data Marketplace as the default data governance layer for fintech decisioning, a space where SAS lacks a native multi-provider marketplace and must respond with alternative data integration and governance narratives."
+          "summary": "Provenir published a thought leadership blog outlining what a rigorous third-party data provider review should look like in financial services, positioning it as more than a commercial renegotiation exercise. The post targets risk and data teams who manage vendor ecosystems and is aligned to Provenir's Data Marketplace strength of 120+ integrated partners.",
+          "sas_impact": "Provenir is using practical, practitioner-level content to anchor its Data Marketplace positioning, directly competing with SAS for mindshare among data-driven risk teams who could be evaluating SAS Intelligent Decisioning for credit or fraud use cases."
         }
       ],
-      "strategic_posture": "Provenir is doubling down on data ecosystem lock-in via its 120+ partner marketplace while using educational content to position itself as the operational backbone for fintech credit decisioning.",
+      "strategic_posture": "Provenir is deepening its fintech-first content strategy to convert data ecosystem governance conversations into platform evaluations, leveraging its large partner marketplace as a differentiator.",
       "content_activity": {
         "blog_count": 1,
         "newsroom_count": 0,
@@ -99,10 +91,10 @@
     },
     {
       "name": "ACTICO",
-      "threat_level": "low",
-      "headline": "No recent ACTICO activity detected this cycle",
+      "threat_level": "medium",
+      "headline": "No recent activity detected in monitoring window",
       "developments": [],
-      "strategic_posture": "ACTICO remains focused on regulatory-constrained decisioning and its Companion AI assistant in the DACH region but produced no tracked content this cycle.",
+      "strategic_posture": "ACTICO remains focused on regulatory-constrained decisioning and its Companion AI assistant, with primary concentration in the DACH region and financial services compliance.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -112,9 +104,9 @@
     {
       "name": "CRIF",
       "threat_level": "medium",
-      "headline": "No recent CRIF activity detected this cycle",
+      "headline": "No recent activity detected in monitoring window",
       "developments": [],
-      "strategic_posture": "CRIF continues advancing GenAI Factory and StrategyOne for European credit decisioning but produced no tracked content this cycle.",
+      "strategic_posture": "CRIF continues to build out its GenAI Factory and StrategyOne platform for European credit decisioning, competing with SAS on explainability and end-to-end decision governance.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -124,9 +116,9 @@
     {
       "name": "Aera Technology",
       "threat_level": "low",
-      "headline": "No recent Aera Technology activity detected this cycle",
+      "headline": "No recent activity detected in monitoring window",
       "developments": [],
-      "strategic_posture": "Aera Technology continues its agentic AI and prescriptive operations push in supply chain via Control Room but produced no tracked content this cycle.",
+      "strategic_posture": "Aera Technology focuses on agentic AI for supply chain and prescriptive operations via its Control Room, representing a niche but growing threat in manufacturing decisioning.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -135,10 +127,10 @@
     },
     {
       "name": "Quantexa",
-      "threat_level": "medium",
-      "headline": "No recent Quantexa activity detected this cycle",
+      "threat_level": "high",
+      "headline": "No recent activity detected in monitoring window",
       "developments": [],
-      "strategic_posture": "Quantexa continues leading in entity graph decisioning and AML/KYC with Q Assist LLM copilot and Databricks integration but produced no tracked content this cycle.",
+      "strategic_posture": "Quantexa continues to lead in entity graph decisioning for AML and KYC with Q Assist LLM copilot and Databricks integration, representing SAS's most distinct structural gap in knowledge graph capabilities.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -149,137 +141,107 @@
   "recommendations": [
     {
       "priority": "critical",
-      "area": "Data Ecosystem and Third-Party Integration",
-      "action": "Develop and publish a structured whitepaper and associated demo scenario showing how SAS Intelligent Decisioning orchestrates, governs, and audits third-party data providers within a regulated decisioning workflow — directly countering Provenir's Data Marketplace narrative with a governance-first alternative.",
-      "rationale": "Provenir is actively building thought leadership around data provider governance to entrench its 120+ partner marketplace; SAS must reframe this as a governance and explainability challenge where SAS's audit trail and lineage capabilities are the differentiator, not the number of connectors."
+      "area": "Content Marketing — Data Ecosystem Governance",
+      "action": "Commission a practitioner-grade content series on third-party data vendor governance within decisioning pipelines, explicitly connecting SAS Intelligent Decisioning's model lineage and audit trail capabilities to the data sourcing lifecycle.",
+      "rationale": "Provenir's blog on data provider reviews directly captures search and mindshare among risk and data teams who are natural SAS prospects, and SAS has no equivalent practitioner-level content competing in this space."
     },
     {
       "priority": "high",
-      "area": "Insurance Vertical Messaging",
-      "action": "Create an insurance-specific content series that directly addresses both the people and technology dimensions of decisioning transformation, incorporating SAS's human-in-the-loop agentic AI and change enablement resources to blunt Sapiens' 'people not technology' repositioning.",
-      "rationale": "Sapiens' CRO is deliberately shifting the insurance conversation away from platform comparisons toward organizational change, which could undercut SAS's technology-led sales motion in insurance if left unaddressed."
+      "area": "Brand Authority — Credit and Fraud Decisioning",
+      "action": "Publish a comparative explainability benchmark or customer case study in banking or insurance that directly contrasts SAS's LIME/SHAP governance capabilities with FICO's Decision Optimizer, targeting analysts and procurement teams conducting platform reviews.",
+      "rationale": "FICO's sustained trade press coverage reinforces its brand as the default scoring and decisioning reference in financial services, and SAS must actively displace that default perception with evidence-led content."
     },
     {
       "priority": "high",
-      "area": "CRM-Decisioning Competitive Displacement",
-      "action": "Build a targeted battlecard and demo scenario that separates SAS Intelligent Decisioning from Pega's CRM-native decisioning by emphasizing multi-channel model governance, enterprise ML depth, and SAS Viya's statistical rigor in use cases Pega's Blueprint AI cannot match.",
-      "rationale": "Pega's sustained analyst visibility as a CRM-and-automation specialist means enterprise buyers may conflate customer decisioning with CRM-native automation, eroding SAS's differentiation in customer engagement use cases."
+      "area": "Fintech Segment Enablement",
+      "action": "Develop a dedicated fintech-segment battlecard and solution brief that positions SAS Intelligent Decisioning's governance and explainability as a competitive advantage over Provenir's marketplace breadth, targeting compliance officers and chief risk officers at fintechs facing regulatory scrutiny.",
+      "rationale": "Provenir's fintech-first content strategy is designed to convert data governance conversations into platform evaluations, and SAS currently lacks fintech-specific collateral to intercept these buyers."
     },
     {
       "priority": "medium",
-      "area": "Regulated Industry Thought Leadership",
-      "action": "Accelerate publication of practitioner-level content on AI audit trails, model lineage, and decision explainability in regulated industries (banking, insurance, public sector) to maintain share of voice while major competitors like IBM, FICO, and Palantir are quiet this cycle.",
-      "rationale": "The current low competitor content volume represents a window to dominate search and social conversation in regulated AI decisioning before these high-threat competitors re-enter the content cycle."
+      "area": "Public Sector and Agentic AI Positioning",
+      "action": "Create a government-focused thought leadership piece on trustworthy agentic AI with human-in-the-loop oversight, explicitly addressing the traceability and accountability requirements that differentiate SAS from Palantir's ontology-based approach.",
+      "rationale": "Palantir's AIP Logic retains strong government footprint and SAS must proactively articulate why auditable agentic AI matters more in public sector than speed of deployment alone."
     },
     {
       "priority": "medium",
-      "area": "Fintech Segment Defense",
-      "action": "Produce a comparison guide specifically for financial services decision teams evaluating fintech-first platforms (Provenir, CRIF) versus enterprise decisioning platforms, foregrounding SAS's compliance workflow depth, model versioning, and enterprise scale as the selection criteria that matter most.",
-      "rationale": "Provenir's fintech-first positioning and active content marketing around data infrastructure governance risks positioning SAS as over-engineered for credit decisioning unless SAS reframes enterprise governance as a business advantage, not a complexity cost."
+      "area": "Knowledge Graph Gap Mitigation",
+      "action": "Prioritize a partnership announcement or integration story with a graph analytics provider to partially close the structural knowledge graph gap versus Quantexa, and brief analysts on SAS's AML and KYC roadmap before the next major evaluation cycle.",
+      "rationale": "Quantexa's entity graph decisioning is the most structurally distinct capability gap SAS faces, and without a credible narrative or roadmap, SAS risks being eliminated early in AML and KYC evaluations."
     }
   ],
   "market_signals": [
-    "Competitors are humanizing AI decisioning narratives to reduce technology-first resistance",
-    "Data ecosystem governance is emerging as a key competitive battleground in fintech",
-    "CRM-native decisioning platforms are absorbing traditional decision management use cases",
-    "Low competitor content volume signals a window for SAS to dominate share of voice",
-    "Regulated industry buyers are being addressed through change management not just capability"
+    "Practitioner content on data governance is becoming a top-of-funnel acquisition tactic.",
+    "Brand heritage narratives are resurgent as buyers seek stable, proven decisioning platforms.",
+    "Fintech risk teams increasingly evaluate vendors on data ecosystem breadth first.",
+    "Agentic AI traceability is emerging as a regulated-industry procurement requirement.",
+    "Explainability benchmarking is displacing feature comparison as evaluation currency."
   ],
   "marketing_actions": [
     {
       "competitor": "Provenir",
-      "trigger": "Provenir published a thought leadership blog framing third-party data provider review as a governance discipline, implicitly positioning its 120+ partner Data Marketplace as the infrastructure standard for fintech decisioning.",
+      "trigger": "Provenir published a practical blog on what a rigorous third-party data provider review looks like, positioning its Data Marketplace as the natural next step for financial services risk teams.",
       "blog_angle": {
-        "title": "Your Data Provider List Is Not a Data Strategy: What Regulated Decisioning Actually Requires",
-        "hook": "As fintechs add data partners, the real risk isn't vendor selection — it's what happens when a model trained on that data makes a wrong call and regulators ask why. SAS makes the case that data governance in decisioning isn't about the marketplace, it's about the audit trail that connects every data source to every decision outcome.",
+        "title": "Your Data Vendor Review Is Incomplete Without These Governance Checks",
+        "hook": "Most risk teams audit their data providers for coverage and cost — almost none audit them for model lineage, downstream decision impact, or regulatory traceability. This post argues that a data provider review is only as good as your ability to trace what that data did inside a live decision model, and explains what that actually requires.",
         "suggested_tags": [
-          "Decision Intelligence",
-          "Data Governance",
-          "Fintech",
-          "Model Risk Management",
-          "Explainability"
+          "data governance",
+          "credit risk",
+          "decisioning",
+          "model lineage",
+          "fintech"
         ]
       },
       "social_talking_points": [
         {
           "platform": "LinkedIn",
           "community": "LinkedIn Decision Intelligence group",
-          "message": "Reviewing your data providers is necessary hygiene — but it's not the same as governing how those data sources influence model outputs in production. The question regulators are actually asking isn't 'which providers do you use?' It's 'can you trace this decision back to the data that drove it?' Those are very different problems that require very different infrastructure."
+          "message": "The best data provider reviews I've seen don't stop at coverage and pricing. They ask: can I trace what this data source contributed to a specific decision outcome six months ago? If your decisioning platform can't answer that, your review isn't really a review — it's a commercial exercise. That audit trail question is where governance starts getting real."
         },
         {
           "platform": "Reddit",
           "community": "r/fintech",
-          "message": "Interesting to see more content on data provider reviews in credit decisioning. One thing that gets underplayed: the review process is only as useful as your ability to see which providers are actually influencing model behavior downstream. Most teams can tell you who their data vendors are. Far fewer can show you how a specific provider's feed shifted a credit decision last Tuesday. That traceability gap is where things get expensive when regulators show up."
+          "message": "Anyone else noticed that data vendor reviews in financial services almost never cover what happens to model performance when a data source changes or goes offline? Most of the conversation is around price and data freshness. The traceability angle — whether a decisioning system can log which data sources influenced which outcomes — feels massively underweighted given how much regulatory exposure it creates."
         },
         {
           "platform": "Twitter",
-          "community": "FinTech Twitter / Model Risk community",
-          "message": "Frameworks for reviewing data providers in decisioning are useful. But governance without decision lineage is just documentation. The hard part isn't choosing your providers — it's proving every downstream decision was appropriate given the data you used. That's an architecture problem, not a vendor review problem."
+          "community": "FinTech risk and credit Twitter",
+          "message": "Hot take: most third-party data reviews in credit decisioning are really just contract renegotiations with extra steps. The hard question — 'what did this data source actually do to our decisions and can we prove it to a regulator?' — almost never gets asked. That's the governance gap worth closing first."
         }
       ],
-      "battlecard_flag": "Update Provenir battlecard to add a 'Data Governance Depth' section: contrast Provenir's Data Marketplace breadth (connector count) against SAS's decision lineage, model audit trail, and data-to-decision traceability capabilities. Include a specific objection handler for 'Provenir has 120+ data partners' that pivots to governance depth and regulatory auditability.",
-      "demo_scenario": "Build a demo showing a credit decisioning workflow where a third-party data provider feed changes — demonstrating how SAS Intelligent Decisioning automatically flags affected model versions, surfaces lineage of impacted decisions, and generates an audit-ready explanation for compliance review. Contrast this with a manual provider review process to make the operational risk concrete.",
-      "demand_gen_hook": "Webinar: 'Beyond the Data Marketplace: How to Govern Third-Party Data in High-Stakes Decisioning' — targeting risk and compliance leaders in financial services who own both model risk and vendor management."
+      "battlecard_flag": "Update Provenir battlecard to add a 'Data Governance Depth' section contrasting SAS model lineage and audit trail capabilities against Provenir's marketplace breadth; include specific talking points for compliance officer personas.",
+      "demo_scenario": "Run a live demo showing how SAS Intelligent Decisioning traces a specific credit decision back through the exact data source version, model version, and rule set that produced it — framed as what a regulator or internal auditor would actually need to see during a data provider review.",
+      "demand_gen_hook": "Webinar: 'Beyond the Data Vendor Review: How to Govern What Your Data Does Inside a Live Decision Model' — targeting credit risk managers and chief data officers at banks and fintechs facing SR 11-7 or EBA model risk guidance."
     },
     {
-      "competitor": "Sapiens",
-      "trigger": "Sapiens CRO publicly reframed insurance legacy as a people problem rather than a technology problem, repositioning Sapiens as a transformation partner and softening the technology platform comparison in the insurance sales cycle.",
+      "competitor": "FICO",
+      "trigger": "Trade press published a background profile reinforcing FICO's identity as the enduring scoring and decisioning pioneer, sustaining brand authority in financial services without a new product announcement.",
       "blog_angle": {
-        "title": "Insurance Transformation Needs Both: Why the People vs. Technology Debate Is a False Choice",
-        "hook": "When a vendor says 'people are your real legacy platform,' what they're really doing is shifting the conversation away from what their technology can't do. SAS argues the best decisioning platforms are designed to amplify human judgment — with traceable AI, human-in-the-loop oversight, and governance workflows that make people more effective, not redundant.",
+        "title": "Beyond the Score: Why the Next Era of Credit Decisioning Demands More Than a Number",
+        "hook": "Credit scoring gave financial services a common language. But regulators, consumers, and risk teams are now asking for something FICO's foundational model wasn't designed to deliver: a full audit trail of how every decision was made, by which model, on what data, and why it was approved for production. This post makes the case for why decision governance — not just model accuracy — is the new competitive frontier.",
         "suggested_tags": [
-          "Insurance",
-          "Human-in-the-Loop AI",
-          "Intelligent Decisioning",
-          "AI Governance",
-          "Change Management"
+          "credit decisioning",
+          "explainability",
+          "model governance",
+          "AI risk",
+          "banking"
         ]
       },
       "social_talking_points": [
         {
           "platform": "LinkedIn",
-          "community": "LinkedIn Insurance Technology professionals",
-          "message": "The 'people not technology' framing in insurance transformation is well-intentioned but incomplete. The reason legacy decisions fail isn't just organizational inertia — it's that the technology wasn't designed to support human judgment with transparency. When every automated decision comes with a traceable rationale and an override pathway, the people question and the technology question become the same question."
+          "community": "LinkedIn Risk Management Professionals group",
+          "message": "FICO built the language of credit risk. But the question regulators and boards are asking in 2026 isn't just 'what's the score?' — it's 'show me the full lineage of the model that produced it, the approval workflow that put it into production, and the human review that signed off on the edge cases.' That's a different kind of infrastructure than a score. Worth asking whether your decisioning stack is built for both questions."
         },
         {
           "platform": "Twitter",
-          "community": "InsurTech Twitter",
-          "message": "Hot take: the 'people are the real legacy' narrative in insurance is what vendors say when they can't win on platform capability. The real question is whether your decisioning platform makes your underwriters, claims handlers, and risk teams more effective — or just replaces them with a black box. Human-in-the-loop design is the answer, not a culture presentation."
+          "community": "AI governance and banking risk Twitter",
+          "message": "The FICO score is 70 years of brand equity. Hard to compete with that on recognition. Where the conversation is moving is governance infrastructure: not just what the model predicts, but how decisions are made, versioned, challenged, and explained end-to-end. That's where the next generation of decisioning platforms are differentiating."
         }
       ],
-      "battlecard_flag": "Add a 'Change Narrative Counter' section to the Sapiens battlecard: when Sapiens leads with organizational transformation messaging, redirect to SAS's human-in-the-loop agentic AI design, approval workflows, and governance audit trails as evidence that SAS is built for human-AI collaboration — not automation-for-automation's sake.",
-      "demo_scenario": "Create an insurance-specific demo showing an underwriting decision where a SAS agent flags an anomalous risk factor, surfaces a SHAP explanation, routes the decision to a human underwriter for approval with full context, and logs the human override with rationale — demonstrating that SAS's platform is designed around human judgment, not despite it.",
-      "demand_gen_hook": "Whitepaper: 'Designing for Human Judgment: How Insurers Can Deploy AI Decisioning Without Losing Underwriter Trust' — targeting chief underwriting officers and digital transformation leads in P&C and life insurance."
-    },
-    {
-      "competitor": "Pegasystems",
-      "trigger": "Trade press profiled Pegasystems as a CRM and automation specialist, reinforcing Pega's dual identity in enterprise automation and customer decisioning and increasing its visibility with decision-makers evaluating combined CRM and decisioning platforms.",
-      "blog_angle": {
-        "title": "CRM-Native Decisioning vs. Decision-Native AI: Why the Architecture Difference Matters at Scale",
-        "hook": "When your decisioning capability lives inside a CRM, it's optimized for customer engagement workflows. When your CRM strategy lives inside an enterprise decision platform, it's optimized for the full range of decisions your business makes. SAS breaks down why organizations in regulated industries need to ask whether their decisioning architecture was designed for marketing automation or for enterprise-grade model governance.",
-        "suggested_tags": [
-          "Intelligent Decisioning",
-          "Enterprise AI",
-          "Model Governance",
-          "CRM",
-          "Decision Automation"
-        ]
-      },
-      "social_talking_points": [
-        {
-          "platform": "LinkedIn",
-          "community": "LinkedIn Decision Intelligence group",
-          "message": "There's an important architectural question getting lost in the CRM-plus-AI conversation: is your decisioning layer a feature of your CRM, or is your CRM one channel among many that your decisioning platform serves? That distinction matters enormously when you need consistent, auditable decisions across underwriting, fraud, credit, and customer engagement — not just next-best-action in a sales workflow."
-        },
-        {
-          "platform": "Reddit",
-          "community": "r/MachineLearning",
-          "message": "Genuine question for practitioners: when organizations buy CRM-native AI decisioning, how do they handle model governance across non-CRM use cases? The tooling that works for customer engagement recommendations usually wasn't designed for the audit trails and model risk controls that fraud or credit decisioning requires. Curious how teams are bridging that gap in practice."
-        }
-      ],
-      "battlecard_flag": "Update Pegasystems battlecard to include an 'Architectural Scope' objection handler: when prospects cite Pega's CRM integration as a strength, redirect to SAS's multi-domain decisioning (fraud, credit, customer, manufacturing) and ask whether Pega's governance and ML depth matches their model risk requirements outside of CRM workflows.",
-      "demo_scenario": "Run a side-by-side scenario showing a customer who triggers both a fraud alert and a cross-sell opportunity simultaneously — demonstrating how SAS Intelligent Decisioning coordinates both decisions with unified model governance, lineage, and explainability, whereas a CRM-native tool would handle only one side of that decision coherently.",
-      "demand_gen_hook": "Campaign theme: 'One Decision Platform, Every Decision' — targeting enterprise architects and CDOs who are consolidating decisioning infrastructure and questioning whether their CRM vendor's AI layer can serve as their enterprise decisioning standard."
+      "battlecard_flag": "Add a 'Decision Governance Infrastructure' section to the FICO battlecard that positions SAS end-to-end lifecycle management, approval workflows, and audit trails as capabilities that extend beyond FICO's explainable ML challenge model — specifically for regulated institution procurement teams.",
+      "demo_scenario": "Demonstrate a complete decision lifecycle in SAS Intelligent Decisioning — from model development and challenger testing through governance approval and live deployment — and contrast with the point-solution nature of FICO's scoring infrastructure to show breadth of governance coverage.",
+      "demand_gen_hook": "Whitepaper: 'The Decision Governance Gap: What Credit Risk Infrastructure Needs Beyond Explainable Scores' — targeting model risk officers and CROs at Tier 1 and Tier 2 banks under increasing SR 11-7 and DORA scrutiny."
     }
   ]
 }
