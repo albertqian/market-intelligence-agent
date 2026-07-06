@@ -1,80 +1,58 @@
 {
-  "generated_at": "2026-07-02T15:19:55.910638+00:00",
+  "generated_at": "2026-07-06T16:21:38.376583+00:00",
   "competitors": [
     {
       "name": "Sapiens",
       "threat_level": "medium",
-      "headline": "Sapiens launches Arrow Decision Release targeting insurance decisioning market",
-      "developments": [
-        {
-          "title": "Arrow Decision Release Launch",
-          "date": "July 2026",
-          "source_type": "trade_press",
-          "summary": "Sapiens launched Arrow Decision Release, a new versioned decisioning product aimed at the insurance sector. Coverage by Insurance Innovation Reporter signals market attention to insurance-specific decisioning capabilities.",
-          "sas_impact": "Arrow directly targets insurance carriers evaluating modern decisioning platforms, a vertical where SAS Intelligent Decisioning competes on governance and model integration strength."
-        }
-      ],
-      "strategic_posture": "Sapiens is deepening insurance-vertical decisioning with structured release management to compete on domain specificity and deployment agility.",
+      "headline": "No recent developments detected this monitoring period",
+      "developments": [],
+      "strategic_posture": "Sapiens continues to position its DECISION platform with Model.AI and Azure OpenAI for natural-language rule authoring, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
-        "trade_press_count": 1
+        "trade_press_count": 0
       }
     },
     {
       "name": "Palantir",
       "threat_level": "high",
-      "headline": "Palantir deploys sovereign NVIDIA Nemotron AI engine and expands enterprise customer base aggressively",
+      "headline": "Karp positions Palantir as enterprise AI oxygen, attacks AI labs on IP",
       "developments": [
         {
-          "title": "NVIDIA Nemotron Sovereign AI Engine Launch",
-          "date": "June 2026",
-          "source_type": "trade_press",
-          "summary": "Palantir launched an engine for deploying NVIDIA Nemotron open models in sovereign, air-gapped environments, targeting US government agencies and regulated enterprises. The partnership with NVIDIA was co-announced on the NVIDIA Blog, amplifying reach.",
-          "sas_impact": "This positions Palantir as the go-to platform for sovereign AI deployment in defense and regulated public sector — a space where SAS has historically competed on governance and compliance."
-        },
-        {
-          "title": "Foundry Ontology Positioned as AI Workflow Backbone",
+          "title": "Palantir vs. Microsoft: AI Stock Comparison",
           "date": "July 2026",
           "source_type": "trade_press",
-          "summary": "Third-party coverage highlighted Palantir Foundry's ontology layer as the data backbone enabling enterprise AI workflows, reinforcing the narrative that structured knowledge representation is essential for trustworthy AI.",
-          "sas_impact": "The ontology-as-backbone narrative may pressure SAS to articulate its own data lineage and contextual decisioning story more aggressively to enterprise buyers."
+          "summary": "The Motley Fool published a comparative analysis positioning Palantir favorably against Microsoft as an AI investment, underscoring enterprise AI credibility. This elevates Palantir's brand in the enterprise AI decisioning space beyond its traditional government footprint.",
+          "sas_impact": "Third-party validation of Palantir as a top-tier enterprise AI platform increases competitive pressure on SAS Intelligent Decisioning in commercial enterprise accounts, particularly in sectors where both compete on operational AI."
         },
         {
-          "title": "Karp Warns Enterprises: Guard AI Training Data Like Treasure",
+          "title": "Karp: AI Labs Chasing Tokens While Enterprises Fear IP Loss",
           "date": "July 2026",
           "source_type": "trade_press",
-          "summary": "Palantir CEO Alex Karp issued a public warning to business leaders that AI models extracting value from enterprise data without compensation is a critical risk, urging data sovereignty. He also publicly criticized OpenAI and Anthropic's token-based model economics.",
-          "sas_impact": "Karp's 'data as treasure' narrative aligns with enterprise risk concerns and may resonate with CISOs and CDOs who are SAS prospects — SAS must counter with its own data governance and model lineage narrative."
+          "summary": "Palantir CEO Alex Karp publicly criticized AI labs for prioritizing token generation over enterprise IP protection, positioning Palantir as the responsible enterprise AI alternative. This narrative directly targets CIO and CDO anxieties around data sovereignty and model trust.",
+          "sas_impact": "Palantir is attempting to own the 'trusted enterprise AI' narrative that SAS has historically led — SAS must aggressively counter with concrete governance and IP protection proof points before this framing takes hold."
         },
         {
-          "title": "Surf Air Mobility Partnership Expansion",
-          "date": "June 2026",
+          "title": "Analysts Call Palantir the 'Oxygen' Behind Enterprise AI",
+          "date": "July 2026",
           "source_type": "trade_press",
-          "summary": "Palantir expanded its partnership with Surf Air Mobility to accelerate commercialization of OperatorOS and OwnerOS enterprise products, demonstrating deployment of AI decisioning in operational and asset-management contexts.",
-          "sas_impact": "Palantir is extending agentic AI decisioning into asset operations and mobility verticals, a signal of cross-industry expansion that could crowd SAS in manufacturing and operational decisioning."
-        },
-        {
-          "title": "Expanding Enterprise Customer Base Drives AI Growth",
-          "date": "June 2026",
-          "source_type": "trade_press",
-          "summary": "Yahoo Finance Singapore reported that Palantir's expanding enterprise customer base is fueling AI platform growth, with commercial revenue accelerating alongside government contracts.",
-          "sas_impact": "Palantir's commercial traction signals it is successfully crossing over from government-only perception to enterprise AI platform — directly competing with SAS in commercial decisioning deals."
+          "summary": "Benzinga reported analyst commentary describing Palantir as foundational infrastructure — the 'oxygen' — for enterprise AI deployments, reinforcing its platform-layer positioning. This metaphor signals an attempt to become the default enterprise AI operating system.",
+          "sas_impact": "If the 'AI infrastructure layer' narrative sticks for Palantir, SAS Intelligent Decisioning risks being positioned as a point solution rather than a strategic platform — a direct threat to enterprise land-and-expand sales motions."
         }
       ],
-      "strategic_posture": "Palantir is executing a two-track expansion: locking in government and defense via sovereign AI infrastructure while aggressively expanding commercial enterprise AI through ontology-driven decisioning and provocative CEO thought leadership.",
+      "strategic_posture": "Palantir is executing a deliberate narrative campaign to own the enterprise AI trust and IP-protection conversation, positioning itself as foundational infrastructure rather than a vertical application.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
-        "trade_press_count": 9
+        "trade_press_count": 3
       }
     },
     {
       "name": "Pegasystems",
       "threat_level": "medium",
-      "headline": "No recent activity detected in monitoring window",
+      "headline": "No recent developments detected this monitoring period",
       "developments": [],
-      "strategic_posture": "Pegasystems continues to invest in Blueprint AI agents and CRM-native decisioning but generated no monitored content in this cycle.",
+      "strategic_posture": "Pegasystems continues to push Blueprint AI agents and Agent Experience with deep CRM-native decisioning, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -84,9 +62,9 @@
     {
       "name": "IBM",
       "threat_level": "medium",
-      "headline": "No recent activity detected in monitoring window",
+      "headline": "No recent developments detected this monitoring period",
       "developments": [],
-      "strategic_posture": "IBM continues positioning watsonx.ai plus ODM and Graph RAG for enterprise decisioning but generated no monitored content in this cycle.",
+      "strategic_posture": "IBM continues to integrate watsonx.ai with ODM and AgentOps, pursuing Graph RAG for grounded generative insights, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -96,9 +74,9 @@
     {
       "name": "FICO",
       "threat_level": "medium",
-      "headline": "No recent activity detected in monitoring window",
+      "headline": "No recent developments detected this monitoring period",
       "developments": [],
-      "strategic_posture": "FICO continues to leverage Decision Optimizer and explainable ML in financial services but generated no monitored content in this cycle.",
+      "strategic_posture": "FICO continues to develop Decision Optimizer with explainable ML challenge models and And-Or Graphs, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -108,9 +86,9 @@
     {
       "name": "Provenir",
       "threat_level": "medium",
-      "headline": "No recent activity detected in monitoring window",
+      "headline": "No recent developments detected this monitoring period",
       "developments": [],
-      "strategic_posture": "Provenir continues expanding its Data Marketplace and champion/challenger testing for fintech but generated no monitored content in this cycle.",
+      "strategic_posture": "Provenir continues to expand its Data Marketplace with 120+ partners and champion/challenger testing for fintech-first decisioning, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -120,9 +98,9 @@
     {
       "name": "ACTICO",
       "threat_level": "low",
-      "headline": "No recent activity detected in monitoring window",
+      "headline": "No recent developments detected this monitoring period",
       "developments": [],
-      "strategic_posture": "ACTICO remains focused on regulatory-constrained decisioning in the DACH region with its Companion AI assistant but generated no monitored content in this cycle.",
+      "strategic_posture": "ACTICO continues to focus on regulatory-constrained decisioning with its Companion AI assistant in the DACH region, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -132,9 +110,9 @@
     {
       "name": "CRIF",
       "threat_level": "low",
-      "headline": "No recent activity detected in monitoring window",
+      "headline": "No recent developments detected this monitoring period",
       "developments": [],
-      "strategic_posture": "CRIF continues building out GenAI Factory and StrategyOne for European credit decisioning but generated no monitored content in this cycle.",
+      "strategic_posture": "CRIF continues to build out its GenAI Factory and StrategyOne with full decision explainability for European credit, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -144,9 +122,9 @@
     {
       "name": "Aera Technology",
       "threat_level": "low",
-      "headline": "No recent activity detected in monitoring window",
+      "headline": "No recent developments detected this monitoring period",
       "developments": [],
-      "strategic_posture": "Aera Technology continues developing its agentic AI Control Room for prescriptive supply chain operations but generated no monitored content in this cycle.",
+      "strategic_posture": "Aera Technology continues to build its agentic AI layer and Control Room for prescriptive supply chain operations, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -156,9 +134,9 @@
     {
       "name": "Quantexa",
       "threat_level": "medium",
-      "headline": "No recent activity detected in monitoring window",
+      "headline": "No recent developments detected this monitoring period",
       "developments": [],
-      "strategic_posture": "Quantexa continues advancing entity graph decisioning with Q Assist LLM copilot and Databricks integration for AML/KYC but generated no monitored content in this cycle.",
+      "strategic_posture": "Quantexa continues to lead in entity graph decisioning with Q Assist LLM copilot and Databricks integration for AML/KYC, but no new activity was captured this cycle.",
       "content_activity": {
         "blog_count": 0,
         "newsroom_count": 0,
@@ -169,107 +147,77 @@
   "recommendations": [
     {
       "priority": "critical",
-      "area": "Sovereign and Regulated AI Deployment",
-      "action": "Develop and publish a SAS Intelligent Decisioning sovereign deployment architecture brief specifically addressing air-gapped, on-premises, and government cloud environments, positioning SAS model governance and audit trails as a differentiator over Palantir's infrastructure-first approach.",
-      "rationale": "Palantir's NVIDIA Nemotron sovereign AI engine launch explicitly targets US government and regulated enterprise — SAS must articulate a comparable secure deployment story or risk ceding public sector AI decisioning to Palantir."
+      "area": "Trusted AI Narrative Ownership",
+      "action": "Launch a multi-channel campaign within 30 days asserting SAS's governance-first AI architecture — publish a technical whitepaper detailing SAS Intelligent Decisioning's model lineage, audit trails, and IP containment architecture with concrete case studies from regulated industries before Palantir's 'responsible enterprise AI' framing solidifies in the analyst community.",
+      "rationale": "Palantir's CEO is actively seeding the narrative that AI labs cannot be trusted with enterprise IP, positioning Palantir as the safe alternative — SAS must respond with documented evidence before this framing displaces SAS's established governance credibility."
     },
     {
       "priority": "critical",
-      "area": "Data Sovereignty and Enterprise AI Narrative",
-      "action": "Launch a CEO or CTO-level thought leadership campaign on enterprise data sovereignty in AI decisioning, directly addressing the concern that third-party AI models extract enterprise value — anchoring SAS on-premises and private cloud deployments as the answer.",
-      "rationale": "Palantir's Karp is winning the narrative war on data sovereignty with enterprise buyers; SAS's model lineage, audit trails, and closed-loop governance are directly relevant but currently under-amplified in this context."
+      "area": "Platform Positioning vs. Point Solution Risk",
+      "action": "Develop an analyst briefing and enterprise-facing solution overview that explicitly frames SAS Intelligent Decisioning as an end-to-end decisioning operating system — from data ingestion through model governance to live decisioning — to directly counter Palantir's 'oxygen/infrastructure layer' positioning.",
+      "rationale": "Analyst commentary calling Palantir the 'oxygen' behind enterprise AI risks relegating SAS to point-solution status in enterprise evaluation frameworks, threatening platform-level budget discussions."
     },
     {
       "priority": "high",
-      "area": "Insurance Vertical Decisioning",
-      "action": "Accelerate production of insurance-specific decisioning content, case studies, and a demo scenario showing SAS Intelligent Decisioning in P&C or life underwriting workflows, directly countering Sapiens Arrow's insurance-native positioning.",
-      "rationale": "Sapiens Arrow Decision Release is generating trade press attention in insurance, a vertical where SAS competes but lacks current insurance-specific decisioning marketing assets."
+      "area": "Competitive Battlecard Refresh",
+      "action": "Update the Palantir battlecard to include a dedicated section on the IP-protection and model governance comparison, with specific feature-level evidence: LIME/SHAP explainability, approval workflows, versioning, and audit trail depth — mapped against what Palantir's AIP Logic actually delivers versus its CEO's narrative claims.",
+      "rationale": "Palantir's public messaging on enterprise IP protection is outpacing its documented product capabilities, and SAS sales teams need factual ammunition to neutralize this narrative in competitive deals."
     },
     {
       "priority": "high",
-      "area": "Ontology and Contextual Decisioning Positioning",
-      "action": "Produce a technical explainer comparing SAS Viya's data and model lineage capabilities against Palantir's ontology-as-backbone narrative, framing SAS governance workflows as providing equivalent contextual grounding with superior explainability for regulated industries.",
-      "rationale": "Third-party coverage is reinforcing Palantir's ontology layer as the essential backbone for enterprise AI decisioning, which risks making SAS's decisioning architecture appear less structured to buyers unfamiliar with SAS Viya's capabilities."
+      "area": "Regulated Industry Differentiation",
+      "action": "Produce a vertical-specific proof point series — one for financial services, one for public sector, one for manufacturing — showing SAS Intelligent Decisioning's audit trail and governance capabilities meeting actual regulatory requirements (Basel, DORA, FedRAMP), directly contrasting with Palantir's government-centric ontology model that lacks native regulatory compliance frameworks for financial services.",
+      "rationale": "Palantir's growing enterprise AI credibility could erode SAS's advantage in regulated verticals if SAS does not reinforce its compliance-ready differentiation with concrete, verifiable proof points."
     },
     {
       "priority": "medium",
-      "area": "Commercial Enterprise Expansion Counter-Narrative",
-      "action": "Equip field teams with a refreshed Palantir battlecard that addresses Palantir's commercial enterprise narrative, including specific win themes around SAS's regulated industry governance, LIME/SHAP explainability, and approval workflow depth versus Palantir's ontology and simulation strengths.",
-      "rationale": "Palantir's expanding commercial customer base signals active pursuit of enterprise AI decisioning deals where SAS has incumbent strength in financial services, insurance, and public sector."
+      "area": "Analyst and Media Engagement",
+      "action": "Brief Gartner, Forrester, and IDC analysts within the next 60 days specifically on SAS Intelligent Decisioning's agentic AI with human-in-the-loop traceability, positioning it against the broader 'enterprise AI infrastructure' category that Palantir is attempting to define — submit for inclusion in relevant 2026 Magic Quadrant and Wave evaluations with updated product evidence.",
+      "rationale": "Third-party analyst validation of Palantir as a top-tier enterprise AI platform in trade press signals that SAS needs proactive analyst engagement to ensure its decisioning governance capabilities are accurately represented in independent evaluations."
     }
   ],
   "market_signals": [
-    "Sovereign AI deployment is becoming a hard requirement in government and regulated enterprise deals",
-    "Data ownership and model value extraction are emerging as C-suite AI governance concerns",
-    "Ontology and structured knowledge layers are reframing how vendors narrate AI trustworthiness",
-    "Insurance-vertical decisioning is seeing new entrants with release-cycle agility as a differentiator",
-    "Enterprise AI platforms are competing on commercial breadth, not just vertical depth"
+    "Enterprise AI trust and IP protection are becoming primary C-suite buying criteria.",
+    "Competitors increasingly frame AI platforms as foundational infrastructure, not applications.",
+    "CEO-level narrative warfare is shaping enterprise AI vendor selection before RFPs launch.",
+    "Third-party financial press amplifying AI platform credibility signals to enterprise buyers.",
+    "Governance and explainability are shifting from differentiators to baseline table stakes."
   ],
   "marketing_actions": [
     {
       "competitor": "Palantir",
-      "trigger": "Palantir launched a sovereign NVIDIA Nemotron AI engine for US agencies and Karp publicly warned enterprises that AI models 'steal' business value by extracting data without compensation.",
+      "trigger": "Palantir CEO Alex Karp publicly attacked AI labs for ignoring enterprise IP protection and analysts labeled Palantir the 'oxygen' behind enterprise AI, attempting to claim the trusted-enterprise-AI narrative that SAS has historically owned.",
       "blog_angle": {
-        "title": "Your AI Shouldn't Know More About Your Business Than You Do: The Case for Governed Decisioning",
-        "hook": "Palantir's CEO is right that enterprise data is treasure — but locking it in a proprietary ontology isn't the only answer. SAS makes the case that model lineage, audit trails, and human-in-the-loop governance deliver data sovereignty without infrastructure lock-in. This post is timely because enterprise CDOs and CISOs are actively asking how to protect IP in AI deployments.",
+        "title": "Your Enterprise AI Platform Should Protect Your IP — Here's How to Actually Verify It",
+        "hook": "Palantir's CEO is right that enterprise IP protection is broken in AI — but bold claims need architectural proof. SAS makes the case that real IP protection requires model lineage, audit trails, and governance workflows, not just messaging, and walks through exactly what to ask any AI vendor.",
         "suggested_tags": [
-          "AI Governance",
-          "Data Sovereignty",
           "Trustworthy AI",
+          "Enterprise AI Governance",
           "Decision Intelligence",
-          "Enterprise AI"
+          "Model Risk Management",
+          "AI Platform Evaluation"
         ]
       },
       "social_talking_points": [
         {
           "platform": "LinkedIn",
           "community": "LinkedIn Decision Intelligence group",
-          "message": "Palantir's Karp is generating headlines calling enterprise data 'treasure' that AI vendors are stealing. He's not wrong about the risk. But the answer isn't just sovereign infrastructure — it's full model lineage, explainability, and human approval workflows so your decisioning platform never becomes a black box you can't audit. The governance layer is the differentiator, not just the deployment environment."
+          "message": "Palantir's CEO made waves this week calling out AI labs for chasing tokens while enterprises fear IP loss. He's not wrong about the problem. But the solution isn't just picking a vendor who says the right things — it's demanding to see the audit trail, the model lineage, the approval workflow. Any platform worth trusting in a regulated environment should be able to show you exactly who changed what model, when, and why. That's the bar."
+        },
+        {
+          "platform": "LinkedIn",
+          "community": "Risk & Compliance Technology professionals",
+          "message": "When analysts start calling a vendor the 'oxygen' behind enterprise AI, it's worth asking: what does their governance stack actually look like under the hood? In regulated industries, the infrastructure question and the compliance question are the same question. Explainability, versioning, and human-in-the-loop oversight aren't features — they're the floor. Make sure your 'foundational' platform meets it."
         },
         {
           "platform": "Reddit",
           "community": "r/MachineLearning",
-          "message": "Interesting to see Palantir's CEO framing AI model economics as value extraction from enterprise data. This maps to a real concern in regulated industries — if your decisioning model is trained or fine-tuned on proprietary customer data, who owns that signal? SHAP/LIME explainability and model lineage tracking are underrated here; they're not just audit tools, they're the mechanism by which enterprises prove they understand what their models are actually doing with their data."
-        },
-        {
-          "platform": "LinkedIn",
-          "community": "LinkedIn AI in Financial Services group",
-          "message": "Palantir is making a strong play in government AI with sovereign NVIDIA Nemotron deployments. For regulated commercial enterprises, the parallel question is: what does 'sovereign AI' mean in a private cloud or on-prem context? It's less about the model weights and more about whether you can trace every decision back to the model version, training data, and approval workflow that produced it. That traceability is where regulated industries need to invest."
+          "message": "Interesting to see the enterprise AI narrative shifting toward IP protection as a selling point. The challenge is most of the claims are at the CEO/marketing level right now. For anyone evaluating enterprise decisioning platforms in a regulated context, the real test is whether the platform has full model lineage tracing, reproducible decisions with audit logs, and governance workflows that satisfy internal model risk committees — not just press releases about taking IP seriously."
         }
       ],
-      "battlecard_flag": "Update Palantir battlecard: add section on SAS vs Palantir sovereign/regulated deployment — contrast SAS's model governance, approval workflows, and LIME/SHAP explainability against Palantir's ontology-based contextual grounding. Add Karp 'data as treasure' counter-narrative talking points for C-suite conversations. Note Palantir's commercial expansion beyond government as a new competitive dimension.",
-      "demo_scenario": "Build a side-by-side demo showing a regulatory decisioning scenario — e.g., fraud adjudication in a financial institution — where SAS Intelligent Decisioning provides a full audit trail from data input through model version to decision outcome and human approval, positioning this as 'sovereign governance' that any regulated enterprise can run in their own environment without proprietary infrastructure dependency.",
-      "demand_gen_hook": "Webinar: 'AI Sovereignty for the Enterprise: Why Governance Beats Infrastructure' — targeting CISOs, CDOs, and compliance leaders in financial services and public sector who are evaluating AI platforms and concerned about data value extraction by third-party AI vendors."
-    },
-    {
-      "competitor": "Sapiens",
-      "trigger": "Sapiens launched Arrow Decision Release, a versioned insurance-specific decisioning product generating trade press coverage in the insurance innovation space.",
-      "blog_angle": {
-        "title": "Insurance Decisioning in 2026: Why Versioning Is Table Stakes and Governance Is the Real Differentiator",
-        "hook": "New insurance-specific decisioning releases are competing on deployment agility and rule versioning — but in a regulated industry where a single bad decision can trigger regulatory action, versioning without governance is just faster risk. SAS argues that the real question is not how fast you can release a decision, but how completely you can explain and audit it. Post this now as Sapiens Arrow generates buzz in the insurance innovation community.",
-        "suggested_tags": [
-          "Insurance Technology",
-          "Decision Intelligence",
-          "AI Governance",
-          "Regulatory Compliance",
-          "Underwriting Automation"
-        ]
-      },
-      "social_talking_points": [
-        {
-          "platform": "LinkedIn",
-          "community": "LinkedIn Insurance Technology Professionals group",
-          "message": "The insurance decisioning market is seeing a wave of new platform launches competing on release velocity and vertical specificity. Worth asking: when you're automating underwriting or claims decisioning, how do you demonstrate to your regulator that the decision made in Q3 was based on the model version approved in Q2 and not something that quietly changed? Versioning is necessary but model lineage and approval workflows are what actually protect carriers in an exam."
-        },
-        {
-          "platform": "Twitter",
-          "community": "InsurTech / AI in Insurance community",
-          "message": "Insurance decisioning platforms are getting crowded. The differentiator isn't the release cadence — it's whether your AI decisions are explainable to an examiner at 9am on a Monday. LIME/SHAP outputs tied to model version history are becoming a baseline expectation in regulated insurance AI."
-        }
-      ],
-      "battlecard_flag": "Create or update Sapiens battlecard section for Arrow Decision Release: highlight SAS's advantage in model lineage, approval workflow depth, and LIME/SHAP explainability for insurance regulatory scenarios. Note Sapiens' Azure OpenAI natural-language rule authoring as a usability strength to acknowledge but counter with SAS's governance depth for lines of business subject to state/federal insurance regulation.",
-      "demo_scenario": "Develop an insurance underwriting decisioning demo showing SAS Intelligent Decisioning with a complete workflow from rule authoring through model integration, version approval, and post-decision explainability report — positioning the audit trail as a regulatory examination readiness asset that Sapiens Arrow cannot match.",
-      "demand_gen_hook": "Whitepaper: 'The Governance Gap in Insurance Decisioning: What Carriers Risk When They Optimize for Speed Over Auditability' — targeted at Chief Actuaries, Chief Risk Officers, and IT leaders at P&C and life carriers evaluating automated decisioning platforms."
+      "battlecard_flag": "Add new section to Palantir battlecard: 'Governance vs. Narrative' — document Palantir AIP Logic's actual audit trail and explainability capabilities versus CEO-stated IP protection claims; map SAS's LIME/SHAP explainability, model versioning, approval workflows, and audit trails against Palantir feature-by-feature; include specific regulated industry (banking, insurance, federal civilian) compliance framework support comparison.",
+      "demo_scenario": "Build a live demo scenario showing a SAS Intelligent Decisioning model update in a fraud detection workflow: trigger a model change, capture the full audit trail with who approved it and why, run SHAP explainability on the decision output, and show the complete lineage from dev to prod — framed as 'this is what IP protection actually looks like in production.'",
+      "demand_gen_hook": "Webinar: 'The Enterprise AI Trust Audit — 10 Questions Your AI Platform Should Be Able to Answer Before You Deploy' — targets risk officers and CDOs evaluating AI platforms, positioned as a vendor-neutral framework that SAS Intelligent Decisioning demonstrably satisfies."
     }
   ]
 }
