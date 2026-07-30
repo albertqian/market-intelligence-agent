@@ -1,10 +1,11 @@
 """
-fetch_intel.py — SAS Competitive Intelligence Feed
+fetch_intel.py — SAS Competitive Intelligence Feed (Battlecard Edition)
 
 Usage:
-    python fetch_intel.py              # full run
-    python fetch_intel.py --dry-run    # fetch feeds only, skip Claude + email
-    python fetch_intel.py --hours 168  # extend lookback window
+    python fetch_intel.py                  # regular weekly run
+    python fetch_intel.py --baseline       # one-time baseline run from Claude knowledge
+    python fetch_intel.py --dry-run        # fetch feeds only, skip Claude + email
+    python fetch_intel.py --hours 168      # extend lookback window
     python fetch_intel.py --file report.pdf  # attach context document
 """
 
@@ -24,10 +25,9 @@ from config import COMPETITORS, FEED_USER_AGENT, SYSTEM_PROMPT
 
 load_dotenv()
 
-FEED_FILE = "intel_feed.json"
-LOOKBACK_HOURS = 80
-MAX_ITEMS_PER_FEED = 8
-MAX_ITEMS_PER_COMPETITOR = 15
+FEED_FILE      = "intel_feed.json"
+BASELINE_FILE  = "intel_baseline.json"
+LOOKBACK_HOURS = 168  # one week — matches Monday-only cadence
 
 SOURCE_LABELS = {
     "blog":     "📝 Thought Leadership",
@@ -35,21 +35,9 @@ SOURCE_LABELS = {
     "google":   "📰 Trade Press",
 }
 
-SOURCE_ICONS = {
-    "blog":        ("📝", "Thought Leadership",   "#2563eb"),
-    "newsroom":    ("📣", "Product / Co. Update", "#7c3aed"),
-    "trade_press": ("📰", "Trade Press",          "#0891b2"),
-}
-
-PLATFORM_ICONS = {
-    "LinkedIn": "💼",
-    "Reddit":   "🔴",
-    "Twitter":  "𝕏",
-}
-
-PRI_COLORS = {"critical": "#dc2626", "high": "#d97706", "medium": "#2563eb"}
+THREAT_ORDER  = {"high": 0, "medium": 1, "low": 2}
 THREAT_LABELS = {"high": "🔴 HIGH", "medium": "🟡 MED", "low": "🟢 LOW"}
-THREAT_ORDER = {"high": 0, "medium": 1, "low": 2}
+THREAT_COLORS = {"high": "#dc2626", "medium": "#d97706", "low": "#16a34a"}
 
 
 # ── RSS FETCHING ──────────────────────────────────────────────────────────────
@@ -69,7 +57,7 @@ def fetch_feed(url: str, feed_type: str, cutoff: datetime) -> list[dict]:
         if status in (403, 404, 410):
             print(f"      ↳ HTTP {status}: {url[:65]}")
             return []
-        for entry in feed.entries[:MAX_ITEMS_PER_FEED]:
+        for entry in feed.entries[:8]:
             pub = entry.get("published_parsed") or entry.get("updated_parsed")
             if pub:
                 pub_dt = datetime(*pub[:6], tzinfo=timezone.utc)
@@ -116,35 +104,10 @@ def fetch_competitor_items(competitor: dict, hours: int) -> list[dict]:
             seen.add(key)
             deduped.append(item)
 
-    return deduped[:MAX_ITEMS_PER_COMPETITOR]
+    return deduped[:15]
 
 
 # ── CLAUDE ANALYSIS ───────────────────────────────────────────────────────────
-
-def build_prompt(all_items: dict, context_files: list | None) -> str:
-    lines = [
-        "Recent RSS items from SAS Intelligent Decisioning competitors.",
-        "Each item tagged: blog | newsroom | google\n",
-    ]
-    for comp_name, items in all_items.items():
-        lines.append(f"## {comp_name}")
-        if not items:
-            lines.append("No recent articles found.\n")
-            continue
-        for item in items:
-            lines.append(
-                f"- [{item['source_type'].upper()}] {item['title']} ({item['published']})"
-            )
-            if item["summary"]:
-                lines.append(f"  {item['summary'][:350]}")
-        lines.append("")
-    if context_files:
-        lines.append("\n## Additional Context Documents")
-        for p in context_files:
-            lines.append(f"- {p} (attached)")
-    lines.append("\nReturn only the JSON. No preamble.")
-    return "\n".join(lines)
-
 
 def parse_json(raw: str) -> dict:
     raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
@@ -154,12 +117,179 @@ def parse_json(raw: str) -> dict:
         start, end = raw.find("{"), raw.rfind("}")
         if start != -1 and end != -1:
             return json.loads(raw[start:end + 1])
-        raise ValueError(f"Could not parse JSON from response:\n{raw[:400]}")
+        raise ValueError(f"Could not parse JSON:\n{raw[:400]}")
 
 
-def run_claude_analysis(all_items: dict, context_files: list | None = None) -> dict:
+def call_claude(prompt: str, system: str) -> str:
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    prompt_text = build_prompt(all_items, context_files)
+    response = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=8192,
+        system=system,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    if response.stop_reason == "max_tokens":
+        print("  ⚠ Response truncated — retrying in concise mode...")
+        response = client.messages.create(
+            model="claude-sonnet-4-6",
+            max_tokens=8192,
+            system=system,
+            messages=[{"role": "user", "content": prompt + (
+                "\n\nIMPORTANT: Be very concise. 1 sentence per field. "
+                "Max 1 blog suggestion per competitor. Return only the JSON."
+            )}],
+        )
+    return response.content[0].text
+
+
+# ── BASELINE RUN ──────────────────────────────────────────────────────────────
+
+BASELINE_SYSTEM = """You are a senior competitive intelligence strategist at SAS.
+
+Generate a complete baseline battlecard for each of these 10 SAS Intelligent Decisioning competitors, based entirely on your training knowledge up to your cutoff date.
+
+SAS Intelligent Decisioning context:
+- Native SAS Viya integration: enterprise ML, statistical models, Python/R workflows
+- Agentic AI with human-in-the-loop oversight; fully traceable agent actions
+- Trustworthy AI: LIME/SHAP explainability, model lineage, audit trails
+- End-to-end lifecycle: dev to test to prod, versioning, governance, approval workflows
+- Industries: fraud detection, customer engagement, manufacturing, public sector
+- Strengths: governance, explainability, regulated industry trust, enterprise scale
+- Known gaps: no native knowledge graph (vs Quantexa); less fintech-native than Provenir/CRIF
+
+Competitors to cover:
+Sapiens, Palantir, Pegasystems, IBM, FICO, Provenir, ACTICO, CRIF, Aera Technology, Quantexa
+
+Return ONLY valid JSON. No markdown fences, no preamble.
+
+JSON schema:
+{
+  "generated_at": "<ISO 8601 timestamp>",
+  "type": "baseline",
+  "competitors": [
+    {
+      "name": "<exact name>",
+      "segment": "<market segment>",
+      "threat_level": "<high | medium | low>",
+      "battlecard": {
+        "tab1_approach_to_market": {
+          "market_strategy": "<current go-to-market direction>",
+          "customers": "<key customer segments and notable reference customers>",
+          "verticals_served": "<industries actively targeted>",
+          "partners": "<key technology and channel partners>"
+        },
+        "tab2_top_3_things_to_know": [
+          "<most important fact for a sales rep #1>",
+          "<most important fact for a sales rep #2>",
+          "<most important fact for a sales rep #3>"
+        ],
+        "tab3_product_claims": {
+          "overview": "<product summary, 2-3 sentences>",
+          "key_claims": ["<major capability claim>"],
+          "pricing_model": "<pricing approach if known, else null>"
+        },
+        "tab4_strengths_weaknesses": {
+          "strengths": ["<strength relative to SAS ID>"],
+          "weaknesses": ["<exploitable weakness relative to SAS ID>"],
+          "differentiators": "<what genuinely sets them apart from SAS>"
+        },
+        "tab5_sales_strategies": {
+          "what_to_attack": "<where SAS wins against this competitor>",
+          "what_to_defend": "<where this competitor attacks SAS>",
+          "trap_questions": [
+            "<question that reveals this competitor weakness>",
+            "<second trap question>"
+          ]
+        }
+      }
+    }
+  ]
+}
+
+Be thorough and specific — this is the foundation every future weekly update will be compared against.
+Accuracy matters more than brevity here. Use everything you know.
+"""
+
+
+def run_baseline() -> dict:
+    print("\nGenerating baseline battlecards from Claude training knowledge...")
+    print("(This may take 60-90 seconds — Claude is writing full profiles for all 10 competitors)\n")
+
+    prompt = (
+        "Generate complete baseline battlecards for all 10 SAS Intelligent Decisioning competitors: "
+        "Sapiens, Palantir, Pegasystems, IBM, FICO, Provenir, ACTICO, CRIF, Aera Technology, Quantexa.\n\n"
+        "Be thorough. This is the foundation all future weekly updates will be compared against.\n\n"
+        "Return only the JSON."
+    )
+
+    raw = call_claude(prompt, BASELINE_SYSTEM)
+    data = parse_json(raw)
+    data["generated_at"] = datetime.now(timezone.utc).isoformat()
+    data["type"] = "baseline"
+    return data
+
+
+# ── WEEKLY DELTA RUN ──────────────────────────────────────────────────────────
+
+def load_baseline() -> dict | None:
+    try:
+        with open(BASELINE_FILE, encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return None
+
+
+def build_delta_prompt(all_items: dict, baseline: dict | None, context_files: list | None) -> str:
+    lines = [
+        "TASK: Analyze new RSS articles from SAS Intelligent Decisioning competitors.",
+        "Compare against the baseline knowledge provided.",
+        "Only flag things that are GENUINELY NEW or CHANGED vs the baseline.",
+        "Do not re-summarize stable, known facts.\n",
+    ]
+
+    if baseline:
+        lines.append("## BASELINE KNOWLEDGE (what we already know — do not repeat this)")
+        for comp in baseline.get("competitors", []):
+            bc = comp.get("battlecard", {})
+            tab3 = bc.get("tab3_product_claims", {})
+            lines.append(
+                f"- {comp['name']}: "
+                f"{tab3.get('overview', 'No baseline overview.')}"
+            )
+        lines.append("")
+
+    lines.append("## NEW RSS ARTICLES THIS WEEK\n")
+    for comp_name, items in all_items.items():
+        lines.append(f"### {comp_name}")
+        if not items:
+            lines.append("No new articles found this week.\n")
+            continue
+        for item in items:
+            lines.append(
+                f"- [{item['source_type'].upper()}] {item['title']} ({item['published']})"
+            )
+            if item["summary"]:
+                lines.append(f"  {item['summary'][:350]}")
+        lines.append("")
+
+    if context_files:
+        lines.append("## Additional Context Documents")
+        for p in context_files:
+            lines.append(f"- {p} (attached)")
+
+    lines.append("\nReturn only the JSON. No preamble.")
+    return "\n".join(lines)
+
+
+def run_delta_analysis(all_items: dict, context_files: list | None = None) -> dict:
+    baseline = load_baseline()
+    if baseline:
+        print(f"  ✓ Baseline loaded ({baseline.get('generated_at','unknown date')[:10]})")
+    else:
+        print("  ⚠ No baseline found — running without delta comparison.")
+        print("    Tip: run 'python fetch_intel.py --baseline' to generate one.\n")
+
+    prompt_text = build_delta_prompt(all_items, baseline, context_files)
     message_content = [{"type": "text", "text": prompt_text}]
 
     for path in (context_files or []):
@@ -179,8 +309,9 @@ def run_claude_analysis(all_items: dict, context_files: list | None = None) -> d
             })
             print(f"  Attached: {path}")
         except Exception as e:
-            print(f"  Warning — could not attach {path}: {e}")
+            print(f"  Warning: could not attach {path}: {e}")
 
+    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     response = client.messages.create(
         model="claude-sonnet-4-6",
         max_tokens=8192,
@@ -190,15 +321,15 @@ def run_claude_analysis(all_items: dict, context_files: list | None = None) -> d
 
     if response.stop_reason == "max_tokens":
         print("  ⚠ Response truncated — retrying in concise mode...")
-        concise_text = prompt_text + (
-            "\n\nIMPORTANT: Be very concise. Max 1 development per competitor, "
-            "1 sentence each. Max 3 marketing actions total. Return only the JSON."
+        concise = prompt_text + (
+            "\n\nIMPORTANT: Be very concise. 1 sentence per field. "
+            "Max 1 blog suggestion per competitor. Return only the JSON."
         )
         response = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=8192,
             system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": [{"type": "text", "text": concise_text}]}],
+            messages=[{"role": "user", "content": [{"type": "text", "text": concise}]}],
         )
 
     return parse_json(response.content[0].text)
@@ -206,7 +337,7 @@ def run_claude_analysis(all_items: dict, context_files: list | None = None) -> d
 
 # ── JSON OUTPUT ───────────────────────────────────────────────────────────────
 
-def save_json(data: dict, path: str = FEED_FILE) -> None:
+def save_json(data: dict, path: str) -> None:
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     print(f"✓ Saved → {path}")
@@ -214,219 +345,348 @@ def save_json(data: dict, path: str = FEED_FILE) -> None:
 
 # ── EMAIL BUILDER ─────────────────────────────────────────────────────────────
 
-def _card(content: str, border_color: str = "#e2e8f0", bg: str = "#f8fafc") -> str:
+def _td(content: str, align: str = "left", color: str = "") -> str:
+    style = (
+        f"padding:8px 10px;border:1px solid #e2e8f0;"
+        f"vertical-align:top;text-align:{align};"
+    )
+    if color:
+        style += f"color:{color};"
+    return f"<td style='{style}'>{content}</td>"
+
+
+def _th(content: str, align: str = "left") -> str:
     return (
-        f"<div style='border-left:3px solid {border_color};"
-        f"padding:10px 14px;margin-bottom:12px;background:{bg}'>"
-        f"{content}</div>"
+        f"<th style='padding:8px 10px;border:1px solid #e2e8f0;background:#f1f5f9;"
+        f"text-align:{align};font-size:11px;letter-spacing:.5px;color:#475569'>"
+        f"{content}</th>"
     )
 
 
-def _h2(text: str) -> str:
-    return f"<h2 style='color:#1e40af;margin-top:28px;margin-bottom:12px'>{text}</h2>"
+def _section(title: str, content: str) -> str:
+    return (
+        f"<h2 style='color:#1e40af;margin-top:28px;margin-bottom:10px;font-size:16px'>"
+        f"{title}</h2>{content}"
+    )
 
 
-def build_email_html(data: dict) -> str:
+def _changed_badge(changed: bool) -> str:
+    if changed:
+        return "<span style='color:#dc2626;font-size:10px;font-weight:bold'>▲ CHANGED</span>"
+    return "<span style='color:#94a3b8;font-size:10px'>— stable</span>"
+
+
+def _ul(items: list) -> str:
+    if not items:
+        return "<span style='color:#94a3b8;font-size:12px'>None noted</span>"
+    lis = "".join(f"<li style='margin-bottom:3px'>{i}</li>" for i in items if i)
+    return f"<ul style='margin:4px 0;padding-left:16px;font-size:12px'>{lis}</ul>"
+
+
+def build_baseline_email_html(data: dict) -> str:
+    generated = data.get("generated_at", "")
+    competitors = data.get("competitors", [])
+    competitors_sorted = sorted(
+        competitors,
+        key=lambda c: THREAT_ORDER.get(c.get("threat_level", "low"), 2),
+    )
+
+    cards = ""
+    for c in competitors_sorted:
+        threat = c.get("threat_level", "low")
+        color = THREAT_COLORS.get(threat, "#16a34a")
+        bc = c.get("battlecard", {})
+        tab1 = bc.get("tab1_approach_to_market", {})
+        tab2 = bc.get("tab2_top_3_things_to_know", [])
+        tab3 = bc.get("tab3_product_claims", {})
+        tab4 = bc.get("tab4_strengths_weaknesses", {})
+        tab5 = bc.get("tab5_sales_strategies", {})
+
+        rows = (
+            f"<tr style='background:#fafafa'>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;width:28%;vertical-align:top'>"
+            f"<strong>Tab 1 — Approach to Market</strong></td>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
+            f"<strong>Strategy:</strong> {tab1.get('market_strategy','—')}<br>"
+            f"<strong>Customers:</strong> {tab1.get('customers','—')}<br>"
+            f"<strong>Verticals:</strong> {tab1.get('verticals_served','—')}<br>"
+            f"<strong>Partners:</strong> {tab1.get('partners','—')}"
+            f"</td></tr>"
+
+            f"<tr>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
+            f"<strong>Tab 2 — Top 3 Things to Know</strong></td>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0'>{_ul(tab2)}</td></tr>"
+
+            f"<tr style='background:#fafafa'>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
+            f"<strong>Tab 3 — Product Claims</strong></td>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
+            f"{tab3.get('overview','—')}<br><br>"
+            f"<strong>Key Claims:</strong>{_ul(tab3.get('key_claims',[]))}"
+            f"</td></tr>"
+
+            f"<tr>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
+            f"<strong>Tab 4 — Strengths &amp; Weaknesses</strong></td>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
+            f"<strong>Strengths:</strong>{_ul(tab4.get('strengths',[]))}"
+            f"<strong>Weaknesses:</strong>{_ul(tab4.get('weaknesses',[]))}"
+            f"<strong>Differentiator:</strong> <em>{tab4.get('differentiators','—')}</em>"
+            f"</td></tr>"
+
+            f"<tr style='background:#fafafa'>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
+            f"<strong>Tab 5 — Sales Strategies</strong></td>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
+            f"<strong style='color:#16a34a'>⚔ Attack:</strong> {tab5.get('what_to_attack','—')}<br><br>"
+            f"<strong style='color:#dc2626'>🛡 Defend:</strong> {tab5.get('what_to_defend','—')}<br><br>"
+            f"<strong>Trap Questions:</strong>{_ul(tab5.get('trap_questions',[]))}"
+            f"</td></tr>"
+        )
+
+        cards += (
+            f"<div style='margin-bottom:28px;border:1px solid {color};border-top:3px solid {color}'>"
+            f"<div style='padding:10px 14px;background:#f8fafc'>"
+            f"<strong style='color:{color};font-size:15px'>{c['name']}</strong>"
+            f" &nbsp; {THREAT_LABELS.get(threat,'')} &nbsp;"
+            f"<span style='color:#64748b;font-size:12px'>{c.get('segment','')}</span>"
+            f"</div>"
+            f"<table style='width:100%;border-collapse:collapse;font-size:12px'>{rows}</table>"
+            f"</div>"
+        )
+
+    return (
+        "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;"
+        "max-width:820px;margin:0 auto;padding:28px;color:#1e293b'>"
+        "<h1 style='color:#1e40af;margin-bottom:2px'>SAS Intelligent Decisioning</h1>"
+        "<h2 style='font-weight:normal;color:#64748b;margin-top:0;font-size:15px'>"
+        "Competitive Baseline Battlecards</h2>"
+        "<div style='background:#fef3c7;border:1px solid #f59e0b;padding:10px 14px;"
+        "font-size:12px;margin-bottom:20px'>"
+        "📚 <strong>This is your baseline.</strong> Generated from Claude's training knowledge. "
+        "All future weekly digests will compare against this and only surface what has changed."
+        "</div>"
+        f"<p style='color:#94a3b8;font-size:11px;border-bottom:1px solid #e2e8f0;"
+        f"padding-bottom:14px'>Generated: {generated}</p>"
+        + cards
+        + "<hr style='border:none;border-top:1px solid #e2e8f0;margin:28px 0'>"
+        "<p style='font-size:11px;color:#94a3b8'>"
+        "SAS Intel Feed &middot; Baseline Run &middot; Powered by Claude</p>"
+        "</body></html>"
+    )
+
+
+def build_delta_email_html(data: dict) -> str:
     generated = data.get("generated_at", "")
     sections = []
 
-    # ── Market Signals ────────────────────────────────────────────────────────
     signals = data.get("market_signals", [])
     if signals:
-        bullets = "".join(f"<li style='margin-bottom:6px'>{s}</li>" for s in signals)
+        bullets = "".join(
+            f"<li style='margin-bottom:5px;font-size:13px'>{s}</li>" for s in signals
+        )
         sections.append(
-            _h2("📡 Market Signals")
-            + f"<ul style='padding-left:20px;margin:0'>{bullets}</ul>"
+            _section("📡 Market Signals", f"<ul style='padding-left:18px'>{bullets}</ul>")
         )
 
-    # ── Competitor Snapshot ───────────────────────────────────────────────────
     competitors = sorted(
         data.get("competitors", []),
         key=lambda c: THREAT_ORDER.get(c.get("threat_level", "low"), 2),
     )
 
-    rows = ""
+    # Summary table
+    summary_rows = ""
     for c in competitors:
-        label = THREAT_LABELS.get(c.get("threat_level", "low"), "🟢 LOW")
+        threat = c.get("threat_level", "low")
+        color = THREAT_COLORS.get(threat, "#16a34a")
         act = c.get("content_activity", {})
-        act_str = (
-            f"📝 {act.get('blog_count', 0)}&nbsp;"
-            f"📣 {act.get('newsroom_count', 0)}&nbsp;"
-            f"📰 {act.get('trade_press_count', 0)}"
+        has_updates = c.get("has_updates", False)
+        bc = c.get("battlecard", {})
+        tab1 = bc.get("tab1_approach_to_market", {})
+        tab3 = bc.get("tab3_product_claims", {})
+        update_flag = (
+            "<span style='color:#dc2626;font-weight:bold'>▲ Updated</span>"
+            if has_updates else
+            "<span style='color:#94a3b8'>— No change</span>"
         )
-        rows += (
+        activity = (
+            f"📝{act.get('blog_count',0)} "
+            f"📣{act.get('newsroom_count',0)} "
+            f"📰{act.get('trade_press_count',0)}"
+        )
+        summary_rows += (
             f"<tr>"
-            f"<td style='padding:10px;border:1px solid #e2e8f0;vertical-align:top'>"
-            f"<strong>{c['name']}</strong><br>"
-            f"<span style='color:#6b7280;font-size:11px'>{c.get('strategic_posture', '')}</span></td>"
-            f"<td style='padding:10px;border:1px solid #e2e8f0'>{c.get('headline', '—')}</td>"
-            f"<td style='padding:10px;border:1px solid #e2e8f0;text-align:center;font-size:11px'>{act_str}</td>"
-            f"<td style='padding:10px;border:1px solid #e2e8f0;text-align:center'>{label}</td>"
-            f"</tr>"
+            + _td(
+                f"<strong style='color:{color}'>{c['name']}</strong><br>"
+                f"<span style='font-size:11px;color:#64748b'>{c.get('segment','')}</span>"
+            )
+            + _td(THREAT_LABELS.get(threat, "🟢 LOW"), align="center")
+            + _td(update_flag, align="center")
+            + _td(_changed_badge(tab1.get("changed", False)), align="center")
+            + _td(_changed_badge(tab3.get("changed", False)), align="center")
+            + _td(activity, align="center")
+            + "</tr>"
         )
 
     sections.append(
-        _h2("Competitor Snapshot")
-        + f"<table style='width:100%;border-collapse:collapse;font-size:13px'>"
-        f"<thead><tr style='background:#f8fafc'>"
-        f"<th style='padding:10px;border:1px solid #e2e8f0;text-align:left'>Competitor</th>"
-        f"<th style='padding:10px;border:1px solid #e2e8f0;text-align:left'>Latest Development</th>"
-        f"<th style='padding:10px;border:1px solid #e2e8f0;text-align:center'>Activity</th>"
-        f"<th style='padding:10px;border:1px solid #e2e8f0'>Threat</th>"
-        f"</tr></thead><tbody>{rows}</tbody></table>"
-        f"<p style='font-size:11px;color:#94a3b8;margin-top:6px'>"
-        f"📝 Blog &nbsp;·&nbsp; 📣 Press / Product &nbsp;·&nbsp; 📰 Trade Press</p>"
+        _section("Competitor Snapshot",
+            "<table style='width:100%;border-collapse:collapse;font-size:12px'>"
+            "<thead><tr>"
+            + _th("Competitor")
+            + _th("Threat", align="center")
+            + _th("Updates", align="center")
+            + _th("Market Approach", align="center")
+            + _th("Product Claims", align="center")
+            + _th("Activity", align="center")
+            + "</tr></thead>"
+            + f"<tbody>{summary_rows}</tbody></table>"
+            + "<p style='font-size:11px;color:#94a3b8;margin-top:4px'>"
+            + "📝 Blog &nbsp;·&nbsp; 📣 Press &nbsp;·&nbsp; 📰 Trade Press</p>"
+        )
     )
 
-    # ── High Threat Detail ────────────────────────────────────────────────────
-    high_threat = [c for c in competitors if c.get("threat_level") == "high"]
-    if high_threat:
-        dev_html = ""
-        for c in high_threat:
-            dev_html += f"<h3 style='color:#dc2626;margin-bottom:6px'>🔴 {c['name']}</h3>"
-            for dev in c.get("developments", []):
-                src = dev.get("source_type", "google")
-                icon, lbl, color = SOURCE_ICONS.get(src, ("📰", "Trade Press", "#0891b2"))
-                dev_html += _card(
-                    f"<span style='font-size:11px;color:{color};font-weight:bold'>{icon} {lbl}</span><br>"
-                    f"<strong style='font-size:13px'>{dev.get('title', '')}</strong> "
-                    f"<span style='color:#94a3b8;font-size:11px'>{dev.get('date', '')}</span><br>"
-                    f"<span style='font-size:13px'>{dev.get('summary', '')}</span><br>"
-                    f"<span style='font-size:12px;color:#d97706'>"
-                    f"<strong>SAS Impact:</strong> {dev.get('sas_impact', '')}</span>",
-                    border_color=color,
-                )
-        sections.append(_h2("High Threat — Detail") + dev_html)
+    # Battlecard detail — only updated competitors
+    updated = [c for c in competitors if c.get("has_updates")]
+    if updated:
+        detail_html = ""
+        for c in updated:
+            threat = c.get("threat_level", "low")
+            color = THREAT_COLORS.get(threat, "#16a34a")
+            bc = c.get("battlecard", {})
+            tab1 = bc.get("tab1_approach_to_market", {})
+            tab2 = bc.get("tab2_top_3_things_to_know", [])
+            tab3 = bc.get("tab3_product_claims", {})
+            tab4 = bc.get("tab4_strengths_weaknesses", {})
+            tab5 = bc.get("tab5_sales_strategies", {})
 
-    # ── Strategic Recommendations ─────────────────────────────────────────────
-    recs = data.get("recommendations", [])
-    if recs:
-        rec_html = ""
-        for r in recs:
-            color = PRI_COLORS.get(r.get("priority", "medium"), "#2563eb")
-            rec_html += (
-                f"<li style='margin-bottom:14px'>"
-                f"<span style='color:{color};font-weight:bold'>[{r.get('priority','').upper()}]</span> "
-                f"<strong>{r.get('area', '')}</strong><br>"
-                f"<span style='font-size:13px'>{r.get('action', '')}</span><br>"
-                f"<em style='color:#6b7280;font-size:12px'>{r.get('rationale', '')}</em>"
-                f"</li>"
+            new_claims = tab3.get("new_claims", [])
+            pricing = tab3.get("pricing_signals")
+
+            rows = (
+                f"<tr style='background:#fafafa'>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;width:28%;vertical-align:top'>"
+                f"<strong>Tab 1 — Approach to Market</strong><br>{_changed_badge(tab1.get('changed',False))}</td>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
+                f"<strong>Strategy:</strong> {tab1.get('market_strategy','—')}<br>"
+                f"<strong>Customers:</strong> {tab1.get('customers','—')}<br>"
+                f"<strong>Verticals:</strong> {tab1.get('verticals_served','—')}<br>"
+                f"<strong>Partners:</strong> {tab1.get('partners','—')}"
+                f"</td></tr>"
+
+                f"<tr>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
+                f"<strong>Tab 2 — Top 3 to Know</strong></td>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0'>{_ul(tab2)}</td></tr>"
+
+                f"<tr style='background:#fafafa'>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
+                f"<strong>Tab 3 — Product Claims</strong><br>{_changed_badge(tab3.get('changed',False))}</td>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
+                f"{tab3.get('overview','—')}"
+                + (f"<br><br><strong>New This Week:</strong>{_ul(new_claims)}" if new_claims else "")
+                + (f"<br><strong>Pricing Signal:</strong> {pricing}" if pricing else "")
+                + "</td></tr>"
+
+                f"<tr>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
+                f"<strong>Tab 4 — Strengths &amp; Weaknesses</strong></td>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
+                f"<strong>Strengths:</strong>{_ul(tab4.get('strengths',[]))}"
+                f"<strong>Weaknesses:</strong>{_ul(tab4.get('weaknesses',[]))}"
+                f"<em style='font-size:12px'>{tab4.get('differentiators','')}</em>"
+                f"</td></tr>"
+
+                f"<tr style='background:#fafafa'>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
+                f"<strong>Tab 5 — Sales Strategies</strong></td>"
+                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
+                f"<strong style='color:#16a34a'>⚔ Attack:</strong> {tab5.get('what_to_attack','—')}<br><br>"
+                f"<strong style='color:#dc2626'>🛡 Defend:</strong> {tab5.get('what_to_defend','—')}<br><br>"
+                f"<strong>Trap Questions:</strong>{_ul(tab5.get('trap_questions',[]))}"
+                f"</td></tr>"
             )
+
+            detail_html += (
+                f"<div style='margin-bottom:24px;border:1px solid {color};border-top:3px solid {color}'>"
+                f"<div style='padding:8px 12px;background:#f8fafc'>"
+                f"<strong style='color:{color};font-size:14px'>{c['name']}</strong>"
+                f" &nbsp; {THREAT_LABELS.get(threat,'')} &nbsp;"
+                f"<span style='color:#64748b;font-size:12px'>{c.get('segment','')}</span>"
+                f"</div>"
+                f"<table style='width:100%;border-collapse:collapse;font-size:12px'>{rows}</table>"
+                f"</div>"
+            )
+
+        sections.append(_section("📋 What Changed This Week", detail_html))
+    else:
         sections.append(
-            _h2("Strategic Recommendations")
-            + f"<ol style='padding-left:20px'>{rec_html}</ol>"
+            _section(
+                "📋 What Changed This Week",
+                "<p style='color:#64748b;font-size:13px'>"
+                "No significant changes detected vs baseline this week.</p>"
+            )
         )
 
-    # ── Marketing Actions ─────────────────────────────────────────────────────
-    actions = data.get("marketing_actions", [])
-    if actions:
-        actions_html = ""
-        for action in actions:
-            comp = action.get("competitor", "")
-            trigger = action.get("trigger", "")
-            blog = action.get("blog_angle", {})
-            socials = action.get("social_talking_points", [])
-            battlecard = action.get("battlecard_flag")
-            demo = action.get("demo_scenario", "")
-            demand_gen = action.get("demand_gen_hook", "")
-
-            inner = f"<strong style='font-size:14px'>↳ {comp}</strong><br>"
-            inner += f"<em style='color:#6b7280;font-size:12px'>Trigger: {trigger}</em>"
-
-            # Blog angle
-            if blog:
-                tags_html = " ".join(
-                    f"<span style='background:#dbeafe;color:#1e40af;font-size:10px;"
-                    f"padding:2px 6px;border-radius:3px;margin-right:4px'>{t}</span>"
-                    for t in blog.get("suggested_tags", [])
+    # Blog suggestions
+    all_blogs = [
+        (c["name"], b)
+        for c in competitors
+        for b in c.get("blog_suggestions", [])
+        if b.get("title")
+    ]
+    if all_blogs:
+        blog_rows = ""
+        for comp_name, b in all_blogs:
+            blog_rows += (
+                f"<tr>"
+                + _td(f"<em style='color:#64748b;font-size:11px'>{comp_name}</em>")
+                + _td(
+                    f"<strong style='font-size:13px'>{b.get('title','')}</strong><br>"
+                    f"<span style='font-size:12px;color:#374151'>{b.get('angle','')}</span>"
                 )
-                inner += (
-                    f"<div style='margin-top:10px'>"
-                    f"<span style='font-size:11px;font-weight:bold;color:#1e40af'>📝 BLOG ANGLE</span><br>"
-                    f"<strong style='font-size:13px'>{blog.get('title', '')}</strong><br>"
-                    f"<span style='font-size:12px;color:#374151'>{blog.get('hook', '')}</span><br>"
-                    f"<div style='margin-top:5px'>{tags_html}</div>"
-                    f"</div>"
-                )
+                + _td(f"<span style='font-size:11px;color:#6366f1'>{b.get('why_now','')}</span>")
+                + "</tr>"
+            )
+        sections.append(
+            _section("✍️ Suggested Blog Posts",
+                "<table style='width:100%;border-collapse:collapse;font-size:12px'>"
+                "<thead><tr>"
+                + _th("In Response To")
+                + _th("Suggested Title &amp; Angle")
+                + _th("Why Now")
+                + "</tr></thead>"
+                + f"<tbody>{blog_rows}</tbody></table>"
+                + "<p style='font-size:11px;color:#94a3b8;margin-top:6px'>"
+                + "Posts do not name competitors directly.</p>"
+            )
+        )
 
-            # Social talking points
-            if socials:
-                social_html = ""
-                for s in socials:
-                    platform = s.get("platform", "")
-                    p_icon = PLATFORM_ICONS.get(platform, "💬")
-                    social_html += (
-                        f"<div style='margin-bottom:8px'>"
-                        f"<span style='font-size:11px;font-weight:bold;color:#374151'>"
-                        f"{p_icon} {platform}</span>"
-                        f"<span style='font-size:11px;color:#6b7280'> · {s.get('community', '')}</span><br>"
-                        f"<span style='font-size:12px;color:#374151'>{s.get('message', '')}</span>"
-                        f"</div>"
-                    )
-                inner += (
-                    f"<div style='margin-top:10px'>"
-                    f"<span style='font-size:11px;font-weight:bold;color:#1e40af'>💬 SOCIAL TALKING POINTS</span><br>"
-                    f"<div style='margin-top:6px'>{social_html}</div>"
-                    f"</div>"
-                )
-
-            # Demo scenario
-            if demo:
-                inner += (
-                    f"<div style='margin-top:10px'>"
-                    f"<span style='font-size:11px;font-weight:bold;color:#1e40af'>🎯 DEMO SCENARIO</span><br>"
-                    f"<span style='font-size:12px;color:#374151'>{demo}</span>"
-                    f"</div>"
-                )
-
-            # Demand gen hook
-            if demand_gen:
-                inner += (
-                    f"<div style='margin-top:10px'>"
-                    f"<span style='font-size:11px;font-weight:bold;color:#1e40af'>📣 DEMAND GEN HOOK</span><br>"
-                    f"<span style='font-size:12px;color:#374151'>{demand_gen}</span>"
-                    f"</div>"
-                )
-
-            # Battlecard flag
-            if battlecard and battlecard.lower() != "null":
-                inner += (
-                    f"<div style='margin-top:10px;padding:6px 10px;background:#fef3c7;"
-                    f"border:1px solid #f59e0b;font-size:12px'>"
-                    f"⚠️ <strong>Battlecard Update:</strong> {battlecard}"
-                    f"</div>"
-                )
-
-            actions_html += _card(inner, border_color="#6366f1", bg="#fafafa")
-
-        sections.append(_h2("🚀 Marketing Actions") + actions_html)
-
-    # ── Assemble ──────────────────────────────────────────────────────────────
     return (
         "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;"
-        "max-width:800px;margin:0 auto;padding:28px;color:#1e293b'>"
-        "<h1 style='color:#1e40af;margin-bottom:4px'>SAS Intelligent Decisioning</h1>"
-        "<h2 style='font-weight:normal;color:#64748b;margin-top:0'>"
-        "Competitive Intelligence &amp; Marketing Actions</h2>"
-        f"<p style='color:#94a3b8;font-size:12px;border-bottom:1px solid #e2e8f0;"
-        f"padding-bottom:16px'>Generated: {generated}</p>"
+        "max-width:820px;margin:0 auto;padding:28px;color:#1e293b'>"
+        "<h1 style='color:#1e40af;margin-bottom:2px'>SAS Intelligent Decisioning</h1>"
+        "<h2 style='font-weight:normal;color:#64748b;margin-top:0;font-size:15px'>"
+        "Weekly Competitive Intelligence</h2>"
+        f"<p style='color:#94a3b8;font-size:11px;border-bottom:1px solid #e2e8f0;"
+        f"padding-bottom:14px'>Generated: {generated}</p>"
         + "\n".join(sections)
         + "<hr style='border:none;border-top:1px solid #e2e8f0;margin:28px 0'>"
         "<p style='font-size:11px;color:#94a3b8'>"
-        "SAS Intel Feed &middot; Mon &amp; Thu &middot; Powered by Claude</p>"
+        "SAS Intel Feed &middot; Weekly Monday &middot; Powered by Claude</p>"
         "</body></html>"
     )
 
 
 # ── EMAIL SEND ────────────────────────────────────────────────────────────────
 
-def send_email(data: dict) -> None:
+def send_email(subject: str, html: str) -> None:
     api_key = os.getenv("SENDGRID_API_KEY")
     from_addr = os.getenv("EMAIL_FROM")
     to_addr = os.getenv("EMAIL_TO")
 
     if not all([api_key, from_addr, to_addr]):
-        print("⚠  SendGrid env vars not set (SENDGRID_API_KEY / EMAIL_FROM / EMAIL_TO). Skipping.")
+        print("⚠  SendGrid env vars not set. Skipping email.")
         return
 
     recipients = [addr.strip() for addr in to_addr.split(",")]
@@ -437,10 +697,9 @@ def send_email(data: dict) -> None:
     msg = Mail(
         from_email=from_addr,
         to_emails=[To(r) for r in recipients],
-        subject=f"SAS Competitive Intel — {datetime.now().strftime('%b %d, %Y')}",
-        html_content=build_email_html(data),
+        subject=subject,
+        html_content=html,
     )
-
     try:
         sg = sendgrid.SendGridAPIClient(api_key=api_key)
         response = sg.send(msg)
@@ -452,14 +711,34 @@ def send_email(data: dict) -> None:
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="SAS Intel Feed")
-    parser.add_argument("--dry-run", action="store_true", help="Fetch feeds only, skip Claude + email")
-    parser.add_argument("--hours", type=int, default=LOOKBACK_HOURS, help="Lookback window in hours")
-    parser.add_argument("--file", nargs="*", metavar="PATH", help="PDF/image files to attach as context")
+    parser = argparse.ArgumentParser(description="SAS Intel Feed — Battlecard Edition")
+    parser.add_argument("--baseline", action="store_true",
+                        help="Generate full baseline battlecards from Claude knowledge (run once)")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Fetch feeds only; skip Claude + email")
+    parser.add_argument("--hours", type=int, default=LOOKBACK_HOURS,
+                        help="Lookback window in hours")
+    parser.add_argument("--file", nargs="*", metavar="PATH",
+                        help="PDF/image files to attach as context")
     args = parser.parse_args()
 
     print(f"\nSAS Intel Feed  —  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
-    print(f"Lookback: {args.hours}h  |  Competitors: {len(COMPETITORS)}\n")
+
+    # ── BASELINE MODE ─────────────────────────────────────────────────────────
+    if args.baseline:
+        print("Mode: BASELINE\n")
+        data = run_baseline()
+        save_json(data, BASELINE_FILE)
+        date_str = datetime.now().strftime("%b %d, %Y")
+        send_email(
+            subject=f"SAS Competitive Baseline Battlecards — {date_str}",
+            html=build_baseline_email_html(data),
+        )
+        print("\nBaseline complete. Run 'python fetch_intel.py' for weekly delta runs.\n")
+        return
+
+    # ── WEEKLY DELTA MODE ─────────────────────────────────────────────────────
+    print(f"Mode: WEEKLY DELTA  |  Lookback: {args.hours}h  |  Competitors: {len(COMPETITORS)}\n")
 
     all_items: dict[str, list] = {}
     for comp in COMPETITORS:
@@ -471,9 +750,7 @@ def main():
             counts[item.get("source_type", "google")] += 1
         print(
             f"    → {len(items)} items  "
-            f"[📝 {counts['blog']} blog  "
-            f"📣 {counts['newsroom']} newsroom  "
-            f"📰 {counts['google']} trade press]\n"
+            f"[📝 {counts['blog']}  📣 {counts['newsroom']}  📰 {counts['google']}]\n"
         )
 
     total = sum(len(v) for v in all_items.values())
@@ -484,11 +761,16 @@ def main():
         return
 
     print("\nRunning Claude analysis...")
-    result = run_claude_analysis(all_items, context_files=args.file)
+    result = run_delta_analysis(all_items, context_files=args.file)
     result["generated_at"] = datetime.now(timezone.utc).isoformat()
 
-    save_json(result)
-    send_email(result)
+    save_json(result, FEED_FILE)
+
+    date_str = datetime.now().strftime("%b %d, %Y")
+    send_email(
+        subject=f"SAS Competitive Intel — {date_str}",
+        html=build_delta_email_html(result),
+    )
 
     print("\nDone.\n")
 
