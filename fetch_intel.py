@@ -308,50 +308,95 @@ def run_delta_analysis(all_items: dict, context_files: list | None = None) -> di
         print("  ⚠ No baseline found — running without delta comparison.")
         print("    Tip: run 'python fetch_intel.py --baseline' to generate one.\n")
 
-    prompt_text = build_delta_prompt(all_items, baseline, context_files)
-    message_content = [{"type": "text", "text": prompt_text}]
+    # Build baseline lookup by competitor name for quick access
+    baseline_by_name = {}
+    if baseline:
+        for comp in baseline.get("competitors", []):
+            baseline_by_name[comp["name"]] = comp
 
-    for path in (context_files or []):
-        try:
-            with open(path, "rb") as f:
-                data = base64.standard_b64encode(f.read()).decode("utf-8")
-            ext = path.rsplit(".", 1)[-1].lower()
-            media_type = {
-                "pdf": "application/pdf",
-                "png": "image/png",
-                "jpg": "image/jpeg",
-                "jpeg": "image/jpeg",
-            }.get(ext, "application/octet-stream")
-            message_content.append({
-                "type": "document",
-                "source": {"type": "base64", "media_type": media_type, "data": data},
-            })
-            print(f"  Attached: {path}")
-        except Exception as e:
-            print(f"  Warning: could not attach {path}: {e}")
+    # Split competitors into two batches to stay within token limits
+    competitor_names = [c["name"] for c in COMPETITORS]
+    mid = len(competitor_names) // 2
+    batches = [competitor_names[:mid], competitor_names[mid:]]
 
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=8192,
-        system=SYSTEM_PROMPT,
-        messages=[{"role": "user", "content": message_content}],
-    )
+    all_results = []
+    all_signals = []
 
-    if response.stop_reason == "max_tokens":
-        print("  ⚠ Response truncated — retrying in concise mode...")
-        concise = prompt_text + (
-            "\n\nIMPORTANT: Be very concise. 1 sentence per field. "
-            "Max 1 blog suggestion per competitor. Return only the JSON."
-        )
+    for i, batch_names in enumerate(batches, 1):
+        print(f"  Analyzing batch {i}/2: {', '.join(batch_names)}")
+
+        # Build items and baseline for just this batch
+        batch_items = {k: v for k, v in all_items.items() if k in batch_names}
+        batch_baseline = {
+            "competitors": [
+                baseline_by_name[n]
+                for n in batch_names
+                if n in baseline_by_name
+            ]
+        } if baseline else None
+
+        prompt_text = build_delta_prompt(batch_items, batch_baseline, context_files if i == 1 else None)
+        message_content = [{"type": "text", "text": prompt_text}]
+
+        if i == 1:
+            for path in (context_files or []):
+                try:
+                    with open(path, "rb") as f:
+                        data = base64.standard_b64encode(f.read()).decode("utf-8")
+                    ext = path.rsplit(".", 1)[-1].lower()
+                    media_type = {
+                        "pdf": "application/pdf",
+                        "png": "image/png",
+                        "jpg": "image/jpeg",
+                        "jpeg": "image/jpeg",
+                    }.get(ext, "application/octet-stream")
+                    message_content.append({
+                        "type": "document",
+                        "source": {"type": "base64", "media_type": media_type, "data": data},
+                    })
+                    print(f"  Attached: {path}")
+                except Exception as e:
+                    print(f"  Warning: could not attach {path}: {e}")
+
+        client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
         response = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=8192,
             system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": [{"type": "text", "text": concise}]}],
+            messages=[{"role": "user", "content": message_content}],
         )
 
-    return parse_json(response.content[0].text)
+        if response.stop_reason == "max_tokens":
+            print(f"  ⚠ Batch {i} truncated — retrying in concise mode...")
+            concise = prompt_text + (
+                "\n\nIMPORTANT: Be very concise. 1 sentence per field. "
+                "Max 1 blog suggestion per competitor. Return only the JSON."
+            )
+            response = client.messages.create(
+                model="claude-sonnet-4-6",
+                max_tokens=8192,
+                system=SYSTEM_PROMPT,
+                messages=[{"role": "user", "content": [{"type": "text", "text": concise}]}],
+            )
+
+        batch_result = parse_json(response.content[0].text)
+        all_results.extend(batch_result.get("competitors", []))
+        all_signals.extend(batch_result.get("market_signals", []))
+        print(f"    ✓ Batch {i} complete — {len(batch_result.get('competitors',[]))} competitors")
+        time.sleep(2)
+
+    # Deduplicate signals
+    seen_signals, unique_signals = set(), []
+    for s in all_signals:
+        if s.lower() not in seen_signals:
+            seen_signals.add(s.lower())
+            unique_signals.append(s)
+
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "market_signals": unique_signals[:5],
+        "competitors": all_results,
+    }
 
 
 # ── JSON OUTPUT ───────────────────────────────────────────────────────────────
