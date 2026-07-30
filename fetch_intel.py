@@ -2,8 +2,8 @@
 fetch_intel.py — SAS Competitive Intelligence Feed (Battlecard Edition)
 
 Usage:
-    python fetch_intel.py                  # regular weekly run
-    python fetch_intel.py --baseline       # one-time baseline run from Claude knowledge
+    python fetch_intel.py                  # regular weekly delta run
+    python fetch_intel.py --baseline       # one-time baseline from Claude knowledge
     python fetch_intel.py --dry-run        # fetch feeds only, skip Claude + email
     python fetch_intel.py --hours 168      # extend lookback window
     python fetch_intel.py --file report.pdf  # attach context document
@@ -21,13 +21,13 @@ import anthropic
 import feedparser
 from dotenv import load_dotenv
 
-from config import COMPETITORS, FEED_USER_AGENT, SYSTEM_PROMPT
+from config import BASELINE_SYSTEM, COMPETITORS, DELTA_SYSTEM, FEED_USER_AGENT
 
 load_dotenv()
 
-FEED_FILE      = "intel_feed.json"
-BASELINE_FILE  = "intel_baseline.json"
-LOOKBACK_HOURS = 168  # one week — matches Monday-only cadence
+FEED_FILE     = "intel_feed.json"
+BASELINE_FILE = "intel_baseline.json"
+LOOKBACK_HOURS = 168
 
 SOURCE_LABELS = {
     "blog":     "📝 Thought Leadership",
@@ -68,8 +68,7 @@ def fetch_feed(url: str, feed_type: str, cutoff: datetime) -> list[dict]:
                 continue
             items.append({
                 "title": title,
-                "summary": (entry.get("summary") or "")[:600].strip(),
-                "link": entry.get("link", ""),
+                "summary": (entry.get("summary") or "")[:400].strip(),
                 "published": entry.get("published", "unknown date"),
                 "source_type": feed_type,
             })
@@ -85,15 +84,14 @@ def fetch_competitor_items(competitor: dict, hours: int) -> list[dict]:
     for feed_cfg in competitor.get("feeds", []):
         items = fetch_feed(feed_cfg["url"], feed_cfg["type"], cutoff)
         if items:
-            label = SOURCE_LABELS.get(feed_cfg["type"], feed_cfg["type"])
-            print(f"      ✓ {len(items)} item(s) [{label}]")
+            print(f"      ✓ {len(items)} [{SOURCE_LABELS.get(feed_cfg['type'], '')}]")
         all_items.extend(items)
         time.sleep(0.3)
 
     for query in competitor.get("google_news_queries", []):
         items = fetch_feed(google_news_url(query), "google", cutoff)
         if items:
-            print(f"      ✓ {len(items)} item(s) [📰 Trade Press] via: '{query}'")
+            print(f"      ✓ {len(items)} [📰 Trade Press] via: '{query}'")
         all_items.extend(items)
         time.sleep(0.3)
 
@@ -104,10 +102,10 @@ def fetch_competitor_items(competitor: dict, hours: int) -> list[dict]:
             seen.add(key)
             deduped.append(item)
 
-    return deduped[:15]
+    return deduped[:10]
 
 
-# ── CLAUDE ANALYSIS ───────────────────────────────────────────────────────────
+# ── CLAUDE HELPERS ────────────────────────────────────────────────────────────
 
 def parse_json(raw: str) -> dict:
     raw = raw.strip().removeprefix("```json").removeprefix("```").removesuffix("```").strip()
@@ -120,7 +118,7 @@ def parse_json(raw: str) -> dict:
         raise ValueError(f"Could not parse JSON:\n{raw[:400]}")
 
 
-def call_claude(prompt: str, system: str) -> str:
+def call_claude(prompt: str, system: str) -> dict:
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     response = client.messages.create(
         model="claude-sonnet-4-6",
@@ -129,93 +127,25 @@ def call_claude(prompt: str, system: str) -> str:
         messages=[{"role": "user", "content": prompt}],
     )
     if response.stop_reason == "max_tokens":
-        print("  ⚠ Response truncated — retrying in concise mode...")
+        print("  ⚠ Truncated — retrying in concise mode...")
         response = client.messages.create(
             model="claude-sonnet-4-6",
             max_tokens=8192,
             system=system,
             messages=[{"role": "user", "content": prompt + (
-                "\n\nIMPORTANT: Be very concise. 1 sentence per field. "
-                "Max 1 blog suggestion per competitor. Return only the JSON."
+                "\n\nCRITICAL: Response was truncated. Be extremely concise — "
+                "max 1 sentence per field. Return only valid JSON for the "
+                "competitors listed. Stop after closing brace."
             )}],
         )
-    return response.content[0].text
+    return parse_json(response.content[0].text)
 
 
 # ── BASELINE RUN ──────────────────────────────────────────────────────────────
 
-BASELINE_SYSTEM = """You are a senior competitive intelligence strategist at SAS.
-
-Generate a complete baseline battlecard for each of these 10 SAS Intelligent Decisioning competitors, based entirely on your training knowledge up to your cutoff date.
-
-SAS Intelligent Decisioning context:
-- Native SAS Viya integration: enterprise ML, statistical models, Python/R workflows
-- Agentic AI with human-in-the-loop oversight; fully traceable agent actions
-- Trustworthy AI: LIME/SHAP explainability, model lineage, audit trails
-- End-to-end lifecycle: dev to test to prod, versioning, governance, approval workflows
-- Industries: fraud detection, customer engagement, manufacturing, public sector
-- Strengths: governance, explainability, regulated industry trust, enterprise scale
-- Known gaps: no native knowledge graph (vs Quantexa); less fintech-native than Provenir/CRIF
-
-Competitors to cover:
-Sapiens, Palantir, Pegasystems, IBM, FICO, Provenir, ACTICO, CRIF, Aera Technology, Quantexa
-
-Return ONLY valid JSON. No markdown fences, no preamble.
-
-JSON schema:
-{
-  "generated_at": "<ISO 8601 timestamp>",
-  "type": "baseline",
-  "competitors": [
-    {
-      "name": "<exact name>",
-      "segment": "<market segment>",
-      "threat_level": "<high | medium | low>",
-      "battlecard": {
-        "tab1_approach_to_market": {
-          "market_strategy": "<current go-to-market direction>",
-          "customers": "<key customer segments and notable reference customers>",
-          "verticals_served": "<industries actively targeted>",
-          "partners": "<key technology and channel partners>"
-        },
-        "tab2_top_3_things_to_know": [
-          "<most important fact for a sales rep #1>",
-          "<most important fact for a sales rep #2>",
-          "<most important fact for a sales rep #3>"
-        ],
-        "tab3_product_claims": {
-          "overview": "<product summary, 2-3 sentences>",
-          "key_claims": ["<major capability claim>"],
-          "pricing_model": "<pricing approach if known, else null>"
-        },
-        "tab4_strengths_weaknesses": {
-          "strengths": ["<strength relative to SAS ID>"],
-          "weaknesses": ["<exploitable weakness relative to SAS ID>"],
-          "differentiators": "<what genuinely sets them apart from SAS>"
-        },
-        "tab5_sales_strategies": {
-          "what_to_attack": "<where SAS wins against this competitor>",
-          "what_to_defend": "<where this competitor attacks SAS>",
-          "trap_questions": [
-            "<question that reveals this competitor weakness>",
-            "<second trap question>"
-          ]
-        }
-      }
-    }
-  ]
-}
-
-Be thorough and specific — this is the foundation every future weekly update will be compared against.
-Accuracy matters more than brevity here. Use everything you know.
-"""
-
-
 def run_baseline() -> dict:
-    print("\nGenerating baseline battlecards from Claude training knowledge...")
-    print("(Running in two batches of 5 — takes 2-3 minutes total)\n")
+    print("\nGenerating baseline battlecards (2 batches of 5)...\n")
 
-    # Split into two batches to stay within token limits
     batches = [
         ["Sapiens", "Palantir", "Pegasystems", "IBM", "FICO"],
         ["Provenir", "ACTICO", "CRIF", "Aera Technology", "Quantexa"],
@@ -226,20 +156,15 @@ def run_baseline() -> dict:
         names = ", ".join(batch)
         print(f"  Batch {i}/2: {names}")
         prompt = (
-            f"Generate complete baseline battlecards for these SAS Intelligent Decisioning competitors: "
-            f"{names}.\n\n"
-            "Be thorough — this is the foundation all future weekly updates compare against.\n\n"
-            "Return only the JSON with this exact structure:\n"
-            "{\n"
-            '  "competitors": [ ... ]\n'
-            "}"
+            f"Generate baseline battlecards for ONLY these 5 competitors: {names}.\n"
+            "Return ONLY the JSON with a competitors array containing exactly 5 entries.\n"
+            "Keep every text field to 1-2 sentences maximum."
         )
-        raw = call_claude(prompt, BASELINE_SYSTEM)
-        batch_data = parse_json(raw)
-        comps = batch_data.get("competitors", [])
-        print(f"    ✓ {len(comps)} competitor(s) returned")
+        result = call_claude(prompt, BASELINE_SYSTEM)
+        comps = result.get("competitors", [])
+        print(f"    ✓ {len(comps)} returned")
         all_competitors.extend(comps)
-        time.sleep(2)  # brief pause between batches
+        time.sleep(3)
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
@@ -258,148 +183,76 @@ def load_baseline() -> dict | None:
         return None
 
 
-def build_delta_prompt(all_items: dict, baseline: dict | None, context_files: list | None) -> str:
-    lines = [
-        "TASK: Analyze new RSS articles from SAS Intelligent Decisioning competitors.",
-        "Compare against the baseline knowledge provided.",
-        "Only flag things that are GENUINELY NEW or CHANGED vs the baseline.",
-        "Do not re-summarize stable, known facts.\n",
-    ]
-
-    if baseline:
-        lines.append("## BASELINE KNOWLEDGE (what we already know — do not repeat this)")
-        for comp in baseline.get("competitors", []):
-            bc = comp.get("battlecard", {})
-            tab3 = bc.get("tab3_product_claims", {})
-            lines.append(
-                f"- {comp['name']}: "
-                f"{tab3.get('overview', 'No baseline overview.')}"
-            )
-        lines.append("")
-
-    lines.append("## NEW RSS ARTICLES THIS WEEK\n")
-    for comp_name, items in all_items.items():
-        lines.append(f"### {comp_name}")
-        if not items:
-            lines.append("No new articles found this week.\n")
-            continue
-        for item in items:
-            lines.append(
-                f"- [{item['source_type'].upper()}] {item['title']} ({item['published']})"
-            )
-            if item["summary"]:
-                lines.append(f"  {item['summary'][:350]}")
-        lines.append("")
-
-    if context_files:
-        lines.append("## Additional Context Documents")
-        for p in context_files:
-            lines.append(f"- {p} (attached)")
-
-    lines.append("\nReturn only the JSON. No preamble.")
-    return "\n".join(lines)
-
-
 def run_delta_analysis(all_items: dict, context_files: list | None = None) -> dict:
     baseline = load_baseline()
     if baseline:
-        print(f"  ✓ Baseline loaded ({baseline.get('generated_at','unknown date')[:10]})")
+        print(f"  ✓ Baseline loaded ({baseline.get('generated_at','')[:10]})")
     else:
-        print("  ⚠ No baseline found — running without delta comparison.")
-        print("    Tip: run 'python fetch_intel.py --baseline' to generate one.\n")
+        print("  ⚠ No baseline — run --baseline first for best results")
 
-    # Build baseline lookup by competitor name for quick access
-    baseline_by_name = {}
-    if baseline:
-        for comp in baseline.get("competitors", []):
-            baseline_by_name[comp["name"]] = comp
+    batches = [
+        ["Sapiens", "Palantir", "Pegasystems", "IBM", "FICO"],
+        ["Provenir", "ACTICO", "CRIF", "Aera Technology", "Quantexa"],
+    ]
 
-    # Split competitors into two batches to stay within token limits
-    competitor_names = [c["name"] for c in COMPETITORS]
-    mid = len(competitor_names) // 2
-    batches = [competitor_names[:mid], competitor_names[mid:]]
-
-    all_results = []
+    all_competitors = []
     all_signals = []
 
     for i, batch_names in enumerate(batches, 1):
         print(f"  Analyzing batch {i}/2: {', '.join(batch_names)}")
 
-        # Build items and baseline for just this batch
-        batch_items = {k: v for k, v in all_items.items() if k in batch_names}
-        batch_baseline = {
-            "competitors": [
-                baseline_by_name[n]
-                for n in batch_names
-                if n in baseline_by_name
-            ]
-        } if baseline else None
+        lines = [
+            f"Analyze new RSS articles for ONLY these competitors: {', '.join(batch_names)}.",
+            "Return JSON with ONLY these competitor names in the competitors array.\n",
+            "## NEW RSS ARTICLES\n",
+        ]
 
-        prompt_text = build_delta_prompt(batch_items, batch_baseline, context_files if i == 1 else None)
-        message_content = [{"type": "text", "text": prompt_text}]
+        for name in batch_names:
+            items = all_items.get(name, [])
+            lines.append(f"### {name}")
+            if not items:
+                lines.append("No new articles this week.\n")
+                continue
+            for item in items:
+                lines.append(f"- [{item['source_type'].upper()}] {item['title']} ({item['published']})")
+                if item["summary"]:
+                    lines.append(f"  {item['summary'][:250]}")
+            lines.append("")
 
-        if i == 1:
-            for path in (context_files or []):
-                try:
-                    with open(path, "rb") as f:
-                        data = base64.standard_b64encode(f.read()).decode("utf-8")
-                    ext = path.rsplit(".", 1)[-1].lower()
-                    media_type = {
-                        "pdf": "application/pdf",
-                        "png": "image/png",
-                        "jpg": "image/jpeg",
-                        "jpeg": "image/jpeg",
-                    }.get(ext, "application/octet-stream")
-                    message_content.append({
-                        "type": "document",
-                        "source": {"type": "base64", "media_type": media_type, "data": data},
-                    })
-                    print(f"  Attached: {path}")
-                except Exception as e:
-                    print(f"  Warning: could not attach {path}: {e}")
+        if baseline and i == 1:
+            lines.append("## WHAT WE ALREADY KNOW (do not repeat)\n")
+            for comp in baseline.get("competitors", []):
+                if comp["name"] in batch_names:
+                    bc = comp.get("battlecard", {})
+                    tab3 = bc.get("tab3_product_claims", {})
+                    lines.append(f"- {comp['name']}: {tab3.get('overview', '')}")
 
-        client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-        response = client.messages.create(
-            model="claude-sonnet-4-6",
-            max_tokens=8192,
-            system=SYSTEM_PROMPT,
-            messages=[{"role": "user", "content": message_content}],
-        )
+        lines.append("\nReturn only the JSON. Be concise — 1 sentence per field.")
+        prompt = "\n".join(lines)
 
-        if response.stop_reason == "max_tokens":
-            print(f"  ⚠ Batch {i} truncated — retrying in concise mode...")
-            concise = prompt_text + (
-                "\n\nIMPORTANT: Be very concise. 1 sentence per field. "
-                "Max 1 blog suggestion per competitor. Return only the JSON."
-            )
-            response = client.messages.create(
-                model="claude-sonnet-4-6",
-                max_tokens=8192,
-                system=SYSTEM_PROMPT,
-                messages=[{"role": "user", "content": [{"type": "text", "text": concise}]}],
-            )
-
-        batch_result = parse_json(response.content[0].text)
-        all_results.extend(batch_result.get("competitors", []))
-        all_signals.extend(batch_result.get("market_signals", []))
-        print(f"    ✓ Batch {i} complete — {len(batch_result.get('competitors',[]))} competitors")
-        time.sleep(2)
+        result = call_claude(prompt, DELTA_SYSTEM)
+        comps = result.get("competitors", [])
+        sigs = result.get("market_signals", [])
+        print(f"    ✓ {len(comps)} competitors, {len(sigs)} signals")
+        all_competitors.extend(comps)
+        all_signals.extend(sigs)
+        time.sleep(3)
 
     # Deduplicate signals
-    seen_signals, unique_signals = set(), []
+    seen, unique = set(), []
     for s in all_signals:
-        if s.lower() not in seen_signals:
-            seen_signals.add(s.lower())
-            unique_signals.append(s)
+        if s.lower()[:40] not in seen:
+            seen.add(s.lower()[:40])
+            unique.append(s)
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "market_signals": unique_signals[:5],
-        "competitors": all_results,
+        "market_signals": unique[:4],
+        "competitors": all_competitors,
     }
 
 
-# ── JSON OUTPUT ───────────────────────────────────────────────────────────────
+# ── JSON SAVE ─────────────────────────────────────────────────────────────────
 
 def save_json(data: dict, path: str) -> None:
     with open(path, "w", encoding="utf-8") as f:
@@ -407,38 +260,19 @@ def save_json(data: dict, path: str) -> None:
     print(f"✓ Saved → {path}")
 
 
-# ── EMAIL BUILDER ─────────────────────────────────────────────────────────────
+# ── EMAIL BUILDERS ────────────────────────────────────────────────────────────
 
-def _td(content: str, align: str = "left", color: str = "") -> str:
-    style = (
-        f"padding:8px 10px;border:1px solid #e2e8f0;"
-        f"vertical-align:top;text-align:{align};"
-    )
-    if color:
-        style += f"color:{color};"
-    return f"<td style='{style}'>{content}</td>"
-
-
-def _th(content: str, align: str = "left") -> str:
+def _th(text: str, align: str = "left") -> str:
     return (
         f"<th style='padding:8px 10px;border:1px solid #e2e8f0;background:#f1f5f9;"
-        f"text-align:{align};font-size:11px;letter-spacing:.5px;color:#475569'>"
-        f"{content}</th>"
+        f"font-size:11px;color:#475569;text-align:{align}'>{text}</th>"
     )
 
-
-def _section(title: str, content: str) -> str:
-    return (
-        f"<h2 style='color:#1e40af;margin-top:28px;margin-bottom:10px;font-size:16px'>"
-        f"{title}</h2>{content}"
-    )
-
-
-def _changed_badge(changed: bool) -> str:
-    if changed:
-        return "<span style='color:#dc2626;font-size:10px;font-weight:bold'>▲ CHANGED</span>"
-    return "<span style='color:#94a3b8;font-size:10px'>— stable</span>"
-
+def _td(text: str, align: str = "left", color: str = "") -> str:
+    style = f"padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top;text-align:{align};"
+    if color:
+        style += f"color:{color};"
+    return f"<td style='{style}'>{text}</td>"
 
 def _ul(items: list) -> str:
     if not items:
@@ -446,298 +280,212 @@ def _ul(items: list) -> str:
     lis = "".join(f"<li style='margin-bottom:3px'>{i}</li>" for i in items if i)
     return f"<ul style='margin:4px 0;padding-left:16px;font-size:12px'>{lis}</ul>"
 
-
-def build_baseline_email_html(data: dict) -> str:
-    generated = data.get("generated_at", "")
-    competitors = data.get("competitors", [])
-    competitors_sorted = sorted(
-        competitors,
-        key=lambda c: THREAT_ORDER.get(c.get("threat_level", "low"), 2),
+def _section(title: str, body: str) -> str:
+    return (
+        f"<h2 style='color:#1e40af;font-size:16px;margin-top:28px;margin-bottom:10px'>"
+        f"{title}</h2>{body}"
     )
 
+def _changed(val: bool) -> str:
+    return (
+        "<span style='color:#dc2626;font-size:10px;font-weight:bold'>▲ CHANGED</span>"
+        if val else
+        "<span style='color:#94a3b8;font-size:10px'>— stable</span>"
+    )
+
+
+def build_baseline_email(data: dict) -> str:
+    competitors = sorted(
+        data.get("competitors", []),
+        key=lambda c: THREAT_ORDER.get(c.get("threat_level", "low"), 2),
+    )
     cards = ""
-    for c in competitors_sorted:
+    for c in competitors:
         threat = c.get("threat_level", "low")
         color = THREAT_COLORS.get(threat, "#16a34a")
         bc = c.get("battlecard", {})
-        tab1 = bc.get("tab1_approach_to_market", {})
-        tab2 = bc.get("tab2_top_3_things_to_know", [])
-        tab3 = bc.get("tab3_product_claims", {})
-        tab4 = bc.get("tab4_strengths_weaknesses", {})
-        tab5 = bc.get("tab5_sales_strategies", {})
+        t1 = bc.get("tab1_approach_to_market", {})
+        t2 = bc.get("tab2_top_3_things_to_know", [])
+        t3 = bc.get("tab3_product_claims", {})
+        t4 = bc.get("tab4_strengths_weaknesses", {})
+        t5 = bc.get("tab5_sales_strategies", {})
 
-        rows = (
-            f"<tr style='background:#fafafa'>"
-            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;width:28%;vertical-align:top'>"
-            f"<strong>Tab 1 — Approach to Market</strong></td>"
+        rows = "".join([
+            f"<tr style='background:#fafafa'><td style='padding:8px 10px;border:1px solid #e2e8f0;width:25%;vertical-align:top;font-size:12px'><strong>Tab 1 — Market Approach</strong></td>"
             f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
-            f"<strong>Strategy:</strong> {tab1.get('market_strategy','—')}<br>"
-            f"<strong>Customers:</strong> {tab1.get('customers','—')}<br>"
-            f"<strong>Verticals:</strong> {tab1.get('verticals_served','—')}<br>"
-            f"<strong>Partners:</strong> {tab1.get('partners','—')}"
-            f"</td></tr>"
+            f"<strong>Strategy:</strong> {t1.get('market_strategy','—')}<br>"
+            f"<strong>Customers:</strong> {t1.get('customers','—')}<br>"
+            f"<strong>Verticals:</strong> {t1.get('verticals_served','—')}<br>"
+            f"<strong>Partners:</strong> {t1.get('partners','—')}</td></tr>",
 
-            f"<tr>"
-            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
-            f"<strong>Tab 2 — Top 3 Things to Know</strong></td>"
-            f"<td style='padding:8px 10px;border:1px solid #e2e8f0'>{_ul(tab2)}</td></tr>"
+            f"<tr><td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px;vertical-align:top'><strong>Tab 2 — Top 3 to Know</strong></td>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0'>{_ul(t2)}</td></tr>",
 
-            f"<tr style='background:#fafafa'>"
-            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
-            f"<strong>Tab 3 — Product Claims</strong></td>"
+            f"<tr style='background:#fafafa'><td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px;vertical-align:top'><strong>Tab 3 — Product Claims</strong></td>"
+            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>{t3.get('overview','—')}<br><br>"
+            f"<strong>Key Claims:</strong>{_ul(t3.get('key_claims',[]))}</td></tr>",
+
+            f"<tr><td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px;vertical-align:top'><strong>Tab 4 — Strengths &amp; Weaknesses</strong></td>"
             f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
-            f"{tab3.get('overview','—')}<br><br>"
-            f"<strong>Key Claims:</strong>{_ul(tab3.get('key_claims',[]))}"
-            f"</td></tr>"
+            f"<strong>Strengths:</strong>{_ul(t4.get('strengths',[]))}"
+            f"<strong>Weaknesses:</strong>{_ul(t4.get('weaknesses',[]))}"
+            f"<em>{t4.get('differentiators','')}</em></td></tr>",
 
-            f"<tr>"
-            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
-            f"<strong>Tab 4 — Strengths &amp; Weaknesses</strong></td>"
+            f"<tr style='background:#fafafa'><td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px;vertical-align:top'><strong>Tab 5 — Sales Strategies</strong></td>"
             f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
-            f"<strong>Strengths:</strong>{_ul(tab4.get('strengths',[]))}"
-            f"<strong>Weaknesses:</strong>{_ul(tab4.get('weaknesses',[]))}"
-            f"<strong>Differentiator:</strong> <em>{tab4.get('differentiators','—')}</em>"
-            f"</td></tr>"
-
-            f"<tr style='background:#fafafa'>"
-            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
-            f"<strong>Tab 5 — Sales Strategies</strong></td>"
-            f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
-            f"<strong style='color:#16a34a'>⚔ Attack:</strong> {tab5.get('what_to_attack','—')}<br><br>"
-            f"<strong style='color:#dc2626'>🛡 Defend:</strong> {tab5.get('what_to_defend','—')}<br><br>"
-            f"<strong>Trap Questions:</strong>{_ul(tab5.get('trap_questions',[]))}"
-            f"</td></tr>"
-        )
+            f"<strong style='color:#16a34a'>⚔ Attack:</strong> {t5.get('what_to_attack','—')}<br><br>"
+            f"<strong style='color:#dc2626'>🛡 Defend:</strong> {t5.get('what_to_defend','—')}<br><br>"
+            f"<strong>Trap Questions:</strong>{_ul(t5.get('trap_questions',[]))}</td></tr>",
+        ])
 
         cards += (
-            f"<div style='margin-bottom:28px;border:1px solid {color};border-top:3px solid {color}'>"
-            f"<div style='padding:10px 14px;background:#f8fafc'>"
-            f"<strong style='color:{color};font-size:15px'>{c['name']}</strong>"
+            f"<div style='margin-bottom:24px;border:1px solid {color};border-top:3px solid {color}'>"
+            f"<div style='padding:8px 14px;background:#f8fafc'>"
+            f"<strong style='color:{color};font-size:14px'>{c['name']}</strong>"
             f" &nbsp; {THREAT_LABELS.get(threat,'')} &nbsp;"
             f"<span style='color:#64748b;font-size:12px'>{c.get('segment','')}</span>"
             f"</div>"
-            f"<table style='width:100%;border-collapse:collapse;font-size:12px'>{rows}</table>"
+            f"<table style='width:100%;border-collapse:collapse'>{rows}</table>"
             f"</div>"
         )
 
     return (
-        "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;"
-        "max-width:820px;margin:0 auto;padding:28px;color:#1e293b'>"
+        "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;max-width:820px;margin:0 auto;padding:28px;color:#1e293b'>"
         "<h1 style='color:#1e40af;margin-bottom:2px'>SAS Intelligent Decisioning</h1>"
-        "<h2 style='font-weight:normal;color:#64748b;margin-top:0;font-size:15px'>"
-        "Competitive Baseline Battlecards</h2>"
-        "<div style='background:#fef3c7;border:1px solid #f59e0b;padding:10px 14px;"
-        "font-size:12px;margin-bottom:20px'>"
-        "📚 <strong>This is your baseline.</strong> Generated from Claude's training knowledge. "
-        "All future weekly digests will compare against this and only surface what has changed."
+        "<h2 style='font-weight:normal;color:#64748b;margin-top:0;font-size:15px'>Competitive Baseline Battlecards</h2>"
+        "<div style='background:#fef3c7;border:1px solid #f59e0b;padding:10px 14px;font-size:12px;margin-bottom:20px'>"
+        "📚 <strong>This is your baseline.</strong> All future weekly digests compare against this and only surface what changed."
         "</div>"
-        f"<p style='color:#94a3b8;font-size:11px;border-bottom:1px solid #e2e8f0;"
-        f"padding-bottom:14px'>Generated: {generated}</p>"
+        f"<p style='color:#94a3b8;font-size:11px;border-bottom:1px solid #e2e8f0;padding-bottom:14px'>Generated: {data.get('generated_at','')}</p>"
         + cards
         + "<hr style='border:none;border-top:1px solid #e2e8f0;margin:28px 0'>"
-        "<p style='font-size:11px;color:#94a3b8'>"
-        "SAS Intel Feed &middot; Baseline Run &middot; Powered by Claude</p>"
+        "<p style='font-size:11px;color:#94a3b8'>SAS Intel Feed · Baseline · Powered by Claude</p>"
         "</body></html>"
     )
 
 
-def build_delta_email_html(data: dict) -> str:
-    generated = data.get("generated_at", "")
+def build_delta_email(data: dict) -> str:
     sections = []
+    generated = data.get("generated_at", "")
 
+    # Market signals
     signals = data.get("market_signals", [])
     if signals:
-        bullets = "".join(
-            f"<li style='margin-bottom:5px;font-size:13px'>{s}</li>" for s in signals
-        )
-        sections.append(
-            _section("📡 Market Signals", f"<ul style='padding-left:18px'>{bullets}</ul>")
-        )
+        bullets = "".join(f"<li style='margin-bottom:5px;font-size:13px'>{s}</li>" for s in signals)
+        sections.append(_section("📡 Market Signals", f"<ul style='padding-left:18px'>{bullets}</ul>"))
 
     competitors = sorted(
         data.get("competitors", []),
         key=lambda c: THREAT_ORDER.get(c.get("threat_level", "low"), 2),
     )
 
-    # Summary table
-    summary_rows = ""
+    # Snapshot table
+    rows = ""
     for c in competitors:
         threat = c.get("threat_level", "low")
         color = THREAT_COLORS.get(threat, "#16a34a")
         act = c.get("content_activity", {})
+        changes = c.get("changes", {})
         has_updates = c.get("has_updates", False)
-        bc = c.get("battlecard", {})
-        tab1 = bc.get("tab1_approach_to_market", {})
-        tab3 = bc.get("tab3_product_claims", {})
-        update_flag = (
+        update_str = (
             "<span style='color:#dc2626;font-weight:bold'>▲ Updated</span>"
             if has_updates else
             "<span style='color:#94a3b8'>— No change</span>"
         )
-        activity = (
-            f"📝{act.get('blog_count',0)} "
-            f"📣{act.get('newsroom_count',0)} "
-            f"📰{act.get('trade_press_count',0)}"
-        )
-        summary_rows += (
+        rows += (
             f"<tr>"
-            + _td(
-                f"<strong style='color:{color}'>{c['name']}</strong><br>"
-                f"<span style='font-size:11px;color:#64748b'>{c.get('segment','')}</span>"
-            )
+            + _td(f"<strong style='color:{color}'>{c['name']}</strong><br><span style='font-size:11px;color:#64748b'>{c.get('segment','')}</span>")
             + _td(THREAT_LABELS.get(threat, "🟢 LOW"), align="center")
-            + _td(update_flag, align="center")
-            + _td(_changed_badge(tab1.get("changed", False)), align="center")
-            + _td(_changed_badge(tab3.get("changed", False)), align="center")
-            + _td(activity, align="center")
+            + _td(update_str, align="center")
+            + _td(_changed(changes.get("market_approach_changed", False)), align="center")
+            + _td(_changed(changes.get("product_claims_changed", False)), align="center")
+            + _td(f"📝{act.get('blog_count',0)} 📣{act.get('newsroom_count',0)} 📰{act.get('trade_press_count',0)}", align="center")
             + "</tr>"
         )
 
-    sections.append(
-        _section("Competitor Snapshot",
-            "<table style='width:100%;border-collapse:collapse;font-size:12px'>"
-            "<thead><tr>"
-            + _th("Competitor")
-            + _th("Threat", align="center")
-            + _th("Updates", align="center")
-            + _th("Market Approach", align="center")
-            + _th("Product Claims", align="center")
-            + _th("Activity", align="center")
-            + "</tr></thead>"
-            + f"<tbody>{summary_rows}</tbody></table>"
-            + "<p style='font-size:11px;color:#94a3b8;margin-top:4px'>"
-            + "📝 Blog &nbsp;·&nbsp; 📣 Press &nbsp;·&nbsp; 📰 Trade Press</p>"
-        )
+    snapshot = (
+        "<table style='width:100%;border-collapse:collapse;font-size:12px'>"
+        "<thead><tr>"
+        + _th("Competitor") + _th("Threat", "center") + _th("Updates", "center")
+        + _th("Market Approach", "center") + _th("Product Claims", "center") + _th("Activity", "center")
+        + "</tr></thead><tbody>" + rows + "</tbody></table>"
+        + "<p style='font-size:11px;color:#94a3b8;margin-top:4px'>📝 Blog · 📣 Press · 📰 Trade Press</p>"
     )
+    sections.append(_section("Competitor Snapshot", snapshot))
 
-    # Battlecard detail — only updated competitors
+    # What changed — detail for updated competitors only
     updated = [c for c in competitors if c.get("has_updates")]
     if updated:
-        detail_html = ""
+        detail = ""
         for c in updated:
             threat = c.get("threat_level", "low")
             color = THREAT_COLORS.get(threat, "#16a34a")
-            bc = c.get("battlecard", {})
-            tab1 = bc.get("tab1_approach_to_market", {})
-            tab2 = bc.get("tab2_top_3_things_to_know", [])
-            tab3 = bc.get("tab3_product_claims", {})
-            tab4 = bc.get("tab4_strengths_weaknesses", {})
-            tab5 = bc.get("tab5_sales_strategies", {})
+            changes = c.get("changes", {})
+            t2 = c.get("tab2_top_3_things_to_know", [])
+            new_claims = c.get("new_product_claims", [])
+            sales = c.get("sales_impact", {})
 
-            new_claims = tab3.get("new_claims", [])
-            pricing = tab3.get("pricing_signals")
-
-            rows = (
-                f"<tr style='background:#fafafa'>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;width:28%;vertical-align:top'>"
-                f"<strong>Tab 1 — Approach to Market</strong><br>{_changed_badge(tab1.get('changed',False))}</td>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
-                f"<strong>Strategy:</strong> {tab1.get('market_strategy','—')}<br>"
-                f"<strong>Customers:</strong> {tab1.get('customers','—')}<br>"
-                f"<strong>Verticals:</strong> {tab1.get('verticals_served','—')}<br>"
-                f"<strong>Partners:</strong> {tab1.get('partners','—')}"
-                f"</td></tr>"
-
-                f"<tr>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
-                f"<strong>Tab 2 — Top 3 to Know</strong></td>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0'>{_ul(tab2)}</td></tr>"
-
-                f"<tr style='background:#fafafa'>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
-                f"<strong>Tab 3 — Product Claims</strong><br>{_changed_badge(tab3.get('changed',False))}</td>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
-                f"{tab3.get('overview','—')}"
-                + (f"<br><br><strong>New This Week:</strong>{_ul(new_claims)}" if new_claims else "")
-                + (f"<br><strong>Pricing Signal:</strong> {pricing}" if pricing else "")
-                + "</td></tr>"
-
-                f"<tr>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
-                f"<strong>Tab 4 — Strengths &amp; Weaknesses</strong></td>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
-                f"<strong>Strengths:</strong>{_ul(tab4.get('strengths',[]))}"
-                f"<strong>Weaknesses:</strong>{_ul(tab4.get('weaknesses',[]))}"
-                f"<em style='font-size:12px'>{tab4.get('differentiators','')}</em>"
-                f"</td></tr>"
-
-                f"<tr style='background:#fafafa'>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;vertical-align:top'>"
-                f"<strong>Tab 5 — Sales Strategies</strong></td>"
-                f"<td style='padding:8px 10px;border:1px solid #e2e8f0;font-size:12px'>"
-                f"<strong style='color:#16a34a'>⚔ Attack:</strong> {tab5.get('what_to_attack','—')}<br><br>"
-                f"<strong style='color:#dc2626'>🛡 Defend:</strong> {tab5.get('what_to_defend','—')}<br><br>"
-                f"<strong>Trap Questions:</strong>{_ul(tab5.get('trap_questions',[]))}"
-                f"</td></tr>"
+            inner = (
+                f"<strong style='color:{color}'>{c['name']}</strong> &nbsp; {THREAT_LABELS.get(threat,'')}<br>"
+                f"<em style='font-size:12px;color:#64748b'>{changes.get('what_changed','')}</em>"
+                f"<br><br>"
             )
 
-            detail_html += (
-                f"<div style='margin-bottom:24px;border:1px solid {color};border-top:3px solid {color}'>"
-                f"<div style='padding:8px 12px;background:#f8fafc'>"
-                f"<strong style='color:{color};font-size:14px'>{c['name']}</strong>"
-                f" &nbsp; {THREAT_LABELS.get(threat,'')} &nbsp;"
-                f"<span style='color:#64748b;font-size:12px'>{c.get('segment','')}</span>"
-                f"</div>"
-                f"<table style='width:100%;border-collapse:collapse;font-size:12px'>{rows}</table>"
-                f"</div>"
+            if t2:
+                inner += f"<strong style='font-size:11px'>Top 3 This Week:</strong>{_ul(t2)}"
+
+            if new_claims:
+                inner += f"<strong style='font-size:11px'>New Product Claims:</strong>{_ul(new_claims)}"
+
+            if sales:
+                inner += (
+                    f"<div style='margin-top:8px;font-size:12px'>"
+                    f"<strong style='color:#16a34a'>⚔ Attack:</strong> {sales.get('what_to_attack','—')}<br>"
+                    f"<strong style='color:#dc2626'>🛡 Defend:</strong> {sales.get('what_to_defend','—')}<br>"
+                    f"<strong>Trap:</strong> {sales.get('trap_question','—')}"
+                    f"</div>"
+                )
+
+            detail += (
+                f"<div style='border-left:3px solid {color};padding:10px 14px;"
+                f"margin-bottom:12px;background:#fafafa'>{inner}</div>"
             )
 
-        sections.append(_section("📋 What Changed This Week", detail_html))
+        sections.append(_section("📋 What Changed This Week", detail))
     else:
-        sections.append(
-            _section(
-                "📋 What Changed This Week",
-                "<p style='color:#64748b;font-size:13px'>"
-                "No significant changes detected vs baseline this week.</p>"
-            )
-        )
+        sections.append(_section(
+            "📋 What Changed This Week",
+            "<p style='color:#64748b;font-size:13px'>No significant changes detected vs baseline this week.</p>"
+        ))
 
     # Blog suggestions
-    all_blogs = [
-        (c["name"], b)
-        for c in competitors
-        for b in c.get("blog_suggestions", [])
-        if b.get("title")
-    ]
-    if all_blogs:
+    blogs = [(c["name"], c["blog_suggestion"]) for c in competitors if c.get("blog_suggestion") and c.get("has_updates")]
+    if blogs:
         blog_rows = ""
-        for comp_name, b in all_blogs:
+        for comp_name, b in blogs:
             blog_rows += (
-                f"<tr>"
+                "<tr>"
                 + _td(f"<em style='color:#64748b;font-size:11px'>{comp_name}</em>")
-                + _td(
-                    f"<strong style='font-size:13px'>{b.get('title','')}</strong><br>"
-                    f"<span style='font-size:12px;color:#374151'>{b.get('angle','')}</span>"
-                )
+                + _td(f"<strong style='font-size:13px'>{b.get('title','')}</strong><br><span style='font-size:12px;color:#374151'>{b.get('angle','')}</span>")
                 + _td(f"<span style='font-size:11px;color:#6366f1'>{b.get('why_now','')}</span>")
                 + "</tr>"
             )
-        sections.append(
-            _section("✍️ Suggested Blog Posts",
-                "<table style='width:100%;border-collapse:collapse;font-size:12px'>"
-                "<thead><tr>"
-                + _th("In Response To")
-                + _th("Suggested Title &amp; Angle")
-                + _th("Why Now")
-                + "</tr></thead>"
-                + f"<tbody>{blog_rows}</tbody></table>"
-                + "<p style='font-size:11px;color:#94a3b8;margin-top:6px'>"
-                + "Posts do not name competitors directly.</p>"
-            )
-        )
+        sections.append(_section(
+            "✍️ Suggested Blog Posts",
+            "<table style='width:100%;border-collapse:collapse;font-size:12px'>"
+            "<thead><tr>" + _th("In Response To") + _th("Title &amp; Angle") + _th("Why Now") + "</tr></thead>"
+            + f"<tbody>{blog_rows}</tbody></table>"
+            + "<p style='font-size:11px;color:#94a3b8;margin-top:6px'>Posts do not name competitors directly.</p>"
+        ))
 
     return (
-        "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;"
-        "max-width:820px;margin:0 auto;padding:28px;color:#1e293b'>"
+        "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;max-width:820px;margin:0 auto;padding:28px;color:#1e293b'>"
         "<h1 style='color:#1e40af;margin-bottom:2px'>SAS Intelligent Decisioning</h1>"
-        "<h2 style='font-weight:normal;color:#64748b;margin-top:0;font-size:15px'>"
-        "Weekly Competitive Intelligence</h2>"
-        f"<p style='color:#94a3b8;font-size:11px;border-bottom:1px solid #e2e8f0;"
-        f"padding-bottom:14px'>Generated: {generated}</p>"
+        "<h2 style='font-weight:normal;color:#64748b;margin-top:0;font-size:15px'>Weekly Competitive Intelligence</h2>"
+        f"<p style='color:#94a3b8;font-size:11px;border-bottom:1px solid #e2e8f0;padding-bottom:14px'>Generated: {generated}</p>"
         + "\n".join(sections)
         + "<hr style='border:none;border-top:1px solid #e2e8f0;margin:28px 0'>"
-        "<p style='font-size:11px;color:#94a3b8'>"
-        "SAS Intel Feed &middot; Weekly Monday &middot; Powered by Claude</p>"
+        "<p style='font-size:11px;color:#94a3b8'>SAS Intel Feed · Weekly Monday · Powered by Claude</p>"
         "</body></html>"
     )
 
@@ -745,15 +493,15 @@ def build_delta_email_html(data: dict) -> str:
 # ── EMAIL SEND ────────────────────────────────────────────────────────────────
 
 def send_email(subject: str, html: str) -> None:
-    api_key = os.getenv("SENDGRID_API_KEY")
+    api_key  = os.getenv("SENDGRID_API_KEY")
     from_addr = os.getenv("EMAIL_FROM")
-    to_addr = os.getenv("EMAIL_TO")
+    to_addr   = os.getenv("EMAIL_TO")
 
     if not all([api_key, from_addr, to_addr]):
         print("⚠  SendGrid env vars not set. Skipping email.")
         return
 
-    recipients = [addr.strip() for addr in to_addr.split(",")]
+    recipients = [a.strip() for a in to_addr.split(",")]
 
     import sendgrid
     from sendgrid.helpers.mail import Mail, To
@@ -766,8 +514,8 @@ def send_email(subject: str, html: str) -> None:
     )
     try:
         sg = sendgrid.SendGridAPIClient(api_key=api_key)
-        response = sg.send(msg)
-        print(f"✓ Email sent → {', '.join(recipients)} (status {response.status_code})")
+        resp = sg.send(msg)
+        print(f"✓ Email sent → {', '.join(recipients)} (status {resp.status_code})")
     except Exception as e:
         print(f"✗ Email failed: {e}")
 
@@ -775,33 +523,29 @@ def send_email(subject: str, html: str) -> None:
 # ── MAIN ──────────────────────────────────────────────────────────────────────
 
 def main():
-    parser = argparse.ArgumentParser(description="SAS Intel Feed — Battlecard Edition")
-    parser.add_argument("--baseline", action="store_true",
-                        help="Generate full baseline battlecards from Claude knowledge (run once)")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Fetch feeds only; skip Claude + email")
-    parser.add_argument("--hours", type=int, default=LOOKBACK_HOURS,
-                        help="Lookback window in hours")
-    parser.add_argument("--file", nargs="*", metavar="PATH",
-                        help="PDF/image files to attach as context")
+    parser = argparse.ArgumentParser(description="SAS Intel Feed")
+    parser.add_argument("--baseline", action="store_true", help="Generate full baseline battlecards")
+    parser.add_argument("--dry-run",  action="store_true", help="Fetch feeds only, skip Claude + email")
+    parser.add_argument("--hours",    type=int, default=LOOKBACK_HOURS, help="Lookback window in hours")
+    parser.add_argument("--file",     nargs="*", metavar="PATH", help="PDF/image context files")
     args = parser.parse_args()
 
     print(f"\nSAS Intel Feed  —  {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}")
+    date_str = datetime.now().strftime("%b %d, %Y")
 
-    # ── BASELINE MODE ─────────────────────────────────────────────────────────
+    # ── BASELINE ──────────────────────────────────────────────────────────────
     if args.baseline:
         print("Mode: BASELINE\n")
         data = run_baseline()
         save_json(data, BASELINE_FILE)
-        date_str = datetime.now().strftime("%b %d, %Y")
         send_email(
             subject=f"SAS Competitive Baseline Battlecards — {date_str}",
-            html=build_baseline_email_html(data),
+            html=build_baseline_email(data),
         )
-        print("\nBaseline complete. Run 'python fetch_intel.py' for weekly delta runs.\n")
+        print("\nBaseline complete.\n")
         return
 
-    # ── WEEKLY DELTA MODE ─────────────────────────────────────────────────────
+    # ── WEEKLY DELTA ──────────────────────────────────────────────────────────
     print(f"Mode: WEEKLY DELTA  |  Lookback: {args.hours}h  |  Competitors: {len(COMPETITORS)}\n")
 
     all_items: dict[str, list] = {}
@@ -812,16 +556,13 @@ def main():
         counts = {"blog": 0, "newsroom": 0, "google": 0}
         for item in items:
             counts[item.get("source_type", "google")] += 1
-        print(
-            f"    → {len(items)} items  "
-            f"[📝 {counts['blog']}  📣 {counts['newsroom']}  📰 {counts['google']}]\n"
-        )
+        print(f"    → {len(items)} items [📝{counts['blog']} 📣{counts['newsroom']} 📰{counts['google']}]\n")
 
     total = sum(len(v) for v in all_items.values())
-    print(f"Total items collected: {total}")
+    print(f"Total items: {total}")
 
     if args.dry_run:
-        print("\n[dry-run] Skipping Claude analysis and email.")
+        print("\n[dry-run] Skipping Claude + email.")
         return
 
     print("\nRunning Claude analysis...")
@@ -829,13 +570,10 @@ def main():
     result["generated_at"] = datetime.now(timezone.utc).isoformat()
 
     save_json(result, FEED_FILE)
-
-    date_str = datetime.now().strftime("%b %d, %Y")
     send_email(
         subject=f"SAS Competitive Intel — {date_str}",
-        html=build_delta_email_html(result),
+        html=build_delta_email(result),
     )
-
     print("\nDone.\n")
 
 
