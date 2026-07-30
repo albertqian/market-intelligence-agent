@@ -213,20 +213,39 @@ Accuracy matters more than brevity here. Use everything you know.
 
 def run_baseline() -> dict:
     print("\nGenerating baseline battlecards from Claude training knowledge...")
-    print("(This may take 60-90 seconds — Claude is writing full profiles for all 10 competitors)\n")
+    print("(Running in two batches of 5 — takes 2-3 minutes total)\n")
 
-    prompt = (
-        "Generate complete baseline battlecards for all 10 SAS Intelligent Decisioning competitors: "
-        "Sapiens, Palantir, Pegasystems, IBM, FICO, Provenir, ACTICO, CRIF, Aera Technology, Quantexa.\n\n"
-        "Be thorough. This is the foundation all future weekly updates will be compared against.\n\n"
-        "Return only the JSON."
-    )
+    # Split into two batches to stay within token limits
+    batches = [
+        ["Sapiens", "Palantir", "Pegasystems", "IBM", "FICO"],
+        ["Provenir", "ACTICO", "CRIF", "Aera Technology", "Quantexa"],
+    ]
 
-    raw = call_claude(prompt, BASELINE_SYSTEM)
-    data = parse_json(raw)
-    data["generated_at"] = datetime.now(timezone.utc).isoformat()
-    data["type"] = "baseline"
-    return data
+    all_competitors = []
+    for i, batch in enumerate(batches, 1):
+        names = ", ".join(batch)
+        print(f"  Batch {i}/2: {names}")
+        prompt = (
+            f"Generate complete baseline battlecards for these SAS Intelligent Decisioning competitors: "
+            f"{names}.\n\n"
+            "Be thorough — this is the foundation all future weekly updates compare against.\n\n"
+            "Return only the JSON with this exact structure:\n"
+            "{\n"
+            '  "competitors": [ ... ]\n'
+            "}"
+        )
+        raw = call_claude(prompt, BASELINE_SYSTEM)
+        batch_data = parse_json(raw)
+        comps = batch_data.get("competitors", [])
+        print(f"    ✓ {len(comps)} competitor(s) returned")
+        all_competitors.extend(comps)
+        time.sleep(2)  # brief pause between batches
+
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "type": "baseline",
+        "competitors": all_competitors,
+    }
 
 
 # ── WEEKLY DELTA RUN ──────────────────────────────────────────────────────────
