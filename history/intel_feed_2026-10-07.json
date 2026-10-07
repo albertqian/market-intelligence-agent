@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T04:49:51.503625+00:00",
+  "generated_at": "2026-10-07T05:00:40.855449+00:00",
   "market_signals": [],
   "competitors": [
     {
@@ -8,60 +8,58 @@
       "threat_level": "high",
       "has_updates": true,
       "content_activity": {
-        "blog_count": 2,
+        "blog_count": 1,
         "newsroom_count": 5,
         "trade_press_count": 2
       },
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "Sapiens launched Arrow (July 2026), a major release claiming governed automation from decision requirements to deployment, and received Everest Group 'Luminary' recognition (April 2026) — the first time Sapiens has claimed back-to-back tier-one analyst leadership in AI decisioning, directly elevating its credibility in SAS's regulated-industry territory."
+        "what_changed": "Sapiens launched 'Arrow' in July 2026 — a major release explicitly claiming governed automation from decision requirements to production — and earned Everest Group 'Luminary' recognition in April 2026, marking a shift from insurance-suite vendor to a credible standalone AI decisioning platform competitor in regulated industries."
       },
       "tab2_top_3_things_to_know": [
-        "Sapiens Arrow is positioned as closing the gap between decision requirements and governed automation in a single release, targeting regulated industries with an insurance-native decisioning platform.",
-        "Everest Group named Sapiens Decision a 'Luminary' in AI-Powered Decision Intelligence 2026, following a Forrester Leader designation in July 2025 — analyst momentum is accelerating rapidly.",
-        "Sapiens' Model.AI release introduces ML and AI within the decisioning platform for business users, signaling a shift from pure rules to hybrid AI-rules governance aimed at non-technical practitioners."
+        "Arrow (July 2026) ships with back-to-back analyst recognitions as proof points, directly targeting regulated-industry buyers who equate analyst validation with enterprise safety.",
+        "Decision Analytics module provides real-time visibility into automated decision outcomes — a capability gap SAS must close or reframe before Sapiens uses it to define the transparency standard.",
+        "Model.AI release signals Sapiens is moving business users into AI/ML authoring within the decisioning layer, reducing dependency on data science teams and accelerating low-code AI adoption in insurance."
       ],
       "new_product_claims": [
-        "Arrow enables regulated organisations to move faster from decision requirements to governed automation in a single integrated release.",
-        "Decision Analytics module provides real-time visibility and optimization of automated decision outcomes."
+        "Arrow enables regulated organisations to move faster from decision requirements to governed automation.",
+        "Decision Analytics delivers real-time visibility and optimization across automated AI decision processes."
       ],
       "sales_impact": {
-        "what_to_attack": "SAS ID governs the judgment behind the data and the model, not just the automation of the rule — Sapiens' governance starts at rule configuration, leaving the organizational and data-origin judgment ungoverned.",
-        "what_to_defend": "Sapiens' analyst momentum and insurance-native positioning will make it a credible shortlist alternative in insurance RFPs; SAS must be ready to demonstrate deeper governance depth and cross-industry scale.",
-        "trap_question": "When your decisioning platform flags an unexpected outcome, can it trace accountability back to the organizational judgment that configured the underlying data and model — or only to the rule that executed?"
+        "what_to_attack": "Sapiens governance is insurance-workflow-native but does not surface or manage the organizational judgment behind the rules — SAS ID governs the decision logic and its origin, not just its execution.",
+        "what_to_defend": "Sapiens' dual analyst recognition (Forrester Leader + Everest Luminary) in the same cycle will resonate strongly with insurance CIOs who use analyst reports as buying shortcuts.",
+        "trap_question": "When a rule changes in your platform, can you show us who authorized that change, what business rationale was recorded, and how the system prevented the change from introducing bias — or does your audit trail only show that a change occurred?"
       },
-      "judgment_gap": "Sapiens governs the automation of decisions but treats the business rules and AI models as the authoritative source of truth, never surfacing or auditing the organizational judgment that produced those rules — SAS's judgment-as-foundation principle exposes this as governing the symptom rather than the cause."
+      "judgment_gap": "Sapiens Decision governs rule execution and decision outcomes with real-time analytics, but it does not expose or govern the organizational judgment — underwriting philosophy, risk appetite, actuarial assumptions — that produced those rules in the first place, treating that judgment as a given rather than a governed input."
     },
     {
       "name": "Palantir",
-      "segment": "Enterprise AI Platform / Operational AI",
+      "segment": "Enterprise AI / Operational Intelligence",
       "threat_level": "medium",
       "has_updates": true,
       "content_activity": {
         "blog_count": 1,
-        "newsroom_count": 2,
+        "newsroom_count": 1,
         "trade_press_count": 3
       },
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": false,
-        "what_changed": "Palantir is actively repositioning AIP from a government-centric platform to a commercial enterprise AI system, with a new NVIDIA partnership (GTC Washington) building an integrated operational AI stack — signaling accelerated commercial market aggression."
+        "what_changed": "Palantir is actively repositioning AIP from a government-centric platform to a full commercial enterprise AI operating system (August 2026 analysis confirms this shift), amplified by the NVIDIA collaboration that frames AIP as the operational AI stack for enterprise data-to-decision pipelines."
       },
       "tab2_top_3_things_to_know": [
-        "Palantir-NVIDIA partnership creates a first-of-its-kind integrated stack for operational AI combining analytics, reference workflows, and automation — raising the enterprise credibility of Palantir's commercial play.",
-        "AIP's ontology layer is now being marketed as a 'living map' that connects LLMs and agents to live enterprise data, positioning governance as a byproduct of the data model rather than a designed-in principle.",
-        "Palantir's August 2026 commercial pivot narrative is gaining analyst and media traction, with the AIP transformation described as reshaping the entire company's market identity."
+        "The NVIDIA-Palantir collaboration builds an integrated stack for operational AI including analytics, reference workflows, and automation — increasing Palantir's credibility with enterprise technology buyers who prioritize infrastructure coherence.",
+        "Palantir AIP's Ontology layer is being marketed as a 'living map' of enterprise operations that connects LLMs to live data — this framing positions the ontology as the source of decision truth, which is philosophically the opposite of SAS's judgment-as-foundation model.",
+        "Palantir's commercial pivot (August 2026) means it will increasingly compete for the same enterprise AI budget as SAS ID in non-government sectors, not just defense and intelligence."
       ],
-      "new_product_claims": [
-        "Palantir AIP now forms an 'AI Mesh' operating system with Foundry and Apollo for full-range AI-driven operational products."
-      ],
+      "new_product_claims": [],
       "sales_impact": {
-        "what_to_attack": "Palantir's governance is a configuration of its ontology, not a first-principle — organizations that deploy AIP inherit governance assumptions embedded in how the ontology was built, with no mechanism to audit the judgment behind that construction.",
-        "what_to_defend": "The NVIDIA partnership gives Palantir significant enterprise credibility for operational AI at scale, which may resonate with CIOs evaluating infrastructure-first AI strategies over governance-first approaches.",
-        "trap_question": "If your ontology encodes a flawed assumption about how a business entity should be represented, what mechanism in your platform surfaces and corrects the organizational judgment that produced that assumption?"
+        "what_to_attack": "Palantir's ontology assumes the data it maps is accurate and complete — SAS ID challenges whether the judgment that produced that data was sound, which the ontology cannot answer.",
+        "what_to_defend": "The NVIDIA partnership gives Palantir infrastructure credibility that appeals to CIOs evaluating AI platforms on compute and scalability grounds where SAS must lead with governance and analytics depth.",
+        "trap_question": "Your ontology maps what your enterprise data says — but who decided what data to include, how it was labeled, and what organizational values shaped its collection, and where is that judgment auditable in your platform?"
       },
-      "judgment_gap": "Palantir's ontology is presented as a trustworthy map of the enterprise, but it encodes the judgment of whoever built it without auditing or governing that originating judgment — SAS's principle exposes that treating the ontology as ground truth is itself an ungoverned assumption."
+      "judgment_gap": "Palantir's ontology-driven approach assumes that a sufficiently complete map of enterprise data produces trustworthy decisions, but it does not surface or govern the human judgment that determined what was captured, how it was defined, or what was excluded — treating data completeness as a proxy for decision soundness."
     },
     {
       "name": "Pegasystems",
@@ -69,30 +67,30 @@
       "threat_level": "high",
       "has_updates": true,
       "content_activity": {
-        "blog_count": 1,
+        "blog_count": 0,
         "newsroom_count": 4,
         "trade_press_count": 2
       },
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "Pega Infinity 26 introduced 'Predictable AI' as a core commercial differentiator — framing cost predictability and outcome consistency as governance — and launched Customer Engagement Studio as an agentic UX layer, signaling Pega is evolving Customer Decision Hub from a rules engine into an agentic orchestration platform."
+        "what_changed": "Pega Infinity 26 (July 2026) introduces a 'Predictable AI' cost and outcome framework with agentic optimization at design time, and the new Customer Engagement Studio (June 2026) adds an agentic UX layer to CDH — shifting Pega's positioning from next-best-action engine to a full agentic enterprise AI suite with explicit cost governance messaging."
       },
       "tab2_top_3_things_to_know": [
-        "Pega's 'Predictable AI' positioning in Infinity 26 reframes governance as financial and operational predictability, which is a commercially resonant but philosophically shallow substitute for judgment-level governance.",
-        "Pega Customer Engagement Studio is a new agentic UX for Customer Decision Hub, accelerating Pega's move toward autonomous customer engagement workflows — with responsible AI advancements announced August 2026.",
-        "Pega's Q2 2026 results and CEO commentary emphasize token-efficiency and design-time AI optimization, indicating Pega is competing on AI cost economics as a governance proxy."
+        "Pega's 'Predictable AI Costs' messaging in Infinity 26 directly targets CFO and procurement objections to agentic AI — a budget-level argument SAS must respond to with its own cost and ROI framing.",
+        "Customer Engagement Studio adds agentic UX to CDH, meaning Pega is now offering business users a natural-language interface to design and modify decisioning strategies — lowering the technical barrier but not the governance gap.",
+        "Pega's responsible AI advances (August 2026) include new capabilities and a strategic partnership, signaling that Pega is actively contesting the 'responsible AI' narrative that SAS has historically owned."
       ],
       "new_product_claims": [
-        "Pega Infinity 26 delivers 'Predictable AI' by applying agents at design time to optimize runtime token use, framing cost predictability as responsible AI.",
-        "Pega Customer Engagement Studio transforms marketing operations with agentic AI layered on top of Customer Decision Hub."
+        "Pega Infinity 26 delivers predictable AI outcomes and predictable AI costs by applying agents at design time to optimize run-time token use.",
+        "Pega Customer Engagement Studio provides an agentic user experience for decisioning strategy design within Customer Decision Hub."
       ],
       "sales_impact": {
-        "what_to_attack": "Pega's 'Predictable AI' is a cost and operations argument, not a governance argument — it cannot answer whether the next-best-action logic reflects sound organizational judgment or merely optimized engagement metrics.",
-        "what_to_defend": "Pega's agentic decisioning narrative combined with responsible AI announcements will appeal to CX-focused buyers who conflate personalization governance with decision governance — SAS must clarify the distinction.",
-        "trap_question": "When your next-best-action model recommends an action that is technically optimal but misaligned with your organization's values or strategy, where in your platform is the mechanism to trace and correct the judgment that produced that model?"
+        "what_to_attack": "Pega's next-best-action logic encodes organizational strategy as model weights and rules but does not make the business judgment behind those rules traceable to the people and policies that authorized them — SAS ID does.",
+        "what_to_defend": "Pega's responsible AI partnership announcement and new capabilities will give it credibility in responsible AI conversations where SAS has traditionally differentiated — SAS must lead with judgment provenance, not just model explainability.",
+        "trap_question": "When your agentic system modifies a decisioning strategy at design time to reduce token cost, how do you ensure that optimization didn't override a business rule that reflects a deliberate organizational policy decision — and where is that conflict auditable?"
       },
-      "judgment_gap": "Pega treats next-best-action logic as an output to be optimized and made predictable, but does not govern the organizational judgment that defined what 'best' means — SAS's principle reveals that optimizing an ungoverned objective function at scale is not responsible AI, it is governed optimization of an unjustified goal."
+      "judgment_gap": "Pega's decisioning architecture treats the rules and models configured in CDH as the source of decision truth, but it does not govern or surface the organizational judgment — strategy, ethics, risk appetite — that determined what those rules should express, making governance a configuration activity rather than a design principle."
     },
     {
       "name": "IBM",
@@ -100,35 +98,35 @@
       "threat_level": "medium",
       "has_updates": true,
       "content_activity": {
-        "blog_count": 1,
-        "newsroom_count": 4,
-        "trade_press_count": 2
+        "blog_count": 0,
+        "newsroom_count": 3,
+        "trade_press_count": 3
       },
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "IBM ODM 9.6 now includes agentic decision automation capabilities (July 2026), and IBM Think 2026 positioned watsonx Orchestrate as an enterprise agentic AI control plane for deploying and governing thousands of AI agents — IBM is actively converging its legacy rules platform with its AI governance stack under an agentic orchestration narrative."
+        "what_changed": "IBM ODM 9.6 (July 2026) introduces agentic decision automation capabilities, and Think 2026 (May 2026) repositioned watsonx Orchestrate as an enterprise agentic AI control plane — IBM is converging its historically separate rules (ODM) and AI governance (watsonx) stacks into a unified agentic decisioning narrative."
       },
       "tab2_top_3_things_to_know": [
-        "IBM ODM 9.6 ships with agentic decision automation, meaning IBM's rules platform now claims to orchestrate AI agents — blurring the line between rule execution and autonomous AI action without a clear governance-origin framework.",
-        "watsonx Orchestrate, announced at Think 2026, is IBM's bid to become the enterprise control plane for thousands of AI agents, with audit and deployment governance presented as platform configuration features.",
-        "IBM's second consecutive Gartner Magic Quadrant Leader recognition for AI Platforms (DSML) in 2026 reinforces its enterprise AI credibility, but its governance story remains tied to model-layer controls rather than judgment-origin governance."
+        "ODM 9.6's agentic decision automation hooks mean IBM is now connecting its legacy rules engine directly to AI agent orchestration — creating a hybrid rules-plus-agents architecture that could appeal to enterprises already on IBM infrastructure.",
+        "watsonx Orchestrate's positioning as a control plane for 'thousands of AI agents' at Think 2026 is a scale claim SAS must contextualize — scale without traceable judgment provenance is infrastructure, not governance.",
+        "IBM's second consecutive Gartner Magic Quadrant Leader recognition for DSML Platforms (2026) reinforces its AI platform credibility among enterprise technology buyers, making it a more formidable governance narrative competitor than in prior years."
       ],
       "new_product_claims": [
-        "IBM ODM 9.6 introduces agentic decision automation, allowing decision services to orchestrate AI agents within enterprise workflows.",
-        "watsonx Orchestrate is positioned as a control plane that lets organizations deploy, govern, and audit thousands of AI agents at enterprise scale."
+        "IBM ODM 9.6 significantly enhances how decision services are designed, integrated, and operated across modern enterprise landscapes with agentic decision automation.",
+        "watsonx Orchestrate enables organizations to deploy, govern, and audit thousands of AI agents as an enterprise agentic AI control plane."
       ],
       "sales_impact": {
-        "what_to_attack": "IBM's governance is applied at the model and deployment layer via watsonx.governance — it audits what the AI did, not whether the data and judgment that trained it were sound, which is the deeper governance gap SAS addresses.",
-        "what_to_defend": "IBM's Gartner recognition and Think 2026 agentic narrative will resonate with enterprise IT buyers already invested in the IBM stack; SAS must make the case that platform-native governance is not the same as judgment-native governance.",
-        "trap_question": "Your governance platform can audit whether an AI agent followed its instructions — but can it audit whether the instructions themselves reflected sound organizational judgment, and who is accountable if they did not?"
+        "what_to_attack": "IBM's convergence of ODM rules and watsonx governance is an integration story, not a design principle — the two products were built independently and governance was added to AI capabilities after the fact, which is precisely what SAS argues is insufficient.",
+        "what_to_defend": "IBM's hybrid cloud and sovereign cloud strategy (Think 2026) will resonate with government and regulated enterprise buyers who prioritize infrastructure control — SAS must ensure its governance story is paired with equally strong deployment flexibility messaging.",
+        "trap_question": "Your ODM rules and your watsonx governance operate as separate products integrated together — when a conflict arises between a rule's intent and an AI agent's action, which system is the authority, and how is that arbitration itself governed and traceable?"
       },
-      "judgment_gap": "IBM's governance architecture monitors and audits AI model behavior within a configured infrastructure, but treats the data, objectives, and rules fed into that infrastructure as given inputs — SAS's principle exposes that governing the pipeline without governing the judgment that built the pipeline leaves the most consequential decisions ungoverned."
+      "judgment_gap": "IBM's approach treats governance as a layer applied to AI outputs via watsonx.governance while ODM governs rule logic — but neither product governs the organizational judgment that determined what the rules should express or what the AI was trained to optimize, assuming those inputs are sound by design."
     },
     {
       "name": "FICO",
-      "segment": "Decision Management / Credit and Risk",
-      "threat_level": "medium",
+      "segment": "Decision Management / Credit Analytics",
+      "threat_level": "high",
       "has_updates": true,
       "content_activity": {
         "blog_count": 0,
@@ -138,26 +136,27 @@
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "FICO was named a Gartner Magic Quadrant Leader for Decision Intelligence Platforms in 2026, and its FICO World 2026 'agentic customer' demo introduced the concept of platforms negotiating with AI-initiated customer agents — FICO is now framing decision management as a two-sided agentic interaction problem, not just an enterprise automation problem."
+        "what_changed": "FICO's Gartner Magic Quadrant Leader recognition for Decision Intelligence Platforms (2026) and its FICO World 2026 'Managing the Agentic Customer' main stage demo signal FICO is expanding its narrative from credit scoring and lending automation to a broader agentic decision intelligence platform — competing more directly with SAS ID beyond financial services."
       },
       "tab2_top_3_things_to_know": [
-        "FICO's Gartner Decision Intelligence Platform Leader recognition in 2026 significantly elevates its competitive positioning beyond credit and lending into the broader enterprise decisioning market where SAS competes.",
-        "FICO World 2026's 'agentic customer' concept positions FICO Platform as infrastructure for handling autonomous AI agents acting on behalf of customers — a novel framing that extends decisioning to machine-to-machine interactions.",
-        "FICO Decision Awards 2026 and 2027 nominations showcase T-Mobile, Erste Group, and Inditex as marquee non-financial-services wins, indicating FICO is diversifying its customer base beyond regulated lending."
+        "FICO's 2026 Gartner Magic Quadrant Leader placement for Decision Intelligence Platforms — not just lending analytics — broadens its competitive surface area and gives it analyst cover to pursue enterprise buyers outside financial services.",
+        "The 'Managing the Agentic Customer' FICO World 2026 demo positions FICO as an authority on how enterprises should govern AI interactions initiated by AI-agent-driven customers, a novel framing that could resonate with financial services CROs.",
+        "The 2027 FICO Decision Awards nominations are open and feature winners across T-Mobile, Inditex, and Erste Group — demonstrating cross-industry applicability that FICO will use to challenge SAS's enterprise breadth argument."
       ],
       "new_product_claims": [
-        "FICO Platform is positioned to manage decisioning when the 'customer' is itself an AI agent initiating and negotiating transactions autonomously."
+        "FICO Platform is named a Leader in the 2026 Gartner Magic Quadrant for Decision Intelligence Platforms.",
+        "FICO Platform enables businesses to negotiate with and manage AI-agent-driven customers through its agentic customer management capabilities."
       ],
       "sales_impact": {
-        "what_to_attack": "FICO's decisioning intelligence is optimized for high-volume transactional accuracy within a defined scoring model, but the judgment embedded in that model's construction — what to weight, what data to trust — is not surfaced or governed by the platform.",
-        "what_to_defend": "FICO's Gartner Leader status will make it a default shortlist entry in enterprise decision intelligence evaluations previously dominated by SAS; SAS must aggressively differentiate on governance depth, not just analytical sophistication.",
-        "trap_question": "When your scoring model produces a decision that is statistically accurate but reflects a historical data bias, what mechanism in your platform identifies and governs the judgment that introduced that bias at the point of data construction?"
+        "what_to_attack": "FICO's decisioning intelligence is rooted in scoring models and optimization algorithms where the judgment is implicit in the model's training objectives — SAS ID makes that judgment explicit, traceable, and governable before the model is ever trained.",
+        "what_to_defend": "FICO's Gartner Magic Quadrant Leader placement will be used aggressively in financial services deals as a shorthand for enterprise readiness — SAS must counter with judgment-provenance depth and cross-industry governance breadth.",
+        "trap_question": "Your scoring models encode risk appetite and lending philosophy as statistical weights — can you show us where those values were explicitly authorized by your organization's leadership, and how the platform prevents model drift from silently overriding that mandate?"
       },
-      "judgment_gap": "FICO treats the scoring model and the data it was trained on as the authoritative basis for decisions, optimizing relentlessly within that frame — but never surfaces or governs the organizational judgment that determined which variables to include, which populations to sample, and which outcomes to optimize for, which is precisely where consequential bias and misalignment originate."
+      "judgment_gap": "FICO's platform optimizes decisions based on analytical models whose objective functions encode organizational risk and value judgments as implicit statistical parameters — the platform governs model accuracy and decision consistency, but it does not surface or make governable the judgment that defined what the model should optimize for in the first place."
     },
     {
       "name": "Provenir",
-      "segment": "Fintech-native decisioning",
+      "segment": "Fintech-native",
       "threat_level": "high",
       "has_updates": true,
       "content_activity": {
@@ -168,22 +167,22 @@
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "Provenir launched a new platform generation (Cloud2) with agentic AI features and secured Marginalen Bank as a live migration customer, while claiming a second consecutive IDC MarketScape Major Players position — signaling an accelerated push toward enterprise credibility beyond fintech-native positioning."
+        "what_changed": "Provenir launched a new Decision Intelligence Platform with explicit agentic AI features and secured a second consecutive IDC MarketScape Major Player designation, signaling a deliberate move upmarket from pure fintech-native credit decisioning toward a broader AI decisioning narrative."
       },
       "tab2_top_3_things_to_know": [
-        "Provenir is now positioning itself as an enterprise Decision Intelligence platform, not just a credit risk tool, with agentic AI as the headline differentiator.",
-        "The Marginalen Bank win demonstrates real cloud migration momentum on Cloud2, making it a live reference customer SAS will encounter in Nordic and European deals.",
-        "IDC's second consecutive Major Players placement gives Provenir analyst cover to compete in RFPs where enterprise pedigree previously limited them."
+        "Provenir is now a two-time IDC MarketScape Major Player in Decision Intelligence Platforms, lending analyst credibility to its enterprise positioning.",
+        "The new platform launch centers on agentic AI as a differentiator, targeting fraud, collections, and credit risk use cases with adaptive intelligence claims.",
+        "Marginalen Bank's migration to Provenir Cloud2 demonstrates active cloud modernization wins in the European financial services market."
       ],
       "new_product_claims": [
-        "Provenir Cloud2 delivers agentic AI-powered risk decisioning for fraud, credit, and collections in a no-code PaaS model."
+        "Agentic AI features embedded in the new Decision Intelligence Platform that adapt to evolving fraud patterns without increasing false-positive friction."
       ],
       "sales_impact": {
-        "what_to_attack": "SAS wins on governance depth and explainability — Provenir's no-code speed is built for business user autonomy, not for traceable organizational judgment or model risk management.",
-        "what_to_defend": "Provenir's IDC placement and agentic AI messaging will appear in enterprise shortlists; SAS must be ready to distinguish governed AI from autonomous AI in procurement conversations.",
-        "trap_question": "When your agentic AI makes a decisioning error, can you trace the failure back to the organizational judgment that shaped the underlying data — or only to the model output?"
+        "what_to_attack": "SAS wins on governance depth and explainability — Provenir's agentic AI claims lack any visible auditability or lineage framework for the judgment behind the decisioning models.",
+        "what_to_defend": "Be ready for Provenir to lead with IDC analyst recognition and cloud-native speed as reasons to displace SAS in mid-market financial services deals.",
+        "trap_question": "When your agentic AI adapts its fraud model, how does your platform document which organizational judgment or policy change authorized that adaptation?"
       },
-      "judgment_gap": "Provenir's no-code agentic platform assumes the data fed into its risk models is correct and representative, but it provides no mechanism to surface or govern the business judgment that defined what data to collect, how to label risk, or whose outcomes were used as training signal."
+      "judgment_gap": "Provenir's platform assumes that data fed into its adaptive models is sound and representative, with no mechanism to surface or govern the human judgment that originally defined the risk criteria — SAS's foundation principle directly exposes this as an ungoverned assumption at the origin of every decision."
     },
     {
       "name": "ACTICO",
@@ -198,22 +197,23 @@
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "ACTICO added agentic AI to its rules-based Decision Management Platform and introduced AI agents specifically for compliance workflows, while announcing a strategic partnership with Axe Finance — a significant shift from pure rules automation toward AI-assisted decision authoring."
+        "what_changed": "ACTICO has shifted from a pure rules/BRMS positioning to an agentic AI narrative, launching AI-assisted decision modeling and controlled AI agents for compliance, while also announcing a strategic tie-up with Axe Finance to expand credit origination reach."
       },
       "tab2_top_3_things_to_know": [
-        "ACTICO's new agentic AI capability allows AI to co-author decision logic within its rules platform, framed as 'fully under expert control' — a direct attempt to own the governance narrative.",
-        "ACTICO's AI compliance agents handle research, analysis, and documentation in regulated processes, positioning the company in AML and compliance workflows previously dominated by specialist vendors.",
-        "The Axe Finance partnership expands ACTICO's credit decisioning footprint and adds a lending-specific channel that narrows SAS's differentiation in that segment."
+        "ACTICO launched agentic AI capabilities in its Decision Management Platform, framing AI as accelerating decision logic creation 'fully under expert control.'",
+        "Controlled AI agents for compliance were introduced September 1, 2026, targeting preparatory research, analysis, and documentation tasks in regulated processes.",
+        "ACTICO joined forces with Axe Finance, expanding its footprint in credit origination and lending automation markets."
       ],
       "new_product_claims": [
-        "ACTICO Decision Management Platform now includes agentic AI for decision logic authoring and controlled AI agents for compliance preparatory tasks, both under expert human oversight."
+        "AI-assisted decision modeling that lets domain experts shape decision logic at AI speed while retaining control.",
+        "Controlled AI agents that handle compliance research and documentation under human oversight."
       ],
       "sales_impact": {
-        "what_to_attack": "SAS wins on governance lineage — ACTICO's 'expert control' framing still treats the rules themselves as the source of truth, not the organizational judgment that produced them, leaving accountability gaps SAS can expose.",
-        "what_to_defend": "ACTICO's Chartis AML Category Leader recognition and new compliance agents will attract regulated institutions looking for a lighter-weight alternative; SAS must reinforce depth of model risk governance.",
-        "trap_question": "If an AI agent writes a compliance rule and that rule later produces a discriminatory outcome, can your platform show the human judgment decision that authorized the logic — or only that an expert approved the output?"
+        "what_to_attack": "SAS wins by demonstrating that ACTICO's 'expert control' framing still treats the rules themselves as the source of truth, without governing or tracing the organizational judgment that originally defined those rules.",
+        "what_to_defend": "ACTICO will use its Chartis Category Leader recognition in AML and new agentic framing to compete in compliance-heavy financial services accounts where SAS also plays.",
+        "trap_question": "When your AI agent assists in creating decision logic, how does your system record and govern the organizational policy judgment that the AI was trained on or prompted with?"
       },
-      "judgment_gap": "ACTICO's rules-based architecture treats codified logic as the governance endpoint, but neither the rules nor the AI agents that now co-author them are traced back to the organizational values and leadership decisions that should be governing those choices from the start."
+      "judgment_gap": "ACTICO's architecture treats expert-defined rules as the authoritative source, but does not surface or govern the organizational judgment and values that produced those rules in the first place — SAS's principle argues that codifying logic is not the same as governing the judgment behind it."
     },
     {
       "name": "CRIF",
@@ -228,22 +228,22 @@
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "CRIF launched 'Strategy Mentor,' a GenAI capability within StrategyOne that generates decision strategy logic from business requirements, and demoed it at FinovateSpring 2026 — marking a shift from data-driven scoring toward AI-authored decision strategy design."
+        "what_changed": "CRIF introduced 'Strategy Mentor,' a GenAI capability within StrategyOne that auto-generates decision strategies and logic from business requirements, and announced the forthcoming CRIF ORCHESTRA platform for unified credit management — both moves signal a push toward AI-native, business-user-led decisioning."
       },
       "tab2_top_3_things_to_know": [
-        "Strategy Mentor allows financial institutions to describe a business requirement in natural language and receive a deployable credit decision strategy, dramatically compressing strategy development cycles.",
-        "CRIF is also teasing 'CRIF ORCHESTRA,' a new unified credit management platform with a world premiere webinar — indicating a broader platform consolidation move.",
-        "CRIF's conversational AI agent for business information, already live in Singapore and Indonesia, shows it is building AI-native data access layers alongside its decisioning tools."
+        "Strategy Mentor uses GenAI to convert business requirements directly into deployable credit decision logic, demonstrated live at FinovateSpring 2026.",
+        "CRIF ORCHESTRA is a new upcoming platform for unified credit management, previewed via webinar registration, indicating a major product consolidation move.",
+        "CRIF's conversational AI agent for business information, launched in Asia, signals geographic and product expansion beyond traditional credit decisioning."
       ],
       "new_product_claims": [
-        "StrategyOne's Strategy Mentor uses GenAI to translate business requirements directly into decision logic and scorecards without manual modeling."
+        "Strategy Mentor: GenAI that translates business intent into decision strategy logic without manual modeling, embedded in StrategyOne."
       ],
       "sales_impact": {
-        "what_to_attack": "SAS wins on governed model development — CRIF's AI-authored strategies accelerate deployment but bypass the validated, auditable model development lifecycle that regulated lenders require.",
-        "what_to_defend": "CRIF's FinovateSpring visibility and no-code GenAI narrative will appeal to mid-market lenders prioritizing speed; SAS must make the case that speed without governance is a liability, not a feature.",
-        "trap_question": "When Strategy Mentor generates a credit decision logic from a business requirement, where in that process is the institution's lending policy — and the judgment behind it — formally captured and auditable?"
+        "what_to_attack": "SAS wins by exposing that GenAI-generated decision logic inherits the assumptions of historical training data, making Strategy Mentor's output only as sound as the data and prompts it was given — governance of that origin is absent.",
+        "what_to_defend": "CRIF's no-code, business-user-led positioning will resonate strongly with credit teams that want to bypass IT and data science bottlenecks — SAS must show that speed without governance is a strategic liability.",
+        "trap_question": "When Strategy Mentor generates a decision strategy, how do you audit whether the logic it produced reflects your institution's current risk appetite, or the patterns embedded in your historical data?"
       },
-      "judgment_gap": "CRIF's GenAI strategy generation treats a business requirement as sufficient input for decision logic, but it does not surface or govern the institutional judgment about credit philosophy, risk appetite, or fairness that should precede any automated strategy design."
+      "judgment_gap": "CRIF's GenAI-driven strategy creation assumes that historical data and business-user prompts are sufficient inputs for sound decision logic, with no mechanism to interrogate or govern the organizational judgment those inputs encode — SAS's principle reveals this as automating assumption, not governing intent."
     },
     {
       "name": "Aera Technology",
@@ -258,22 +258,22 @@
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "Aera secured Accenture Ventures investment, launched agentic reasoning that enables end-to-end decision execution in a single conversation, was named an IDC MarketScape Leader, and launched a Climate Decision Intelligence product — a multi-front expansion from supply chain operations into sustainability and broader enterprise AI."
+        "what_changed": "Aera received an Accenture Ventures investment and launched agentic reasoning capabilities at Gartner Supply Chain Symposium, framing the platform as enabling 'situation to action in one conversation' — a significant step toward autonomous enterprise decisioning with a named IDC MarketScape Leader designation."
       },
       "tab2_top_3_things_to_know": [
-        "Accenture's investment creates a powerful go-to-market channel that will accelerate Aera's penetration into large enterprise accounts where Accenture has existing relationships.",
-        "Aera's agentic reasoning positions it as an 'act now, review later' platform — its own messaging acknowledges that humans review after systems act, which is a governance posture SAS directly challenges.",
-        "The IDC MarketScape Leader designation puts Aera in the same analyst tier as SAS and creates direct competitive overlap in enterprise decision intelligence evaluations."
+        "Accenture Ventures invested in Aera Technology and will co-sell Aera's decision intelligence combined with Accenture's supply chain services, dramatically expanding enterprise go-to-market reach.",
+        "Aera was named a Leader in the 2026 IDC MarketScape for Decision Intelligence Platforms, directly competitive with Provenir's Major Player status and SAS's positioning.",
+        "New agentic reasoning enables users to explore, analyze, reason, and act on decisions in a single conversational interaction, with 2026 roadmap including autonomous agent teams that self-assemble."
       ],
       "new_product_claims": [
-        "Aera Decision Cloud delivers audited decision automation with autonomous agent teams that self-assemble for decisions, with humans reviewing after systems act."
+        "Agentic reasoning that moves from situation to action in one conversation, with autonomous agent teams and governance agents planned for 2026."
       ],
       "sales_impact": {
-        "what_to_attack": "SAS wins on human-in-the-loop governance design — Aera's 'act now, review later' model inverts the governance principle, making human oversight reactive rather than foundational.",
-        "what_to_defend": "The Accenture partnership gives Aera enterprise sales reach SAS must monitor closely, particularly in manufacturing, supply chain, and oil and gas verticals where SAS has less decisioning presence.",
-        "trap_question": "In your 'act now, review later' model, when an autonomous agent team assembles and executes a decision that causes operational harm, which governance record shows that the action was authorized by a human with organizational accountability before it was taken?"
+        "what_to_attack": "SAS wins by demonstrating that Aera's 'audited decision automation' is output-level auditability, not governance of the organizational judgment and data quality assumptions that trained the agents — SAS governs from the foundation.",
+        "what_to_defend": "Accenture's investment gives Aera immediate access to large enterprise supply chain accounts globally; SAS must be ready to defend cross-industry decisioning deals where Aera now has a well-resourced channel partner.",
+        "trap_question": "When your autonomous agent teams self-assemble to make a decision, how does your governance layer trace which data assumptions and organizational policies each agent was operating under?"
       },
-      "judgment_gap": "Aera's platform is designed to act on real-time data and have humans review afterward, which assumes the data ingested from ERP, CRM, and IoT sources is a reliable proxy for organizational intent — rather than governing the judgment that determined what data matters and what actions are permissible before the system acts."
+      "judgment_gap": "Aera's platform sits atop existing enterprise data infrastructure and treats that data as a reliable input layer, with governance applied to the automation layer rather than to the judgment and data quality decisions that precede it — SAS's principle exposes that governing the agent's actions is not the same as governing the judgment behind the data the agent acts on."
     },
     {
       "name": "Quantexa",
@@ -288,22 +288,22 @@
       "changes": {
         "market_approach_changed": true,
         "product_claims_changed": true,
-        "what_changed": "Quantexa declared its Decision Intelligence Platform 'Agent Ready,' explicitly framing data fragmentation and context as the core unsolved problems in AI — a strategic repositioning from entity resolution tool to agentic AI infrastructure for enterprise decisions."
+        "what_changed": "Quantexa declared its Decision Intelligence Platform 'Agent Ready,' explicitly positioning entity resolution and contextual data as the solution to AI's core challenge of data fragmentation, while securing Chartis FCC50 #7 ranking and Category Leader in Enterprise Fraud Solutions."
       },
       "tab2_top_3_things_to_know": [
-        "Quantexa's 'Agent Ready' announcement is a direct bid to become the data and context layer that other AI agents depend on, positioning entity resolution as a prerequisite for trustworthy agentic AI.",
-        "The Chartis FCC50 #7 ranking and Enterprise Fraud Category Leader designation reinforce Quantexa's dominance in financial crime, making it the default contextual AI choice for AML and fraud teams.",
-        "The HSBC relationship (connecting global datasets for a single customer view) and ING win demonstrate that Quantexa is landing and expanding in Tier 1 global banks SAS also targets."
+        "Quantexa's 'Agent Ready' positioning frames its entity resolution capability as the prerequisite infrastructure for trustworthy agentic AI, targeting the data fragmentation problem that undermines AI outcomes.",
+        "Quantexa ranked #7 in Chartis FCC50 2026 and was named Category Leader in Enterprise Fraud Solutions, reinforcing dominance in financial crime use cases against direct SAS competition.",
+        "The HSBC and ING case studies published this cycle demonstrate active deployment of Quantexa's platform at Tier 1 global banks, raising the credibility bar for enterprise conversations."
       ],
       "new_product_claims": [
-        "Quantexa's platform is now 'Agent Ready,' solving data fragmentation and context gaps that prevent other AI agents from making trustworthy decisions at enterprise scale."
+        "Agent Ready platform architecture that combines entity resolution and contextual data to provide AI agents with trusted, unfragmented data as their operating foundation."
       ],
       "sales_impact": {
-        "what_to_attack": "SAS wins on governance of the judgment layer — Quantexa builds a trusted picture of the world from existing data, but does not govern the decisions about what data was collected, how entities were defined, or whose context was privileged in that construction.",
-        "what_to_defend": "Quantexa's Tier 1 bank wins and 'Agent Ready' narrative will position it as a foundational layer in enterprise AI stacks, potentially displacing SAS in the data preparation and context phase of decision pipelines.",
-        "trap_question": "When your entity resolution model decides that two records represent the same person and that determination influences a credit or fraud decision, where is the governance record for the organizational judgment that defined identity in your data — before the model was trained?"
+        "what_to_attack": "SAS wins by arguing that resolving fragmented data into a unified entity view does not address whether the data within those entities reflects sound organizational judgment — a complete picture built on biased inputs is still a biased decision.",
+        "what_to_defend": "Quantexa's Chartis recognition in fraud and financial crime, combined with Tier 1 bank wins, will make it the default reference in AML and fraud RFPs where SAS must demonstrate superior governance depth, not just analytic accuracy.",
+        "trap_question": "When your entity resolution creates a unified customer view, how does your platform govern whether the data sources that populated that view were themselves the product of sound, auditable organizational judgment?"
       },
-      "judgment_gap": "Quantexa assumes that resolving data fragmentation produces trustworthy context, but entity resolution is itself a model whose outputs reflect the judgment embedded in its training data — judgment about what constitutes identity, risk, and relationship that Quantexa's platform does not surface, audit, or govern."
+      "judgment_gap": "Quantexa's approach assumes that connecting and resolving more data points produces a more trustworthy picture of the world, but does not interrogate the judgment that determined which data sources were ingested, how they were weighted, or whether the entities they describe were correctly defined — SAS's principle holds that a richer graph built on ungoverned data assumptions amplifies, not corrects, the original error in judgment."
     }
   ]
 }
