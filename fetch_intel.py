@@ -555,29 +555,24 @@ def build_delta_email(data: dict) -> str:
 # ── EMAIL SEND ────────────────────────────────────────────────────────────────
 
 def send_email(subject: str, html: str) -> None:
-    api_key  = os.getenv("SENDGRID_API_KEY")
-    from_addr = os.getenv("EMAIL_FROM")
-    to_addr   = os.getenv("EMAIL_TO")
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
 
-    if not all([api_key, from_addr, to_addr]):
-        print("⚠  SendGrid env vars not set. Skipping email.")
-        return
+    gmail_user     = "albert.qian@gmail.com"
+    gmail_password = os.environ["GMAIL_APP_PASSWORD"]
 
-    recipients = [a.strip() for a in to_addr.split(",")]
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = subject
+    msg["From"]    = gmail_user
+    msg["To"]      = gmail_user
+    msg.attach(MIMEText(html, "html"))
 
-    import sendgrid
-    from sendgrid.helpers.mail import Mail, To
-
-    msg = Mail(
-        from_email=from_addr,
-        to_emails=[To(r) for r in recipients],
-        subject=subject,
-        html_content=html,
-    )
     try:
-        sg = sendgrid.SendGridAPIClient(api_key=api_key)
-        resp = sg.send(msg)
-        print(f"✓ Email sent → {', '.join(recipients)} (status {resp.status_code})")
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(gmail_user, gmail_password)
+            server.sendmail(gmail_user, gmail_user, msg.as_string())
+        print(f"✓ Email sent → {gmail_user}")
     except Exception as e:
         print(f"✗ Email failed: {e}")
 
