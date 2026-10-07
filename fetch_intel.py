@@ -615,7 +615,7 @@ def main():
         print(f"  {comp['name']}")
         items = fetch_competitor_items(comp, hours=args.hours)
         all_items[comp["name"]] = items
-        counts = {"blog": 0, "newsroom": 0, "google": 0}
+        counts = {"blog": 0, "newsroom": 0, "google": 0, "tavily": 0}
         for item in items:
             counts[item.get("source_type", "google")] += 1
         print(f"    → {len(items)} items [📝{counts['blog']} 📣{counts['newsroom']} 📰{counts['google']}]\n")
