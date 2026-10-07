@@ -15,7 +15,6 @@ import json
 import os
 import time
 from datetime import datetime, timedelta, timezone
-from urllib.parse import quote_plus
 
 import anthropic
 import feedparser
@@ -42,11 +41,33 @@ THREAT_COLORS = {"high": "#dc2626", "medium": "#d97706", "low": "#16a34a"}
 
 # ── RSS FETCHING ──────────────────────────────────────────────────────────────
 
-def google_news_url(query: str) -> str:
-    return (
-        "https://news.google.com/rss/search"
-        f"?q={quote_plus(query)}&hl=en-US&gl=US&ceid=US:en"
-    )
+def fetch_tavily_items(query: str, cutoff: datetime) -> list[dict]:
+    """Fetch recent news via Tavily API — replaces Google News RSS."""
+    try:
+        from tavily import TavilyClient
+        tavily = TavilyClient(api_key=os.environ.get("TAVILY_API_KEY", ""))
+        response = tavily.search(
+            query=query,
+            search_depth="basic",
+            max_results=5,
+            days=7,
+        )
+        items = []
+        for r in response.get("results", []):
+            title = (r.get("title") or "").strip()
+            if not title:
+                continue
+            items.append({
+                "title": title,
+                "summary": (r.get("content") or "")[:400].strip(),
+                "published": r.get("published_date", "recent"),
+                "source_type": "tavily",
+                "url": r.get("url", ""),
+            })
+        return items
+    except Exception as e:
+        print(f"      ↳ Tavily error: {e}")
+        return []
 
 
 def fetch_feed(url: str, feed_type: str, cutoff: datetime) -> list[dict]:
@@ -88,8 +109,8 @@ def fetch_competitor_items(competitor: dict, hours: int) -> list[dict]:
         all_items.extend(items)
         time.sleep(0.3)
 
-    for query in competitor.get("google_news_queries", []):
-        items = fetch_feed(google_news_url(query), "google", cutoff)
+    for query in competitor.get("tavily_queries", []):
+        items = fetch_tavily_items(query, cutoff)
         if items:
             print(f"      ✓ {len(items)} [📰 Trade Press] via: '{query}'")
         all_items.extend(items)
@@ -364,15 +385,65 @@ def build_baseline_email(data: dict) -> str:
     )
 
 
+def _brief_section(icon: str, heading: str, items: list, note: str = "") -> str:
+    """Render one of the three weekly brief sections."""
+    if not items:
+        return ""
+    if isinstance(items[0], dict):
+        # Marketing plays — structured
+        rows = ""
+        for item in items:
+            rows += (
+                "<tr>"
+                + _td(f"<strong style='font-size:13px'>{item.get('title','')}</strong>"
+                      f"<br><span style='font-size:12px;color:#374151'>{item.get('angle','')}</span>")
+                + _td(f"<span style='font-size:11px;color:#6366f1'>{item.get('why_now','')}</span>")
+                + "</tr>"
+            )
+        table = (
+            "<table style='width:100%;border-collapse:collapse;font-size:12px'>"
+            "<thead><tr>" + _th("Title & Angle") + _th("Why Now") + "</tr></thead>"
+            f"<tbody>{rows}</tbody></table>"
+        )
+        if note:
+            table += f"<p style='font-size:11px;color:#94a3b8;margin-top:6px'>{note}</p>"
+        return _section(f"{icon} {heading}", table)
+    else:
+        # Intel summary or product actions — bullet list
+        bullets = "".join(f"<li style='margin-bottom:6px;font-size:13px'>{s}</li>" for s in items)
+        return _section(f"{icon} {heading}", f"<ul style='padding-left:18px'>{bullets}</ul>")
+
+
 def build_delta_email(data: dict) -> str:
     sections = []
     generated = data.get("generated_at", "")
+    brief = data.get("weekly_brief", {})
 
-    # Market signals
-    signals = data.get("market_signals", [])
-    if signals:
-        bullets = "".join(f"<li style='margin-bottom:5px;font-size:13px'>{s}</li>" for s in signals)
-        sections.append(_section("📡 Market Signals", f"<ul style='padding-left:18px'>{bullets}</ul>"))
+    # ── Three questions ───────────────────────────────────────────────────────
+    intel   = brief.get("intel_summary", [])
+    product = brief.get("product_actions", [])
+    mktg    = brief.get("marketing_plays", [])
+
+    if intel:
+        sections.append(_brief_section(
+            "🎯", "What SAS Needs to Know", intel
+        ))
+    if product:
+        sections.append(_brief_section(
+            "🔬", "Product Response", product
+        ))
+    if mktg:
+        sections.append(_brief_section(
+            "✍️", "Marketing Plays", mktg,
+            note="Posts do not name competitors directly."
+        ))
+
+    # Fallback: old market_signals if weekly_brief not present
+    if not brief:
+        signals = data.get("market_signals", [])
+        if signals:
+            bullets = "".join(f"<li style='margin-bottom:5px;font-size:13px'>{s}</li>" for s in signals)
+            sections.append(_section("📡 Market Signals", f"<ul style='padding-left:18px'>{bullets}</ul>"))
 
     competitors = sorted(
         data.get("competitors", []),
@@ -458,30 +529,12 @@ def build_delta_email(data: dict) -> str:
             "<p style='color:#64748b;font-size:13px'>No significant changes detected vs baseline this week.</p>"
         ))
 
-    # Blog suggestions
-    blogs = [(c["name"], c["blog_suggestion"]) for c in competitors if c.get("blog_suggestion") and c.get("has_updates")]
-    if blogs:
-        blog_rows = ""
-        for comp_name, b in blogs:
-            blog_rows += (
-                "<tr>"
-                + _td(f"<em style='color:#64748b;font-size:11px'>{comp_name}</em>")
-                + _td(f"<strong style='font-size:13px'>{b.get('title','')}</strong><br><span style='font-size:12px;color:#374151'>{b.get('angle','')}</span>")
-                + _td(f"<span style='font-size:11px;color:#6366f1'>{b.get('why_now','')}</span>")
-                + "</tr>"
-            )
-        sections.append(_section(
-            "✍️ Suggested Blog Posts",
-            "<table style='width:100%;border-collapse:collapse;font-size:12px'>"
-            "<thead><tr>" + _th("In Response To") + _th("Title &amp; Angle") + _th("Why Now") + "</tr></thead>"
-            + f"<tbody>{blog_rows}</tbody></table>"
-            + "<p style='font-size:11px;color:#94a3b8;margin-top:6px'>Posts do not name competitors directly.</p>"
-        ))
+    # Marketing plays are now surfaced at the top via weekly_brief — no duplicate section here
 
     return (
         "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;max-width:820px;margin:0 auto;padding:28px;color:#1e293b'>"
         "<h1 style='color:#1e40af;margin-bottom:2px'>SAS Intelligent Decisioning</h1>"
-        "<h2 style='font-weight:normal;color:#64748b;margin-top:0;font-size:15px'>Weekly Competitive Intelligence</h2>"
+        "<h2 style='font-weight:normal;color:#64748b;margin-top:0;font-size:15px'>Weekly Intel · Product · Marketing Brief</h2>"
         f"<p style='color:#94a3b8;font-size:11px;border-bottom:1px solid #e2e8f0;padding-bottom:14px'>Generated: {generated}</p>"
         + "\n".join(sections)
         + "<hr style='border:none;border-top:1px solid #e2e8f0;margin:28px 0'>"
