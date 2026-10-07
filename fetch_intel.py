@@ -13,8 +13,11 @@ import argparse
 import base64
 import json
 import os
+import smtplib
 import time
 from datetime import datetime, timedelta, timezone
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import anthropic
 import feedparser
@@ -555,11 +558,7 @@ def build_delta_email(data: dict) -> str:
 # ── EMAIL SEND ────────────────────────────────────────────────────────────────
 
 def send_email(subject: str, html: str) -> None:
-    import smtplib
-    from email.mime.multipart import MIMEMultipart
-    from email.mime.text import MIMEText
-
-    gmail_user     = "albert.qian@gmail.com"
+    gmail_user     = os.environ["GMAIL_ADDRESS"]
     gmail_password = os.environ["GMAIL_APP_PASSWORD"]
 
     msg = MIMEMultipart("alternative")
@@ -569,8 +568,7 @@ def send_email(subject: str, html: str) -> None:
     msg.attach(MIMEText(html, "html"))
 
     try:
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:
-            server.starttls()
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
             server.login(gmail_user, gmail_password)
             server.sendmail(gmail_user, gmail_user, msg.as_string())
         print(f"✓ Email sent → {gmail_user}")
