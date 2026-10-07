@@ -517,6 +517,15 @@ def build_delta_email(data: dict) -> str:
                     f"</div>"
                 )
 
+            judgment_gap = c.get("judgment_gap", "")
+            if judgment_gap:
+                inner += (
+                    f"<div style='margin-top:10px;padding:8px 12px;"
+                    f"background:#eff6ff;border-left:3px solid #1e40af;font-size:12px'>"
+                    f"<strong style='color:#1e40af'>⚖ Judgment Gap:</strong> {judgment_gap}"
+                    f"</div>"
+                )
+
             detail += (
                 f"<div style='border-left:3px solid {color};padding:10px 14px;"
                 f"margin-bottom:12px;background:#fafafa'>{inner}</div>"
