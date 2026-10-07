@@ -558,22 +558,21 @@ def build_delta_email(data: dict) -> str:
 # ── EMAIL SEND ────────────────────────────────────────────────────────────────
 
 def send_email(subject: str, html: str) -> None:
-    gmail_user     = os.environ["GMAIL_ADDRESS"]
-    gmail_password = os.environ["GMAIL_APP_PASSWORD"]
+    sender   = os.environ["GMAIL_ADDRESS"]
+    password = os.environ["GMAIL_APP_PASSWORD"]
+    to       = sender
 
     msg = MIMEMultipart("alternative")
     msg["Subject"] = subject
-    msg["From"]    = gmail_user
-    msg["To"]      = gmail_user
+    msg["From"]    = sender
+    msg["To"]      = to
+    msg.attach(MIMEText("SAS Competitive Intelligence Weekly Brief", "plain"))
     msg.attach(MIMEText(html, "html"))
 
-    try:
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
-            server.login(gmail_user, gmail_password)
-            server.sendmail(gmail_user, gmail_user, msg.as_string())
-        print(f"✓ Email sent → {gmail_user}")
-    except Exception as e:
-        print(f"✗ Email failed: {e}")
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as s:
+        s.login(sender, password)
+        s.sendmail(sender, [to], msg.as_string())
+    print(f"✓ Email sent → {to}")
 
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
