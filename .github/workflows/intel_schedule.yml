@@ -44,4 +44,5 @@ jobs:
           cp intel_feed.json history/intel_feed_${DATE}.json
           git add intel_feed.json history/intel_feed_${DATE}.json
           git diff --staged --quiet || git commit -m "chore: intel feed ${DATE}"
+          git pull --rebase origin main
           git push
