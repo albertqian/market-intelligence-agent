@@ -15,10 +15,12 @@ COMPETITORS = [
     {
         "name": "Sapiens",
         "segment": "Insurance / Financial",
-        "feeds": [],
-        "google_news_queries": [
-            "Sapiens International software insurance AI",
-            "Sapiens DECISION platform release",
+        "feeds": [
+            {"url": "https://www.sapiens.com/feed/", "type": "blog"},
+        ],
+        "tavily_queries": [
+            "Sapiens International decisioning AI product announcement",
+            "Sapiens DECISION platform new release insurance",
         ],
     },
     {
@@ -27,18 +29,20 @@ COMPETITORS = [
         "feeds": [
             {"url": "https://medium.com/feed/palantir", "type": "blog"},
         ],
-        "google_news_queries": [
-            "Palantir AIP platform product",
-            "Palantir artificial intelligence enterprise",
+        "tavily_queries": [
+            "Palantir AIP platform product launch enterprise AI",
+            "Palantir artificial intelligence decisioning announcement",
         ],
     },
     {
         "name": "Pegasystems",
         "segment": "CRM / BPM",
-        "feeds": [],
-        "google_news_queries": [
-            "Pegasystems Pega AI product launch",
-            "Pega decisioning automation release",
+        "feeds": [
+            {"url": "https://www.pega.com/about/news/rss.xml", "type": "newsroom"},
+        ],
+        "tavily_queries": [
+            "Pegasystems Pega AI decisioning product launch 2026",
+            "Pega decisioning automation new feature release",
         ],
     },
     {
@@ -47,18 +51,20 @@ COMPETITORS = [
         "feeds": [
             {"url": "https://www.ibm.com/blog/feed/", "type": "blog"},
         ],
-        "google_news_queries": [
-            "IBM watsonx AI product announcement",
-            "IBM decision optimization ODM release",
+        "tavily_queries": [
+            "IBM watsonx AI decisioning product announcement 2026",
+            "IBM decision optimization ODM new release",
         ],
     },
     {
         "name": "FICO",
         "segment": "Credit / Risk",
-        "feeds": [],
-        "google_news_queries": [
-            "FICO credit scoring AI platform",
-            "FICO decision management product",
+        "feeds": [
+            {"url": "https://www.fico.com/blogs/feed", "type": "blog"},
+        ],
+        "tavily_queries": [
+            "FICO credit scoring AI platform product update 2026",
+            "FICO decision management new announcement",
         ],
     },
     {
@@ -67,45 +73,49 @@ COMPETITORS = [
         "feeds": [
             {"url": "https://www.provenir.com/feed/", "type": "blog"},
         ],
-        "google_news_queries": [
-            "Provenir fintech credit risk AI",
-            "Provenir decisioning platform",
+        "tavily_queries": [
+            "Provenir fintech credit risk AI decisioning 2026",
+            "Provenir platform new product feature announcement",
         ],
     },
     {
         "name": "ACTICO",
         "segment": "Compliance / Reg-Tech",
-        "feeds": [],
-        "google_news_queries": [
-            "ACTICO decision management compliance AI",
-            "ACTICO rules engine software",
+        "feeds": [
+            {"url": "https://www.actico.com/feed/", "type": "blog"},
+        ],
+        "tavily_queries": [
+            "ACTICO decision management compliance AI 2026",
+            "ACTICO rules engine software new release",
         ],
     },
     {
         "name": "CRIF",
         "segment": "Credit Risk",
         "feeds": [],
-        "google_news_queries": [
-            "CRIF credit risk AI analytics platform",
-            "CRIF decisioning GenAI",
+        "tavily_queries": [
+            "CRIF credit risk AI analytics platform announcement 2026",
+            "CRIF decisioning GenAI product update",
         ],
     },
     {
         "name": "Aera Technology",
         "segment": "Supply Chain / Ops",
         "feeds": [],
-        "google_news_queries": [
-            "Aera Technology agentic AI supply chain",
-            "Aera Technology decision automation",
+        "tavily_queries": [
+            "Aera Technology agentic AI supply chain decisioning 2026",
+            "Aera Technology decision automation new product",
         ],
     },
     {
         "name": "Quantexa",
         "segment": "AML / KYC / Fraud",
-        "feeds": [],
-        "google_news_queries": [
-            "Quantexa AI analytics fraud AML platform",
-            "Quantexa entity resolution decision intelligence",
+        "feeds": [
+            {"url": "https://www.quantexa.com/blog/feed/", "type": "blog"},
+        ],
+        "tavily_queries": [
+            "Quantexa AI analytics fraud AML platform announcement 2026",
+            "Quantexa entity resolution decision intelligence new release",
         ],
     },
 ]
@@ -171,17 +181,45 @@ Keep every field to the minimum needed. Sales reps read this between calls.
 # ── Used weekly for delta runs ────────────────────────────────────────────────
 DELTA_SYSTEM = """You are a senior competitive intelligence strategist at SAS focused on SAS Intelligent Decisioning.
 
-SAS Intelligent Decisioning strengths: governance, explainability, regulated industry trust, enterprise scale, native Viya integration, traceable agentic AI.
+SAS Intelligent Decisioning strengths: governance, explainability, regulated industry trust,
+enterprise scale, native Viya integration, traceable agentic AI, human-in-the-loop controls.
 SAS gaps: no native knowledge graph (vs Quantexa); less fintech-native than Provenir/CRIF.
 
-You will receive new RSS articles from competitors. Analyze ONLY what is new or changed.
-Do not re-summarize stable known facts.
+You will receive new articles and press coverage from competitors. Your job is to answer
+three specific questions for the SAS product and marketing teams:
+
+QUESTION 1 — INTEL: What does SAS need to know about what competitors did this week?
+Focus on product launches, partnerships, customer wins, analyst recognition, and positioning shifts.
+Only include what is genuinely new. Do not summarize stable known facts.
+
+QUESTION 2 — PRODUCT: What should SAS do from a product standpoint in response?
+Be specific: feature gaps to close, positioning adjustments, roadmap signals, capabilities
+to accelerate. Frame this as concrete recommendations, not observations.
+
+QUESTION 3 — MARKETING: What can SAS say from a marketing and content standpoint?
+Suggest specific blog posts, thought leadership angles, or messaging moves that address
+competitor activity without naming competitors directly. Each suggestion should be
+publishable and timely.
 
 Return ONLY valid JSON for the competitors listed. No markdown, no preamble.
 
 Schema:
 {
-  "market_signals": ["<cross-competitor trend, max 10 words>"],
+  "weekly_brief": {
+    "intel_summary": [
+      "<key thing SAS needs to know — 1 sentence, specific and factual>"
+    ],
+    "product_actions": [
+      "<specific product recommendation for SAS ID team — 1 sentence, actionable>"
+    ],
+    "marketing_plays": [
+      {
+        "title": "<blog or content title — do NOT name the competitor>",
+        "angle": "<the argument SAS makes in 1 sentence>",
+        "why_now": "<why this is timely given this week's competitive activity>"
+      }
+    ]
+  },
   "competitors": [
     {
       "name": "<exact name>",
@@ -208,11 +246,6 @@ Schema:
         "what_to_attack": "<1 sentence — where SAS wins against them now>",
         "what_to_defend": "<1 sentence — what to be ready for>",
         "trap_question": "<1 question that reveals their weakness>"
-      },
-      "blog_suggestion": {
-        "title": "<post title — do NOT name the competitor>",
-        "angle": "<1 sentence argument SAS makes>",
-        "why_now": "<1 sentence on timeliness>"
       }
     }
   ]
@@ -221,7 +254,9 @@ Schema:
 Rules:
 - Only include competitors whose names appear in the prompt.
 - Set has_updates: false and what_changed: null if no new articles found.
-- blog_suggestion: include only if has_updates is true, otherwise omit.
-- Market signals: 3-4 max, cross-competitor patterns only.
+- weekly_brief should synthesize across ALL competitors, not just those with updates.
+- intel_summary: 3-5 bullets maximum. Cross-competitor patterns preferred over single events.
+- product_actions: 2-4 concrete recommendations maximum.
+- marketing_plays: 2-3 content ideas maximum, each tied to something specific that happened.
 - Every field: 1 sentence maximum. Brevity is required.
 """
